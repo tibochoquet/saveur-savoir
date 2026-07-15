@@ -1,0 +1,213 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import OverviewCard from "../../components/OverviewCard.astro";
+
+const categorieen = ["Alles", "Kaas", "Madeleines & bakvormen", "Droge worst", "Wijn", "Zeep", "Etherische oliën"];
+
+const producten = [
+  {
+    titel: "Comté 24 maanden",
+    categorie: "Kaas",
+    herkomst: "Jura",
+    excerpt: "Twee jaar gerijpt in de kelders van het Jura, tot de smaak kristallen krijgt.",
+    prijs: "€ 22,50 / 500 g",
+    tone: "ochre" as const,
+    href: "/franse-producten/comte-24-maanden",
+  },
+  {
+    titel: "Reblochon fermier",
+    categorie: "Kaas",
+    herkomst: "Haute-Savoie",
+    excerpt: "Zachte, wasachtige korst en een romige kern — de klassieker van de Haute-Savoie.",
+    prijs: "€ 14,00 / stuk",
+    tone: "ochre" as const,
+    href: null,
+  },
+  {
+    titel: "Madeleinevorm, verkoperen",
+    categorie: "Madeleines & bakvormen",
+    herkomst: "Commercy",
+    excerpt: "Een gietvorm voor twaalf madeleines, precies zoals ze al generaties gemaakt worden in Commercy.",
+    prijs: "€ 28,00 / stuk",
+    tone: "blue" as const,
+    href: null,
+  },
+  {
+    titel: "Saucisson sec aux herbes de Provence",
+    categorie: "Droge worst",
+    herkomst: "Provence",
+    excerpt: "Traag gedroogde droge worst, op smaak gebracht met tijm en rozemarijn.",
+    prijs: "€ 9,50 / 200 g",
+    tone: "terracotta" as const,
+    href: null,
+  },
+  {
+    titel: "Domaine familiale rosé",
+    categorie: "Wijn",
+    herkomst: "Côtes de Provence",
+    excerpt: "Droog, fris, en precies de kleur van een Provençaalse zomeravond.",
+    prijs: "€ 16,00 / fles",
+    tone: "terracotta" as const,
+    href: "/franse-producten/domaine-familiale-rose",
+  },
+  {
+    titel: "Savon de Marseille, olijfolie",
+    categorie: "Zeep",
+    herkomst: "Marseille",
+    excerpt: "Traditionele zeepblokken, nog steeds gekookt volgens het eeuwenoude procedé.",
+    prijs: "€ 6,50 / blok",
+    tone: "olive" as const,
+    href: null,
+  },
+  {
+    titel: "Etherische lavendelolie",
+    categorie: "Etherische oliën",
+    herkomst: "Plateau de Valensole",
+    excerpt: "Gedistilleerd op kleine schaal, met een geur die meteen aan de Provence doet denken.",
+    prijs: "€ 19,00 / 10 ml",
+    tone: "blue" as const,
+    href: null,
+  },
+];
+
+const stappen = [
+  {
+    nummer: "01",
+    titel: "Mail",
+    tekst: "Je stuurt een aanvraag via het contactformulier, met het product dat je wilt.",
+  },
+  {
+    nummer: "02",
+    titel: "Bevestiging",
+    tekst: "Ik laat binnen enkele dagen weten of het product beschikbaar is, en bevestig prijs en verzendkosten.",
+  },
+  {
+    nummer: "03",
+    titel: "Verzending",
+    tekst: "Na de betalingsafspraak verstuur ik het product, met een trackinglink waar mogelijk.",
+  },
+];
+---
+
+<Layout
+  title="Franse producten — Saveur & Savoir"
+  description="Een kleine etalage van dingen die ik zelf gebruik en aanraad, rechtstreeks uit Frankrijk."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Franse producten</Eyebrow>
+      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+        Een kleine etalage, rechtstreeks uit Frankrijk.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-500">
+        Dit is geen webshop. Er is geen winkelmand en geen online kassa — je
+        vraagt een product aan via het contactformulier, en ik antwoord
+        persoonlijk met prijs, beschikbaarheid en verzendopties.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <div id="filters" class="flex flex-wrap gap-3">
+        {
+          categorieen.map((cat, i) => (
+            <button
+              type="button"
+              data-filter={cat}
+              aria-pressed={i === 0 ? "true" : "false"}
+              class:list={[
+                "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
+                i === 0
+                  ? "border-terracotta-500 bg-terracotta-500 text-cream-50"
+                  : "border-blue-300 text-ink-700 hover:border-terracotta-500 hover:text-terracotta-500",
+              ]}
+            >
+              {cat}
+            </button>
+          ))
+        }
+      </div>
+
+      <div id="product-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          producten.map((product) => (
+            <OverviewCard
+              href={product.href}
+              eyebrow={product.categorie}
+              title={product.titel}
+              excerpt={product.excerpt}
+              prijs={product.prijs}
+              meta={product.herkomst}
+              tone={product.tone}
+              dataCategory={product.categorie}
+            />
+          ))
+        }
+      </div>
+
+      <p id="no-results" class="mt-14 hidden text-sm text-ink-500">
+        Nog geen producten in deze categorie — kom snel terug.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="blue" class="border-t border-blue-800">
+    <Container wide>
+      <Eyebrow class="text-ochre-300">Hoe bestellen werkt</Eyebrow>
+      <div class="mt-10 divide-y divide-cream-50/20">
+        {
+          stappen.map((stap) => (
+            <div class="flex flex-col gap-2 py-6 sm:flex-row sm:items-baseline sm:gap-8">
+              <span class="w-10 shrink-0 font-serif text-sm text-ochre-300">{stap.nummer}</span>
+              <h3 class="w-full shrink-0 font-serif text-lg text-cream-50 sm:w-56">{stap.titel}</h3>
+              <p class="text-sm text-blue-100">{stap.tekst}</p>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>("#filters button");
+  const cards = document.querySelectorAll<HTMLElement>("#product-grid > *");
+  const noResults = document.getElementById("no-results");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+
+      filterButtons.forEach((b) => {
+        const active = b === button;
+        b.setAttribute("aria-pressed", String(active));
+        b.classList.toggle("border-terracotta-500", active);
+        b.classList.toggle("bg-terracotta-500", active);
+        b.classList.toggle("text-cream-50", active);
+        b.classList.toggle("border-blue-300", !active);
+        b.classList.toggle("text-ink-700", !active);
+        b.classList.toggle("hover:border-terracotta-500", !active);
+        b.classList.toggle("hover:text-terracotta-500", !active);
+      });
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const matches = filter === "Alles" || card.dataset.category === filter;
+        card.classList.toggle("hidden", !matches);
+        if (matches) visibleCount++;
+      });
+
+      noResults?.classList.toggle("hidden", visibleCount > 0);
+    });
+  });
+</script>

@@ -1,0 +1,102 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Button from "../../components/Button.astro";
+import PlaceholderImage from "../../components/PlaceholderImage.astro";
+
+const productNaam = "Domaine familiale rosé";
+---
+
+<Layout
+  title={`${productNaam} — Saveur & Savoir`}
+  description="Droog, fris, en precies de kleur van een Provençaalse zomeravond."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container class="max-w-2xl">
+      <a href="/franse-producten" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle producten</a>
+      <Eyebrow class="mt-6">Product · Wijn</Eyebrow>
+      <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+        {productNaam}
+      </h1>
+      <p class="mt-6 font-serif text-xl leading-relaxed text-ink-700 italic">
+        Een rosé van een familiedomein net buiten Draguignan — droog, fris, en
+        precies de kleur van een Provençaalse zomeravond.
+      </p>
+      <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-500">
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Prijs</dt>
+          <dd>€ 16,00 / fles (75 cl)</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Herkomst</dt>
+          <dd>Côtes de Provence</dd>
+        </div>
+      </dl>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <PlaceholderImage ratio="16/9" tone="terracotta" class="rounded-sm" label="Beeld volgt" />
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container class="max-w-2xl">
+      <Eyebrow>Het verhaal</Eyebrow>
+      <div class="mt-8 space-y-6 text-base leading-relaxed text-ink-700">
+        <p>
+          Het domein wordt al vier generaties gerund door dezelfde familie, op
+          wijngaarden die grenzen aan de heuvels van de Massif des Maures. De
+          druiven — grenache, cinsault en een beetje syrah — worden met de
+          hand geplukt in de vroege ochtend, wanneer het nog koel genoeg is om
+          de frisheid in de druif te bewaren.
+        </p>
+        <p>
+          Wat deze rosé onderscheidt van de bekende supermarktflessen is de
+          "saignée"-methode: een deel van het sap wordt na een paar uur
+          contact met de schil afgetapt, wat zorgt voor die kenmerkende
+          bleekroze kleur en een structuur die net iets meer body heeft dan de
+          doorsnee zomerwijn.
+        </p>
+        <p class="border-l-2 border-ochre-400 py-1 pl-6 font-serif text-lg text-ink-900 italic">
+          Deze rosé smaakt naar een keukentafel in de Provence, niet naar een
+          strandbar.
+        </p>
+        <p>
+          Ik kreeg deze fles voor het eerst aangeboden door de wijnboer zelf,
+          tijdens een proeverij aan de keukentafel van het domein — geen
+          poespas, gewoon een fles, vijf glazen, en een gesprek dat drie uur
+          duurde. Die avond nam ik een kist mee naar huis, en dat doe ik nog
+          steeds elk jaar.
+        </p>
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container class="max-w-2xl">
+      <div class="border border-blue-200 bg-cream-50 p-8">
+        <h2 class="font-serif text-xl text-ink-900">{productNaam}</h2>
+        <p class="mt-2 font-serif text-2xl text-terracotta-600">€ 16,00 / fles (75 cl)</p>
+        <p class="mt-3 text-sm text-ink-500">
+          Geen webshop, geen automatische afrekening — je vraagt aan, ik
+          bevestig persoonlijk beschikbaarheid en verzendkosten.
+        </p>
+        <div class="mt-6">
+          <Button href={`/contact?onderwerp=${encodeURIComponent(productNaam)}`} variant="primary">
+            Vraag dit product aan
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

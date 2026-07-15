@@ -73,10 +73,18 @@ const inputClasses =
 
         <div>
           <label for="onderwerp" class="text-sm font-medium text-ink-900">Onderwerp</label>
-          <select id="onderwerp" name="onderwerp" required class={inputClasses}>
-            <option value="" disabled selected>Kies een onderwerp</option>
-            {onderwerpen.map((o) => <option value={o}>{o}</option>)}
-          </select>
+          <input
+            id="onderwerp"
+            name="onderwerp"
+            type="text"
+            required
+            list="onderwerp-suggesties"
+            class={inputClasses}
+            placeholder="Bijv. een vertaling, een recept, of een product"
+          />
+          <datalist id="onderwerp-suggesties">
+            {onderwerpen.map((o) => <option value={o} />)}
+          </datalist>
         </div>
 
         <div>
@@ -103,3 +111,11 @@ const inputClasses =
 
   <Footer />
 </Layout>
+
+<script>
+  const onderwerp = new URLSearchParams(window.location.search).get("onderwerp");
+  const input = document.getElementById("onderwerp");
+  if (onderwerp && input instanceof HTMLInputElement) {
+    input.value = onderwerp;
+  }
+</script>
