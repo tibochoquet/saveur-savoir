@@ -6,37 +6,10 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
+import { getWandelingen } from "../../sanity/lib/queries";
 
-const routes = [
-  {
-    titel: "GR70 — Chemin de Stevenson",
-    excerpt: "Twaalf dagen door de Cévennes, in het spoor van Robert Louis Stevenson en zijn eigenzinnige ezel.",
-    meta: "252 km · 12 dagen",
-    tone: "olive" as const,
-    href: "/wandelen/gr70-chemin-de-stevenson",
-  },
-  {
-    titel: "Calanques van Marseille",
-    excerpt: "Steile kalkkloven, turquoise water en geen boom die schaduw geeft — pak veel water mee.",
-    meta: "14 km · dagtocht",
-    tone: "blue" as const,
-    href: null,
-  },
-  {
-    titel: "Gorges du Verdon",
-    excerpt: "De Grand Canyon van Europa, met paden die soms rakelings langs de rotswand lopen.",
-    meta: "18 km · dagtocht",
-    tone: "terracotta" as const,
-    href: null,
-  },
-  {
-    titel: "Cirque de Gavarnie",
-    excerpt: "Een natuurlijk amfitheater in de Pyreneeën, met een waterval van driehonderd meter.",
-    meta: "9 km · halve dag",
-    tone: "ochre" as const,
-    href: null,
-  },
-];
+const wandelingen = await getWandelingen();
+const tonen = ["olive", "blue", "terracotta", "ochre"] as const;
 ---
 
 <Layout
@@ -62,16 +35,20 @@ const routes = [
     <Container wide>
       <div class="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
         {
-          routes.map((r) => (
-            <OverviewCard
-              href={r.href}
-              eyebrow="Route"
-              title={r.titel}
-              excerpt={r.excerpt}
-              meta={r.meta}
-              tone={r.tone}
-            />
-          ))
+          wandelingen.map((w, i) => {
+            const isGepubliceerd = (w.etappes?.length ?? 0) > 0 && !!w.gpxBestand;
+            return (
+              <OverviewCard
+                href={isGepubliceerd ? `/wandelen/${w.slug.current}` : null}
+                eyebrow="Route"
+                title={w.titel}
+                excerpt={w.excerpt}
+                meta={`${w.afstand} · ${w.duur}`}
+                image={w.afbeelding}
+                tone={tonen[i % tonen.length]}
+              />
+            );
+          })
         }
       </div>
     </Container>

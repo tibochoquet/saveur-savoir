@@ -1,0 +1,58 @@
+---
+// Renders a real Sanity image (hotspot-aware crop) when one is set,
+// and falls back to PlaceholderImage otherwise — so pages never break
+// while the owner hasn't uploaded a photo yet.
+import PlaceholderImage from "./PlaceholderImage.astro";
+import { urlFor } from "../sanity/lib/image";
+import type { SanityImageValue } from "../sanity/lib/types";
+
+interface Props {
+  image?: SanityImageValue | null;
+  ratio?: string;
+  tone?: "terracotta" | "olive" | "blue" | "ochre";
+  label?: string;
+  class?: string;
+  sizes?: string;
+}
+
+const {
+  image,
+  ratio = "4/5",
+  tone = "olive",
+  label = "Beeld volgt",
+  class: className = "",
+  sizes = "100vw",
+} = Astro.props;
+
+const widths = [480, 768, 1024, 1440, 1920];
+
+let src = "";
+let srcset = "";
+
+if (image?.asset) {
+  const [w, h] = ratio.split("/").map(Number);
+  const heightFor = (width: number) => Math.round(width * (h / w));
+
+  src = urlFor(image).width(1440).height(heightFor(1440)).fit("crop").auto("format").url();
+  srcset = widths
+    .map((width) => `${urlFor(image).width(width).height(heightFor(width)).fit("crop").auto("format").url()} ${width}w`)
+    .join(", ");
+}
+---
+
+{
+  image?.asset ? (
+    <div class:list={["relative overflow-hidden", className]} style={`aspect-ratio: ${ratio};`}>
+      <img
+        src={src}
+        srcset={srcset}
+        sizes={sizes}
+        alt={image.alt ?? ""}
+        class="h-full w-full object-cover"
+        loading="lazy"
+      />
+    </div>
+  ) : (
+    <PlaceholderImage ratio={ratio} tone={tone} label={label} class={className} />
+  )
+}

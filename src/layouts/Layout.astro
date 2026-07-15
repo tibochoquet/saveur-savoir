@@ -10,6 +10,11 @@ const {
   title,
   description = "Saveur & Savoir — Frans leven, taal en landschap, met tijd genomen.",
 } = Astro.props;
+
+// Staging draait op een tijdelijke netlify.app-URL en mag niet
+// geïndexeerd worden. Zet PUBLIC_ALLOW_INDEXING=true in Netlify zodra
+// de site op saveursavoir.nl staat.
+const allowIndexing = import.meta.env.PUBLIC_ALLOW_INDEXING === "true";
 ---
 
 <!doctype html>
@@ -19,6 +24,7 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
+    {!allowIndexing && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
   </head>
   <body class="bg-cream-100 font-sans text-ink-700 antialiased">

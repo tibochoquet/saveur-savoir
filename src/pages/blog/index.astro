@@ -6,46 +6,12 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
+import { getBlogartikelen } from "../../sanity/lib/queries";
 
 const categorieen = ["Alles", "Tradities", "Taal", "Eten & drinken", "Cultuur"];
+const tonen = ["terracotta", "blue", "ochre", "olive"] as const;
 
-const posts = [
-  {
-    titel: "Waarom Fransen elkaar twee, drie of vier keer kussen",
-    excerpt: "La bise lijkt een simpel gebaar, tot je in het verkeerde departement de verkeerde kant op buigt.",
-    meta: "Tradities",
-    tone: "terracotta" as const,
-    href: "/blog/la-bise",
-  },
-  {
-    titel: "Tu of vous: wanneer je het echt fout kan doen",
-    excerpt: "De regels lijken simpel, tot je collega van vijftig jaar plots vous tegen je zegt.",
-    meta: "Taal",
-    tone: "blue" as const,
-    href: null,
-  },
-  {
-    titel: "Waarom elke Franse streek zijn eigen kaas heeft",
-    excerpt: "Meer dan 1.200 soorten, en elke Fransman is ervan overtuigd dat die van zijn streek de beste is.",
-    meta: "Eten & drinken",
-    tone: "ochre" as const,
-    href: null,
-  },
-  {
-    titel: "De ongeschreven regels van de zondagse markt",
-    excerpt: "Niet knijpen in het fruit, niet voordringen, en altijd 'bonjour' zeggen voordat je iets vraagt.",
-    meta: "Cultuur",
-    tone: "olive" as const,
-    href: null,
-  },
-  {
-    titel: "Waarom Franse kinderen tot 18.00 uur op school kunnen zitten",
-    excerpt: "Het Franse schoolsysteem verrast elke nieuwkomer — meestal op de manier die je niet verwacht.",
-    meta: "Cultuur",
-    tone: "blue" as const,
-    href: null,
-  },
-];
+const artikelen = await getBlogartikelen();
 ---
 
 <Layout
@@ -91,16 +57,20 @@ const posts = [
 
       <div id="post-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
         {
-          posts.map((post) => (
-            <OverviewCard
-              href={post.href}
-              eyebrow={post.meta}
-              title={post.titel}
-              excerpt={post.excerpt}
-              tone={post.tone}
-              dataCategory={post.meta}
-            />
-          ))
+          artikelen.map((post, i) => {
+            const isGepubliceerd = (post.inhoud?.length ?? 0) > 0;
+            return (
+              <OverviewCard
+                href={isGepubliceerd ? `/blog/${post.slug.current}` : null}
+                eyebrow={post.onderwerp}
+                title={post.titel}
+                excerpt={post.excerpt}
+                image={post.afbeelding}
+                tone={tonen[i % tonen.length]}
+                dataCategory={post.onderwerp}
+              />
+            );
+          })
         }
       </div>
 

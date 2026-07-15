@@ -1,0 +1,50 @@
+---
+// Renders the constrained rich text used for "verhaal"-style fields.
+// Custom components map onto the site's existing prose styling so
+// content edited in the Studio matches the hardcoded pages it replaces.
+import { PortableText as PT } from "astro-portabletext";
+import type { PortableTextBlock } from "@portabletext/types";
+
+import PTParagraph from "./portable-text/PTParagraph.astro";
+import PTHeading2 from "./portable-text/PTHeading2.astro";
+import PTHeading3 from "./portable-text/PTHeading3.astro";
+import PTBulletList from "./portable-text/PTBulletList.astro";
+import PTNumberList from "./portable-text/PTNumberList.astro";
+import PTLink from "./portable-text/PTLink.astro";
+import PTImage from "./portable-text/PTImage.astro";
+import PTPullQuote from "./portable-text/PTPullQuote.astro";
+
+interface Props {
+  value?: PortableTextBlock[] | null;
+  class?: string;
+}
+
+const { value, class: className = "" } = Astro.props;
+
+const components = {
+  block: {
+    normal: PTParagraph,
+    h2: PTHeading2,
+    h3: PTHeading3,
+  },
+  list: {
+    bullet: PTBulletList,
+    number: PTNumberList,
+  },
+  mark: {
+    link: PTLink,
+  },
+  type: {
+    afbeelding: PTImage,
+    pullQuote: PTPullQuote,
+  },
+};
+---
+
+{
+  value && value.length > 0 && (
+    <div class:list={["space-y-6", className]}>
+      <PT value={value} components={components} />
+    </div>
+  )
+}

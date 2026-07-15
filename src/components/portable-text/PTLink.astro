@@ -1,0 +1,12 @@
+---
+const { node, index, isInline, ...attrs } = Astro.props;
+const href = node.markDef?.href;
+---
+
+<a
+  href={href}
+  class="text-terracotta-600 underline decoration-ochre-400 decoration-2 hover:decoration-terracotta-500"
+  {...attrs}
+>
+  <slot />
+</a>

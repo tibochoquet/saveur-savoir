@@ -1,0 +1,84 @@
+import { defineField, defineType } from "sanity";
+
+export default defineType({
+  name: "product",
+  title: "Product",
+  type: "document",
+  fields: [
+    defineField({
+      name: "naam",
+      title: "Naam",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "slug",
+      title: "Slug (URL)",
+      type: "slug",
+      description: "Wordt gebruikt in de link naar dit product.",
+      options: { source: "naam", maxLength: 96 },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "categorie",
+      title: "Categorie",
+      description: "Bepaalt in welke categorie dit product valt bij het filteren op de productenpagina.",
+      type: "string",
+      options: {
+        list: [
+          { title: "Kaas", value: "Kaas" },
+          { title: "Madeleines & bakvormen", value: "Madeleines & bakvormen" },
+          { title: "Droge worst", value: "Droge worst" },
+          { title: "Wijn", value: "Wijn" },
+          { title: "Zeep", value: "Zeep" },
+          { title: "Etherische oliën", value: "Etherische oliën" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "prijs",
+      title: "Prijs",
+      description: "Volledige prijsvermelding zoals die getoond wordt, bijvoorbeeld: € 22,50 / 500 g. Zonder prijs kan een product niet aangevraagd worden.",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "herkomst",
+      title: "Herkomst",
+      description: "Bijvoorbeeld: Jura, Frankrijk.",
+      type: "string",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "excerpt",
+      title: "Korte omschrijving",
+      description: "Één zin, te zien op de overzichtspagina.",
+      type: "text",
+      rows: 2,
+      validation: (Rule) => Rule.required().max(200),
+    }),
+    defineField({
+      name: "dek",
+      title: "Inleidende zin",
+      description: "De grotere, cursieve zin direct onder de titel. Te zien op de productpagina zelf, niet op het overzicht.",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
+      name: "afbeelding",
+      title: "Foto",
+      type: "afbeelding",
+      description: "Zonder foto wordt automatisch een placeholder getoond.",
+    }),
+    defineField({
+      name: "verhaal",
+      title: "Het verhaal",
+      description: "Het langere verkoopverhaal achter dit product. Leeg laten als het product nog niet klaar is voor publicatie — dan krijgt het \"Binnenkort\" op de overzichtspagina.",
+      type: "blockContent",
+    }),
+  ],
+  preview: {
+    select: { title: "naam", subtitle: "categorie", media: "afbeelding" },
+  },
+});

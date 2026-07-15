@@ -1,0 +1,116 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import SanityImage from "../../components/SanityImage.astro";
+import PortableText from "../../components/PortableText.astro";
+import { getRecepten } from "../../sanity/lib/queries";
+
+export async function getStaticPaths() {
+  const recepten = await getRecepten();
+  return recepten
+    .filter((r) => (r.bereidingsstappen?.length ?? 0) > 0)
+    .map((r) => ({ params: { slug: r.slug.current }, props: { recept: r } }));
+}
+
+const { recept } = Astro.props;
+---
+
+<Layout
+  title={`${recept.titel} — Saveur & Savoir`}
+  description={recept.excerpt}
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container class="max-w-2xl">
+      <a href="/recepten" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle recepten</a>
+      <Eyebrow class="mt-6">Recept · {recept.streek}</Eyebrow>
+      <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+        {recept.titel}
+      </h1>
+      <p class="mt-6 font-serif text-xl leading-relaxed text-ink-700 italic">
+        {recept.excerpt}
+      </p>
+      <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-500">
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Bereidingstijd</dt>
+          <dd>{recept.bereidingstijd}</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Voor</dt>
+          <dd>{recept.aantalPersonen}</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Niveau</dt>
+          <dd>{recept.niveau}</dd>
+        </div>
+      </dl>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <SanityImage image={recept.afbeelding} ratio="16/9" tone="olive" class="rounded-sm" />
+    </Container>
+  </Section>
+
+  {
+    recept.intro && (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <Container class="max-w-2xl">
+          <PortableText value={recept.intro} />
+        </Container>
+      </Section>
+    )
+  }
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
+      <div>
+        {
+          recept.ingredientengroepen?.map((groep) => (
+            <div class="mb-10 last:mb-0">
+              <h2 class="font-serif text-xl text-ink-900">{groep.titel}</h2>
+              <ul class="mt-4 space-y-2 text-sm text-ink-700">
+                {groep.ingredienten.map((i) => (
+                  <li class="border-t border-blue-200 pt-2">{i}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+
+      <div>
+        <h2 class="font-serif text-xl text-ink-900">Bereiding</h2>
+        <ol class="mt-6 space-y-8">
+          {
+            recept.bereidingsstappen?.map((stap, i) => (
+              <li class="flex gap-6">
+                <span class="font-serif text-lg text-terracotta-500">{String(i + 1).padStart(2, "0")}</span>
+                <div>
+                  <h3 class="font-serif text-lg text-ink-900">{stap.titel}</h3>
+                  <p class="mt-2 text-base leading-relaxed text-ink-700">{stap.tekst}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+
+        {
+          recept.tip && (
+            <p class="mt-10 border-l-2 border-ochre-400 py-1 pl-6 font-serif text-lg text-ink-900 italic">
+              {recept.tip}
+            </p>
+          )
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

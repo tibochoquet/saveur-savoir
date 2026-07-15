@@ -6,74 +6,12 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
+import { getProducten } from "../../sanity/lib/queries";
 
 const categorieen = ["Alles", "Kaas", "Madeleines & bakvormen", "Droge worst", "Wijn", "Zeep", "Etherische oliën"];
+const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
-const producten = [
-  {
-    titel: "Comté 24 maanden",
-    categorie: "Kaas",
-    herkomst: "Jura",
-    excerpt: "Twee jaar gerijpt in de kelders van het Jura, tot de smaak kristallen krijgt.",
-    prijs: "€ 22,50 / 500 g",
-    tone: "ochre" as const,
-    href: "/franse-producten/comte-24-maanden",
-  },
-  {
-    titel: "Reblochon fermier",
-    categorie: "Kaas",
-    herkomst: "Haute-Savoie",
-    excerpt: "Zachte, wasachtige korst en een romige kern — de klassieker van de Haute-Savoie.",
-    prijs: "€ 14,00 / stuk",
-    tone: "ochre" as const,
-    href: null,
-  },
-  {
-    titel: "Madeleinevorm, verkoperen",
-    categorie: "Madeleines & bakvormen",
-    herkomst: "Commercy",
-    excerpt: "Een gietvorm voor twaalf madeleines, precies zoals ze al generaties gemaakt worden in Commercy.",
-    prijs: "€ 28,00 / stuk",
-    tone: "blue" as const,
-    href: null,
-  },
-  {
-    titel: "Saucisson sec aux herbes de Provence",
-    categorie: "Droge worst",
-    herkomst: "Provence",
-    excerpt: "Traag gedroogde droge worst, op smaak gebracht met tijm en rozemarijn.",
-    prijs: "€ 9,50 / 200 g",
-    tone: "terracotta" as const,
-    href: null,
-  },
-  {
-    titel: "Domaine familiale rosé",
-    categorie: "Wijn",
-    herkomst: "Côtes de Provence",
-    excerpt: "Droog, fris, en precies de kleur van een Provençaalse zomeravond.",
-    prijs: "€ 16,00 / fles",
-    tone: "terracotta" as const,
-    href: "/franse-producten/domaine-familiale-rose",
-  },
-  {
-    titel: "Savon de Marseille, olijfolie",
-    categorie: "Zeep",
-    herkomst: "Marseille",
-    excerpt: "Traditionele zeepblokken, nog steeds gekookt volgens het eeuwenoude procedé.",
-    prijs: "€ 6,50 / blok",
-    tone: "olive" as const,
-    href: null,
-  },
-  {
-    titel: "Etherische lavendelolie",
-    categorie: "Etherische oliën",
-    herkomst: "Plateau de Valensole",
-    excerpt: "Gedistilleerd op kleine schaal, met een geur die meteen aan de Provence doet denken.",
-    prijs: "€ 19,00 / 10 ml",
-    tone: "blue" as const,
-    href: null,
-  },
-];
+const producten = await getProducten();
 
 const stappen = [
   {
@@ -138,18 +76,22 @@ const stappen = [
 
       <div id="product-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
         {
-          producten.map((product) => (
-            <OverviewCard
-              href={product.href}
-              eyebrow={product.categorie}
-              title={product.titel}
-              excerpt={product.excerpt}
-              prijs={product.prijs}
-              meta={product.herkomst}
-              tone={product.tone}
-              dataCategory={product.categorie}
-            />
-          ))
+          producten.map((product, i) => {
+            const isGepubliceerd = (product.verhaal?.length ?? 0) > 0;
+            return (
+              <OverviewCard
+                href={isGepubliceerd ? `/franse-producten/${product.slug.current}` : null}
+                eyebrow={product.categorie}
+                title={product.naam}
+                excerpt={product.excerpt}
+                prijs={product.prijs}
+                meta={product.herkomst}
+                image={product.afbeelding}
+                tone={tonen[i % tonen.length]}
+                dataCategory={product.categorie}
+              />
+            );
+          })
         }
       </div>
 

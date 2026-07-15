@@ -5,6 +5,7 @@ import Footer from "../components/Footer.astro";
 import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import Eyebrow from "../components/Eyebrow.astro";
+import { getSiteInstellingen } from "../sanity/lib/queries";
 
 const onderwerpen = [
   "Vertalingen & ondertiteling",
@@ -13,6 +14,12 @@ const onderwerpen = [
   "Franse producten",
   "Iets anders",
 ];
+
+// Valt terug op de oorspronkelijke tekst zolang het
+// site-instellingen-document nog niet bestaat (bv. vóór het seeden).
+const instellingen = await getSiteInstellingen();
+const contactEmail = instellingen?.contactEmail ?? "hallo@saveursavoir.nl";
+const reactietijd = instellingen?.reactietijd ?? "Meestal binnen 2 à 3 werkdagen";
 
 const inputClasses =
   "mt-2 w-full border border-blue-300 bg-cream-50 px-4 py-3 text-base text-ink-900 placeholder:text-blue-400 focus:border-terracotta-500 focus:outline-none";
@@ -38,28 +45,23 @@ const inputClasses =
         <dl class="mt-10 space-y-4 text-sm text-ink-700">
           <div>
             <dt class="font-medium text-ink-900">E-mail</dt>
-            <dd>hallo@saveursavoir.nl</dd>
+            <dd>{contactEmail}</dd>
           </div>
           <div>
             <dt class="font-medium text-ink-900">Reactietijd</dt>
-            <dd>Meestal binnen 2 à 3 werkdagen</dd>
+            <dd>{reactietijd}</dd>
           </div>
         </dl>
       </div>
 
       <form
-        name="contact"
+        action="https://api.web3forms.com/submit"
         method="POST"
-        data-netlify="true"
-        netlify-honeypot="bot-field"
         class="space-y-6"
       >
-        <input type="hidden" name="form-name" value="contact" />
-        <p class="hidden">
-          <label>
-            Niet invullen als je een mens bent: <input name="bot-field" />
-          </label>
-        </p>
+        <input type="hidden" name="access_key" value={import.meta.env.PUBLIC_WEB3FORMS_ACCESS_KEY} />
+        <input type="hidden" name="subject" value="Nieuw bericht via saveursavoir.nl" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display: none;" tabindex="-1" autocomplete="off" />
 
         <div>
           <label for="naam" class="text-sm font-medium text-ink-900">Naam</label>

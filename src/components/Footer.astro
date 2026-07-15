@@ -1,5 +1,12 @@
 ---
 import Container from "./Container.astro";
+import { getSiteInstellingen } from "../sanity/lib/queries";
+
+// Valt terug op de oorspronkelijke tekst zolang het
+// site-instellingen-document nog niet bestaat (bv. vóór het seeden).
+const instellingen = await getSiteInstellingen();
+const footerTagline = instellingen?.footerTagline ?? "Frans leven, taal en landschap — met tijd genomen.";
+const footerRegel = instellingen?.footerRegel ?? "Gevestigd in Nederland, met het hart in Frankrijk.";
 
 const columns = [
   {
@@ -27,7 +34,7 @@ const columns = [
       <div class="lg:col-span-2">
         <a href="/" class="font-serif text-xl text-ink-900">Saveur &amp; Savoir</a>
         <p class="mt-4 max-w-xs text-sm text-ink-500">
-          Frans leven, taal en landschap — met tijd genomen.
+          {footerTagline}
         </p>
       </div>
 
@@ -62,7 +69,7 @@ const columns = [
 
     <div class="mt-16 flex flex-col gap-2 border-t border-blue-200/70 pt-8 text-xs text-ink-500 sm:flex-row sm:justify-between">
       <span>&copy; {new Date().getFullYear()} Saveur &amp; Savoir</span>
-      <span>Gevestigd in Nederland, met het hart in Frankrijk.</span>
+      <span>{footerRegel}</span>
     </div>
   </Container>
 </footer>

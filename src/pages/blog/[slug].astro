@@ -1,0 +1,55 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import SanityImage from "../../components/SanityImage.astro";
+import PortableText from "../../components/PortableText.astro";
+import { getBlogartikelen } from "../../sanity/lib/queries";
+
+export async function getStaticPaths() {
+  const artikelen = await getBlogartikelen();
+  return artikelen
+    .filter((post) => (post.inhoud?.length ?? 0) > 0)
+    .map((post) => ({ params: { slug: post.slug.current }, props: { post } }));
+}
+
+const { post } = Astro.props;
+---
+
+<Layout
+  title={`${post.titel} — Saveur & Savoir`}
+  description={post.excerpt}
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container class="max-w-2xl">
+      <a href="/blog" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle artikelen</a>
+      <Eyebrow class="mt-6">{post.onderwerp}</Eyebrow>
+      <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+        {post.titel}
+      </h1>
+      <p class="mt-6 font-serif text-xl leading-relaxed text-ink-700 italic">
+        {post.dek}
+      </p>
+      {post.leestijdMinuten && <p class="mt-6 text-sm text-ink-500">{post.leestijdMinuten} minuten leestijd</p>}
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <SanityImage image={post.afbeelding} ratio="16/9" tone="terracotta" class="rounded-sm" />
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container class="max-w-2xl">
+      <PortableText value={post.inhoud} />
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>
