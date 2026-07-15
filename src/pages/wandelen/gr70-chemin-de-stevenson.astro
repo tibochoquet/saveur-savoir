@@ -1,0 +1,131 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import Button from "../../components/Button.astro";
+import PlaceholderImage from "../../components/PlaceholderImage.astro";
+
+const etappes = [
+  "Le Puy-en-Velay → Le Monastier-sur-Gazeille",
+  "Le Monastier → Le Bouchet-Saint-Nicolas",
+  "Le Bouchet → Langogne",
+  "Langogne → Cheylard-l'Évêque",
+  "Cheylard → Luc",
+  "Luc → Chasseradès",
+  "Chasseradès → Le Bleymard",
+  "Le Bleymard → Pont-de-Montvert (via Mont Lozère)",
+  "Pont-de-Montvert → Florac",
+  "Florac → Cassagnas",
+  "Cassagnas → Saint-Jean-du-Gard",
+  "Saint-Jean-du-Gard → Alès",
+];
+---
+
+<Layout
+  title="GR70 — Chemin de Stevenson — Saveur & Savoir"
+  description="Twaalf dagen door de Cévennes, in het spoor van Robert Louis Stevenson en zijn eigenzinnige ezel."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container class="max-w-2xl">
+      <a href="/wandelen" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle routes</a>
+      <Eyebrow class="mt-6">Route · Cévennes</Eyebrow>
+      <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+        GR70 — Chemin de Stevenson
+      </h1>
+      <p class="mt-6 font-serif text-xl leading-relaxed text-ink-700 italic">
+        Twaalf dagen door de Cévennes, over dezelfde paden die Robert Louis
+        Stevenson in 1878 aflegde met een koppige ezel genaamd Modestine.
+      </p>
+      <dl class="mt-8 flex flex-wrap gap-x-8 gap-y-3 text-sm text-ink-500">
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Afstand</dt>
+          <dd>252 km</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Duur</dt>
+          <dd>12 dagen</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Hoogteverschil</dt>
+          <dd>+9.000 m</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Niveau</dt>
+          <dd>Matig zwaar</dd>
+        </div>
+      </dl>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <PlaceholderImage ratio="16/9" tone="olive" class="rounded-sm" label="Beeld volgt" />
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container class="max-w-2xl space-y-4 text-base leading-relaxed text-ink-700">
+      <p>
+        In 1878 liep de Schotse schrijver Robert Louis Stevenson twaalf dagen
+        door de Cévennes, vergezeld door een ezel die hij liever kwijt dan
+        rijk was. Zijn verslag, "Travels with a Donkey in the Cévennes", werd
+        een klassieker — en het pad dat hij liep, is nu een van de mooiste
+        lange-afstandsroutes van Frankrijk.
+      </p>
+      <p>
+        De GR70 voert je over kale hoogvlaktes, door kastanjebossen en langs
+        eenzame schaapskooien, met de Mont Lozère als hoogtepunt halverwege.
+        Het pad is goed bewegwijzerd en elke etappe eindigt in een dorp met
+        een gîte of kleine herberg — je hoeft dus niet met een tent te sjouwen.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div>
+        <h2 class="font-serif text-xl text-ink-900">De twaalf etappes</h2>
+        <ol class="mt-6 space-y-2 text-sm text-ink-700">
+          {
+            etappes.map((etappe, i) => (
+              <li class="flex gap-4 border-t border-blue-200 py-2">
+                <span class="w-6 shrink-0 font-serif text-terracotta-500">{i + 1}</span>
+                <span>{etappe}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+
+      <div class="border border-blue-200 bg-cream-50 p-8">
+        <h2 class="font-serif text-xl text-ink-900">Download de route</h2>
+        <p class="mt-3 text-sm text-ink-500">
+          Het volledige gpx-bestand met alle twaalf etappes, te openen in elke
+          wandel-app of gps-toestel.
+        </p>
+        <dl class="mt-6 space-y-2 text-sm text-ink-700">
+          <div class="flex justify-between border-t border-blue-200 pt-2">
+            <dt>Bestandstype</dt>
+            <dd>GPX</dd>
+          </div>
+          <div class="flex justify-between border-t border-blue-200 pt-2">
+            <dt>Bestandsgrootte</dt>
+            <dd>±180 KB</dd>
+          </div>
+        </dl>
+        <div class="mt-6">
+          <Button href="/downloads/gr70-chemin-de-stevenson.gpx" variant="primary" download>
+            Download GPX
+          </Button>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

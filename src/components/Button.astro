@@ -1,0 +1,30 @@
+---
+interface Props extends astroHTML.JSX.AnchorHTMLAttributes {
+  href: string;
+  variant?: "primary" | "secondary" | "ghost";
+  class?: string;
+}
+
+const { href, variant = "primary", class: className = "", ...rest } = Astro.props;
+
+const variants = {
+  primary:
+    "bg-terracotta-500 text-cream-50 border border-terracotta-500 hover:bg-terracotta-600 hover:border-terracotta-600",
+  secondary:
+    "bg-transparent text-blue-700 border border-blue-400 hover:bg-blue-50 hover:border-blue-500",
+  ghost:
+    "bg-transparent text-ink-900 border border-transparent underline decoration-ochre-400 decoration-2 hover:decoration-terracotta-500 px-0",
+} as const;
+---
+
+<a
+  href={href}
+  class:list={[
+    "inline-flex items-center gap-2 px-6 py-3 text-sm font-medium tracking-wide uppercase transition-colors duration-200",
+    variants[variant],
+    className,
+  ]}
+  {...rest}
+>
+  <slot />
+</a>

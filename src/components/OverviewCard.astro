@@ -1,0 +1,52 @@
+---
+// Shared by /recepten, /wandelen and /blog so the three overview grids
+// use one layout instead of three near-identical ones.
+import PlaceholderImage from "./PlaceholderImage.astro";
+
+interface Props {
+  href: string | null;
+  eyebrow: string;
+  title: string;
+  excerpt: string;
+  meta?: string;
+  tone?: "terracotta" | "olive" | "blue" | "ochre";
+  ratio?: string;
+  dataCategory?: string;
+}
+
+const {
+  href,
+  eyebrow,
+  title,
+  excerpt,
+  meta,
+  tone = "olive",
+  ratio = "4/3",
+  dataCategory,
+} = Astro.props;
+
+const Tag = href ? "a" : "div";
+---
+
+<Tag
+  href={href ?? undefined}
+  data-category={dataCategory}
+  class:list={["group block", href && "cursor-pointer"]}
+>
+  <PlaceholderImage ratio={ratio} tone={tone} class="rounded-sm" />
+  <div class="mt-5">
+    <span class="text-xs font-semibold tracking-[0.15em] text-terracotta-500 uppercase">
+      {eyebrow}
+    </span>
+    <h3 class="mt-2 font-serif text-xl text-ink-900 group-hover:text-terracotta-600">
+      {title}
+      {!href && (
+        <span class="ml-2 align-middle text-xs font-sans font-medium tracking-wide text-blue-400 uppercase">
+          Binnenkort
+        </span>
+      )}
+    </h3>
+    <p class="mt-2 text-sm text-ink-500">{excerpt}</p>
+    {meta && <p class="mt-3 text-xs tracking-wide text-blue-500 uppercase">{meta}</p>}
+  </div>
+</Tag>

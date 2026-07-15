@@ -1,0 +1,26 @@
+---
+interface Props {
+  tone?: "cream" | "blue" | "olive";
+  id?: string;
+  class?: string;
+  spacing?: "sm" | "base" | "lg";
+}
+
+const { tone = "cream", id, class: className = "", spacing = "base" } = Astro.props;
+
+const tones = {
+  cream: "bg-cream-100 text-ink-700",
+  blue: "bg-blue-700 text-cream-50",
+  olive: "bg-olive-700 text-cream-50",
+} as const;
+
+const spacings = {
+  sm: "py-section-sm",
+  base: "py-section",
+  lg: "py-section-lg",
+} as const;
+---
+
+<section id={id} class:list={[tones[tone], spacings[spacing], className]}>
+  <slot />
+</section>

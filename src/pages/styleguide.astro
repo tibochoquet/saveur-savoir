@@ -1,0 +1,247 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.astro";
+import Button from "../components/Button.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+import PlaceholderImage from "../components/PlaceholderImage.astro";
+
+// Tailwind's scanner only keeps theme variables it can see as literal
+// strings in source, so each swatch class is spelled out (no interpolation).
+const colorGroups = [
+  {
+    name: "Verweerd blauw",
+    shades: [
+      { label: 50, class: "bg-blue-50" },
+      { label: 100, class: "bg-blue-100" },
+      { label: 200, class: "bg-blue-200" },
+      { label: 300, class: "bg-blue-300" },
+      { label: 400, class: "bg-blue-400" },
+      { label: 500, class: "bg-blue-500" },
+      { label: 600, class: "bg-blue-600" },
+      { label: 700, class: "bg-blue-700" },
+      { label: 800, class: "bg-blue-800" },
+      { label: 900, class: "bg-blue-900" },
+    ],
+  },
+  {
+    name: "Olijfgroen",
+    shades: [
+      { label: 50, class: "bg-olive-50" },
+      { label: 100, class: "bg-olive-100" },
+      { label: 200, class: "bg-olive-200" },
+      { label: 300, class: "bg-olive-300" },
+      { label: 400, class: "bg-olive-400" },
+      { label: 500, class: "bg-olive-500" },
+      { label: 600, class: "bg-olive-600" },
+      { label: 700, class: "bg-olive-700" },
+      { label: 800, class: "bg-olive-800" },
+      { label: 900, class: "bg-olive-900" },
+    ],
+  },
+  {
+    name: "Oker",
+    shades: [
+      { label: 50, class: "bg-ochre-50" },
+      { label: 100, class: "bg-ochre-100" },
+      { label: 200, class: "bg-ochre-200" },
+      { label: 300, class: "bg-ochre-300" },
+      { label: 400, class: "bg-ochre-400" },
+      { label: 500, class: "bg-ochre-500" },
+      { label: 600, class: "bg-ochre-600" },
+      { label: 700, class: "bg-ochre-700" },
+      { label: 800, class: "bg-ochre-800" },
+      { label: 900, class: "bg-ochre-900" },
+    ],
+  },
+  {
+    name: "Terracotta",
+    shades: [
+      { label: 50, class: "bg-terracotta-50" },
+      { label: 100, class: "bg-terracotta-100" },
+      { label: 200, class: "bg-terracotta-200" },
+      { label: 300, class: "bg-terracotta-300" },
+      { label: 400, class: "bg-terracotta-400" },
+      { label: 500, class: "bg-terracotta-500" },
+      { label: 600, class: "bg-terracotta-600" },
+      { label: 700, class: "bg-terracotta-700" },
+      { label: 800, class: "bg-terracotta-800" },
+      { label: 900, class: "bg-terracotta-900" },
+    ],
+  },
+];
+
+const neutrals = [
+  { name: "Gebroken wit 50", class: "bg-cream-50" },
+  { name: "Gebroken wit 100", class: "bg-cream-100" },
+  { name: "Gebroken wit 200", class: "bg-cream-200" },
+  { name: "Gebroken wit 300", class: "bg-cream-300" },
+  { name: "Inkt 500", class: "bg-ink-500" },
+  { name: "Inkt 700", class: "bg-ink-700" },
+  { name: "Inkt 900", class: "bg-ink-900" },
+];
+
+const typeScale = [
+  { label: "text-6xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-5xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-4xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-3xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-2xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-xl", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-lg", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-base", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-sm", sample: "Frankrijk, met tijd genomen" },
+  { label: "text-xs", sample: "Frankrijk, met tijd genomen" },
+];
+
+const spacingScale = [
+  { label: "section-sm — 4rem", class: "h-16" },
+  { label: "section — 6rem", class: "h-24" },
+  { label: "section-lg — 9rem", class: "h-36" },
+];
+---
+
+<Layout title="Stijlgids — Saveur & Savoir" description="Het design system van Saveur & Savoir.">
+  <header class="border-b border-blue-200 bg-cream-50">
+    <Container wide class="flex items-center justify-between py-6">
+      <a href="/" class="font-serif text-lg text-ink-900">Saveur &amp; Savoir</a>
+      <span class="text-xs uppercase tracking-[0.2em] text-blue-500">Stijlgids</span>
+    </Container>
+  </header>
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Design system</Eyebrow>
+      <h1 class="mt-4 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">Stijlgids</h1>
+      <p class="mt-4 max-w-xl text-lg text-ink-500">
+        Kleur, typografie, ruimte en basiscomponenten voor Saveur &amp; Savoir —
+        een Franse zomer: warm, traag, kleurrijk, veel natuur.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Kleur</h2>
+      <p class="mt-2 max-w-xl text-ink-500">Verzadigd maar niet schreeuwerig.</p>
+
+      <div class="mt-10 space-y-10">
+        {
+          colorGroups.map((group) => (
+            <div>
+              <h3 class="mb-3 font-serif text-lg text-ink-900">{group.name}</h3>
+              <div class="grid grid-cols-5 gap-3 sm:grid-cols-10">
+                {group.shades.map((shade) => (
+                  <div class="space-y-2">
+                    <div class={`h-16 w-full rounded-sm border border-black/5 ${shade.class}`} />
+                    <p class="text-xs text-ink-500">{shade.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        }
+
+        <div>
+          <h3 class="mb-3 font-serif text-lg text-ink-900">Gebroken wit &amp; inkt</h3>
+          <div class="grid grid-cols-4 gap-3 sm:grid-cols-7">
+            {
+              neutrals.map((n) => (
+                <div class="space-y-2">
+                  <div class={`h-16 w-full rounded-sm border border-black/5 ${n.class}`} />
+                  <p class="text-xs text-ink-500">{n.name}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Typografie</h2>
+      <p class="mt-2 max-w-xl text-ink-500">
+        <span class="font-serif">Fraunces</span> voor koppen, <span class="font-sans font-semibold">Karla</span> voor lopende tekst.
+      </p>
+
+      <div class="mt-10 divide-y divide-blue-200">
+        {
+          typeScale.map((row) => (
+            <div class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+              <span class="w-24 shrink-0 font-mono text-xs text-blue-500">{row.label}</span>
+              <p class={`font-serif text-ink-900 ${row.label}`}>{row.sample}</p>
+            </div>
+          ))
+        }
+        <div class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+          <span class="w-24 shrink-0 font-mono text-xs text-blue-500">body</span>
+          <p class="max-w-xl text-base text-ink-700">
+            Een weerbericht voor de Cévennes, een recept met te veel knoflook, een
+            wandeling die langer duurde dan gepland — dit is waar Saveur &amp; Savoir
+            over gaat.
+          </p>
+        </div>
+        <div class="flex flex-col gap-1 py-4 sm:flex-row sm:items-baseline sm:gap-6">
+          <span class="w-24 shrink-0 font-mono text-xs text-blue-500">italic</span>
+          <p class="max-w-xl font-serif text-xl italic text-ink-900">
+            "Een Franse zomer voelt nooit gehaast."
+          </p>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Ruimte</h2>
+      <p class="mt-2 max-w-xl text-ink-500">Secties ademen. Drie vaste maten voor verticale ritme.</p>
+      <div class="mt-10 space-y-4">
+        {
+          spacingScale.map((s) => (
+            <div class="flex items-center gap-4">
+              <div class={`w-3 bg-terracotta-300 ${s.class}`} />
+              <span class="text-sm text-ink-500">{s.label}</span>
+            </div>
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Knoppen</h2>
+      <div class="mt-10 flex flex-wrap items-center gap-6">
+        <Button href="#" variant="primary">Neem contact op</Button>
+        <Button href="#" variant="secondary">Lees meer</Button>
+        <Button href="#" variant="ghost">Bekijk alle recepten</Button>
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Eyebrow &amp; labels</h2>
+      <div class="mt-10">
+        <Eyebrow>Franse recepten</Eyebrow>
+      </div>
+    </Container>
+  </Section>
+
+  <Section spacing="sm" tone="cream" class="border-t border-blue-200 pb-section">
+    <Container wide>
+      <h2 class="font-serif text-2xl text-ink-900">Beeldplaceholder</h2>
+      <p class="mt-2 max-w-xl text-ink-500">
+        Tot echte fotografie beschikbaar is: verhouding-correcte placeholders in het palet.
+      </p>
+      <div class="mt-10 grid grid-cols-2 gap-6 sm:grid-cols-4">
+        <PlaceholderImage ratio="4/5" tone="olive" class="rounded-sm" />
+        <PlaceholderImage ratio="1/1" tone="terracotta" class="rounded-sm" />
+        <PlaceholderImage ratio="4/3" tone="ochre" class="rounded-sm" />
+        <PlaceholderImage ratio="3/4" tone="blue" class="rounded-sm" />
+      </div>
+    </Container>
+  </Section>
+</Layout>

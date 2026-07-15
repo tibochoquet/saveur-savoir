@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="Saveur & Savoir" xmlns="http://www.topografix.com/GPX/1/1">
+  <metadata>
+    <name>GR70 — Chemin de Stevenson</name>
+    <desc>Voorbeeldtrack, Le Puy-en-Velay naar Alès (Cévennes).</desc>
+  </metadata>
+  <trk>
+    <name>GR70 — Chemin de Stevenson</name>
+    <trkseg>
+      <trkpt lat="45.0430" lon="3.8850"><ele>630</ele></trkpt>
+      <trkpt lat="44.9120" lon="3.9260"><ele>1020</ele></trkpt>
+      <trkpt lat="44.7800" lon="3.9600"><ele>1250</ele></trkpt>
+      <trkpt lat="44.6100" lon="4.0100"><ele>980</ele></trkpt>
+      <trkpt lat="44.3200" lon="4.0700"><ele>560</ele></trkpt>
+      <trkpt lat="44.1280" lon="4.0810"><ele>140</ele></trkpt>
+    </trkseg>
+  </trk>
+</gpx>

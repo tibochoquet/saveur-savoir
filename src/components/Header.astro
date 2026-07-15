@@ -1,0 +1,88 @@
+---
+import Container from "./Container.astro";
+import Button from "./Button.astro";
+
+const navItems = [
+  { label: "Vertalingen", href: "/vertalingen" },
+  { label: "Privéles", href: "/prive-les" },
+  { label: "Recepten", href: "/recepten" },
+  { label: "Wandelen", href: "/wandelen" },
+  { label: "Blog", href: "/blog" },
+];
+
+const { pathname } = Astro.url;
+const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
+---
+
+<header class="relative border-b border-blue-200/70 bg-cream-100">
+  <Container wide class="flex items-center justify-between py-6">
+    <a href="/" class="font-serif text-xl text-ink-900">Saveur &amp; Savoir</a>
+
+    <nav class="hidden items-center gap-8 text-sm font-medium tracking-wide text-ink-700 lg:flex">
+      {
+        navItems.map((item) => (
+          <a
+            href={item.href}
+            aria-current={isActive(item.href) ? "page" : undefined}
+            class:list={[
+              "hover:text-terracotta-500",
+              isActive(item.href) ? "text-terracotta-500" : "",
+            ]}
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="hidden lg:block">
+      <Button href="/contact" variant="secondary">Contact</Button>
+    </div>
+
+    <button
+      id="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+      class="flex flex-col gap-1.5 p-2 lg:hidden"
+    >
+      <span class="sr-only">Menu</span>
+      <span class="h-px w-6 bg-ink-900 transition-transform"></span>
+      <span class="h-px w-6 bg-ink-900 transition-opacity"></span>
+      <span class="h-px w-6 bg-ink-900 transition-transform"></span>
+    </button>
+  </Container>
+
+  <nav
+    id="mobile-nav"
+    class="hidden flex-col gap-1 border-t border-blue-200/70 bg-cream-100 px-6 py-4 lg:hidden"
+  >
+    {
+      navItems.map((item) => (
+        <a
+          href={item.href}
+          aria-current={isActive(item.href) ? "page" : undefined}
+          class:list={[
+            "py-3 text-base font-medium",
+            isActive(item.href) ? "text-terracotta-500" : "text-ink-700",
+          ]}
+        >
+          {item.label}
+        </a>
+      ))
+    }
+    <a href="/contact" class="py-3 text-base font-medium text-ink-700">Contact</a>
+  </nav>
+</header>
+
+<script>
+  const toggle = document.getElementById("nav-toggle");
+  const panel = document.getElementById("mobile-nav");
+
+  toggle?.addEventListener("click", () => {
+    const expanded = toggle.getAttribute("aria-expanded") === "true";
+    toggle.setAttribute("aria-expanded", String(!expanded));
+    panel?.classList.toggle("hidden");
+    panel?.classList.toggle("flex");
+  });
+</script>

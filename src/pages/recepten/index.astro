@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import OverviewCard from "../../components/OverviewCard.astro";
+
+const recepten = [
+  {
+    titel: "Soupe au pistou",
+    excerpt: "De Provençaalse groentesoep die pas leeft door de basilicumpasta die je er vers doorheen roert.",
+    meta: "45 min · gemakkelijk",
+    tone: "olive" as const,
+    href: "/recepten/soupe-au-pistou",
+  },
+  {
+    titel: "Tarte fine aux pommes",
+    excerpt: "Boterdeeg zo dun als papier, dakpansgewijs belegd met appel — het toetje van elke Franse zondag.",
+    meta: "1 uur · gemiddeld",
+    tone: "ochre" as const,
+    href: null,
+  },
+  {
+    titel: "Poulet basquaise",
+    excerpt: "Kip stoofpot uit het Baskenland, traag gegaard met paprika, tomaat en een vleugje Espelette-peper.",
+    meta: "1,5 uur · gemakkelijk",
+    tone: "terracotta" as const,
+    href: null,
+  },
+  {
+    titel: "Clafoutis aux cerises",
+    excerpt: "Een flan-achtige kersentaart uit de Limousin — je maakt hem sneller dan hij op is.",
+    meta: "50 min · gemakkelijk",
+    tone: "blue" as const,
+    href: null,
+  },
+];
+---
+
+<Layout
+  title="Franse recepten — Saveur & Savoir"
+  description="Gerechten uit Franse keukens, uitgeprobeerd en doorverteld — met de verhalen erbij."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Franse recepten</Eyebrow>
+      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+        Gerechten om je keuken naar Frankrijk te verplaatsen.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-500">
+        Geen ingewikkelde technieken, wel echte smaak — recepten die ik zelf
+        keer op keer maak, met de verhalen en trucjes erbij.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <div class="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          recepten.map((r) => (
+            <OverviewCard
+              href={r.href}
+              eyebrow="Recept"
+              title={r.titel}
+              excerpt={r.excerpt}
+              meta={r.meta}
+              tone={r.tone}
+            />
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,105 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+
+const onderwerpen = [
+  "Vertalingen & ondertiteling",
+  "Privéles Frans of Nederlands",
+  "Een recept of wandeling",
+  "Franse producten",
+  "Iets anders",
+];
+
+const inputClasses =
+  "mt-2 w-full border border-blue-300 bg-cream-50 px-4 py-3 text-base text-ink-900 placeholder:text-blue-400 focus:border-terracotta-500 focus:outline-none";
+---
+
+<Layout
+  title="Contact — Saveur & Savoir"
+  description="Vraag, idee, of gewoon zin om te praten over Frankrijk? Stuur een bericht."
+>
+  <Header />
+
+  <Section spacing="lg" tone="cream">
+    <Container wide class="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
+      <div>
+        <Eyebrow>Contact</Eyebrow>
+        <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+          Vraag, idee, of gewoon zin om te praten over Frankrijk?
+        </h1>
+        <p class="mt-6 max-w-md text-lg text-ink-500">
+          Stuur een bericht — ik antwoord graag persoonlijk, meestal binnen
+          een paar dagen.
+        </p>
+        <dl class="mt-10 space-y-4 text-sm text-ink-700">
+          <div>
+            <dt class="font-medium text-ink-900">E-mail</dt>
+            <dd>hallo@saveursavoir.nl</dd>
+          </div>
+          <div>
+            <dt class="font-medium text-ink-900">Reactietijd</dt>
+            <dd>Meestal binnen 2 à 3 werkdagen</dd>
+          </div>
+        </dl>
+      </div>
+
+      <form
+        name="contact"
+        method="POST"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="space-y-6"
+      >
+        <input type="hidden" name="form-name" value="contact" />
+        <p class="hidden">
+          <label>
+            Niet invullen als je een mens bent: <input name="bot-field" />
+          </label>
+        </p>
+
+        <div>
+          <label for="naam" class="text-sm font-medium text-ink-900">Naam</label>
+          <input id="naam" name="naam" type="text" required class={inputClasses} placeholder="Je volledige naam" />
+        </div>
+
+        <div>
+          <label for="email" class="text-sm font-medium text-ink-900">E-mail</label>
+          <input id="email" name="email" type="email" required class={inputClasses} placeholder="jij@voorbeeld.nl" />
+        </div>
+
+        <div>
+          <label for="onderwerp" class="text-sm font-medium text-ink-900">Onderwerp</label>
+          <select id="onderwerp" name="onderwerp" required class={inputClasses}>
+            <option value="" disabled selected>Kies een onderwerp</option>
+            {onderwerpen.map((o) => <option value={o}>{o}</option>)}
+          </select>
+        </div>
+
+        <div>
+          <label for="bericht" class="text-sm font-medium text-ink-900">Bericht</label>
+          <textarea
+            id="bericht"
+            name="bericht"
+            rows={6}
+            required
+            class={inputClasses}
+            placeholder="Vertel me waar je hulp bij zoekt, of wat je kwijt wilt."
+          ></textarea>
+        </div>
+
+        <button
+          type="submit"
+          class="inline-flex items-center gap-2 bg-terracotta-500 px-6 py-3 text-sm font-medium tracking-wide text-cream-50 uppercase transition-colors duration-200 hover:bg-terracotta-600"
+        >
+          Verstuur bericht
+        </button>
+      </form>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

@@ -1,0 +1,147 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import OverviewCard from "../../components/OverviewCard.astro";
+
+const categorieen = ["Alles", "Tradities", "Taal", "Eten & drinken", "Cultuur"];
+
+const posts = [
+  {
+    titel: "Waarom Fransen elkaar twee, drie of vier keer kussen",
+    excerpt: "La bise lijkt een simpel gebaar, tot je in het verkeerde departement de verkeerde kant op buigt.",
+    meta: "Tradities",
+    tone: "terracotta" as const,
+    href: "/blog/la-bise",
+  },
+  {
+    titel: "Tu of vous: wanneer je het echt fout kan doen",
+    excerpt: "De regels lijken simpel, tot je collega van vijftig jaar plots vous tegen je zegt.",
+    meta: "Taal",
+    tone: "blue" as const,
+    href: null,
+  },
+  {
+    titel: "Waarom elke Franse streek zijn eigen kaas heeft",
+    excerpt: "Meer dan 1.200 soorten, en elke Fransman is ervan overtuigd dat die van zijn streek de beste is.",
+    meta: "Eten & drinken",
+    tone: "ochre" as const,
+    href: null,
+  },
+  {
+    titel: "De ongeschreven regels van de zondagse markt",
+    excerpt: "Niet knijpen in het fruit, niet voordringen, en altijd 'bonjour' zeggen voordat je iets vraagt.",
+    meta: "Cultuur",
+    tone: "olive" as const,
+    href: null,
+  },
+  {
+    titel: "Waarom Franse kinderen tot 18.00 uur op school kunnen zitten",
+    excerpt: "Het Franse schoolsysteem verrast elke nieuwkomer — meestal op de manier die je niet verwacht.",
+    meta: "Cultuur",
+    tone: "blue" as const,
+    href: null,
+  },
+];
+---
+
+<Layout
+  title="Blog — Saveur & Savoir"
+  description="Franse cultuur en tradities, kleine ontdekkingen en 'wist je dat'-verhalen."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Blog</Eyebrow>
+      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+        Franse cultuur, in kleine porties.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-500">
+        Gewoontes, gebruiken en "wist je dat"-verhalen die je niet in een
+        reisgids vindt.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <div id="filters" class="flex flex-wrap gap-3">
+        {
+          categorieen.map((cat, i) => (
+            <button
+              type="button"
+              data-filter={cat}
+              aria-pressed={i === 0 ? "true" : "false"}
+              class:list={[
+                "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
+                i === 0
+                  ? "border-terracotta-500 bg-terracotta-500 text-cream-50"
+                  : "border-blue-300 text-ink-700 hover:border-terracotta-500 hover:text-terracotta-500",
+              ]}
+            >
+              {cat}
+            </button>
+          ))
+        }
+      </div>
+
+      <div id="post-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          posts.map((post) => (
+            <OverviewCard
+              href={post.href}
+              eyebrow={post.meta}
+              title={post.titel}
+              excerpt={post.excerpt}
+              tone={post.tone}
+              dataCategory={post.meta}
+            />
+          ))
+        }
+      </div>
+
+      <p id="no-results" class="mt-14 hidden text-sm text-ink-500">
+        Nog geen artikelen in deze categorie — kom snel terug.
+      </p>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll<HTMLButtonElement>("#filters button");
+  const cards = document.querySelectorAll<HTMLElement>("#post-grid > *");
+  const noResults = document.getElementById("no-results");
+
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const filter = button.dataset.filter;
+
+      filterButtons.forEach((b) => {
+        const active = b === button;
+        b.setAttribute("aria-pressed", String(active));
+        b.classList.toggle("border-terracotta-500", active);
+        b.classList.toggle("bg-terracotta-500", active);
+        b.classList.toggle("text-cream-50", active);
+        b.classList.toggle("border-blue-300", !active);
+        b.classList.toggle("text-ink-700", !active);
+        b.classList.toggle("hover:border-terracotta-500", !active);
+        b.classList.toggle("hover:text-terracotta-500", !active);
+      });
+
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const matches = filter === "Alles" || card.dataset.category === filter;
+        card.classList.toggle("hidden", !matches);
+        if (matches) visibleCount++;
+      });
+
+      noResults?.classList.toggle("hidden", visibleCount > 0);
+    });
+  });
+</script>

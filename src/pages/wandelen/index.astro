@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+import OverviewCard from "../../components/OverviewCard.astro";
+
+const routes = [
+  {
+    titel: "GR70 — Chemin de Stevenson",
+    excerpt: "Twaalf dagen door de Cévennes, in het spoor van Robert Louis Stevenson en zijn eigenzinnige ezel.",
+    meta: "252 km · 12 dagen",
+    tone: "olive" as const,
+    href: "/wandelen/gr70-chemin-de-stevenson",
+  },
+  {
+    titel: "Calanques van Marseille",
+    excerpt: "Steile kalkkloven, turquoise water en geen boom die schaduw geeft — pak veel water mee.",
+    meta: "14 km · dagtocht",
+    tone: "blue" as const,
+    href: null,
+  },
+  {
+    titel: "Gorges du Verdon",
+    excerpt: "De Grand Canyon van Europa, met paden die soms rakelings langs de rotswand lopen.",
+    meta: "18 km · dagtocht",
+    tone: "terracotta" as const,
+    href: null,
+  },
+  {
+    titel: "Cirque de Gavarnie",
+    excerpt: "Een natuurlijk amfitheater in de Pyreneeën, met een waterval van driehonderd meter.",
+    meta: "9 km · halve dag",
+    tone: "ochre" as const,
+    href: null,
+  },
+];
+---
+
+<Layout
+  title="Wandelen in Frankrijk — Saveur & Savoir"
+  description="Routes door Franse landschappen, met kaarten en gpx-bestanden om zelf te stappen."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Wandelen in Frankrijk</Eyebrow>
+      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+        Paden die je op je eigen tempo mag lopen.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-500">
+        Routes die ik zelf gestapt heb, met de praktische details erbij —
+        inclusief het gpx-bestand om ze na te wandelen.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <div class="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          routes.map((r) => (
+            <OverviewCard
+              href={r.href}
+              eyebrow="Route"
+              title={r.titel}
+              excerpt={r.excerpt}
+              meta={r.meta}
+              tone={r.tone}
+            />
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

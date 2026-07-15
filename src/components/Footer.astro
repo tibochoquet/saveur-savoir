@@ -1,0 +1,67 @@
+---
+import Container from "./Container.astro";
+
+const columns = [
+  {
+    heading: "Diensten",
+    links: [
+      { label: "Vertalingen & ondertiteling", href: "/vertalingen" },
+      { label: "Privéles Frans & Nederlands", href: "/prive-les" },
+    ],
+  },
+  {
+    heading: "Ontdekken",
+    links: [
+      { label: "Franse recepten", href: "/recepten" },
+      { label: "Wandelen in Frankrijk", href: "/wandelen" },
+      { label: "Blog", href: "/blog" },
+    ],
+  },
+];
+---
+
+<footer class="border-t border-blue-200/70 bg-cream-50">
+  <Container wide class="py-16">
+    <div class="grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="lg:col-span-2">
+        <a href="/" class="font-serif text-xl text-ink-900">Saveur &amp; Savoir</a>
+        <p class="mt-4 max-w-xs text-sm text-ink-500">
+          Frans leven, taal en landschap — met tijd genomen.
+        </p>
+      </div>
+
+      {
+        columns.map((column) => (
+          <div>
+            <h3 class="text-xs font-semibold tracking-[0.15em] text-blue-500 uppercase">
+              {column.heading}
+            </h3>
+            <ul class="mt-4 space-y-3">
+              {column.links.map((link) => (
+                <li>
+                  <a href={link.href} class="text-sm text-ink-700 hover:text-terracotta-500">
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+
+      <div>
+        <h3 class="text-xs font-semibold tracking-[0.15em] text-blue-500 uppercase">Contact</h3>
+        <ul class="mt-4 space-y-3">
+          <li>
+            <a href="/contact" class="text-sm text-ink-700 hover:text-terracotta-500">Stuur een bericht</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-16 flex flex-col gap-2 border-t border-blue-200/70 pt-8 text-xs text-ink-500 sm:flex-row sm:justify-between">
+      <span>&copy; {new Date().getFullYear()} Saveur &amp; Savoir</span>
+      <span>Gevestigd in Nederland, met het hart in Frankrijk.</span>
+    </div>
+  </Container>
+</footer>
