@@ -1,14 +1,13 @@
 ---
 import Container from "./Container.astro";
-import Button from "./Button.astro";
 
 const navItems = [
-  { label: "Vertalingen", href: "/vertalingen" },
-  { label: "Privéles", href: "/prive-les" },
+  { label: "Home", href: "/" },
+  { label: "Webshop", href: "/webshop" },
+  { label: "Diensten", href: "/diensten" },
   { label: "Recepten", href: "/recepten" },
-  { label: "Wandelen", href: "/wandelen" },
-  { label: "Producten", href: "/franse-producten" },
   { label: "Blog", href: "/blog" },
+  { label: "Contact", href: "/contact" },
 ];
 
 const { pathname } = Astro.url;
@@ -35,10 +34,6 @@ const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.s
         ))
       }
     </nav>
-
-    <div class="hidden lg:block">
-      <Button href="/contact" variant="secondary">Contact</Button>
-    </div>
 
     <button
       id="nav-toggle"
@@ -72,7 +67,6 @@ const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.s
         </a>
       ))
     }
-    <a href="/contact" class="py-3 text-base font-medium text-ink-700">Contact</a>
   </nav>
 </header>
 

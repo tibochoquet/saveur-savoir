@@ -4,50 +4,19 @@ import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import Button from "../components/Button.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import PlaceholderImage from "../components/PlaceholderImage.astro";
+import SanityImage from "../components/SanityImage.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { getHomepage } from "../sanity/lib/queries";
 
-const aanbod = [
-  {
-    nummer: "01",
-    titel: "Vertalingen & ondertiteling",
-    tekst:
-      "Frans-Nederlands en Nederlands-Frans, met oog voor toon en nuance — van zakelijke documenten tot ondertiteling.",
-    href: "/vertalingen",
-  },
-  {
-    nummer: "02",
-    titel: "Privéles Frans & Nederlands",
-    tekst:
-      "Persoonlijke lessen, op maat van jouw niveau en tempo. Voor wie eindelijk vloeiend mee wil praten.",
-    href: "/prive-les",
-  },
-  {
-    nummer: "03",
-    titel: "Franse recepten",
-    tekst: "Gerechten uit Franse keukens, uitgeprobeerd en doorverteld — met de verhalen erbij.",
-    href: "/recepten",
-  },
-  {
-    nummer: "04",
-    titel: "Wandelen in Frankrijk",
-    tekst: "Routes door Franse landschappen, met kaarten en gpx-bestanden om zelf te stappen.",
-    href: "/wandelen",
-  },
-  {
-    nummer: "05",
-    titel: "Franse producten",
-    tekst: "Een kleine etalage van dingen die ik zelf gebruik en aanraad, rechtstreeks uit Frankrijk.",
-    href: "/franse-producten",
-  },
-  {
-    nummer: "06",
-    titel: "Blog",
-    tekst: "Franse cultuur en tradities, kleine ontdekkingen en \"wist je dat\"-verhalen.",
-    href: "/blog",
-  },
-];
+const home = await getHomepage();
+
+// Vaste bestemmingen per aanbod-item — alleen de tekst komt uit Sanity.
+const aanbodHrefs = ["/diensten", "/recepten", "/webshop", "/blog"];
+const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
+  ...item,
+  href: aanbodHrefs[i],
+}));
 ---
 
 <Layout title="Saveur & Savoir — Frans leven, met tijd genomen">
@@ -57,21 +26,20 @@ const aanbod = [
   <Section spacing="lg" tone="cream">
     <Container wide class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
       <div class="order-2 lg:order-1">
-        <Eyebrow>Frans leven, taal &amp; landschap</Eyebrow>
+        <Eyebrow>{home?.heroEyebrow}</Eyebrow>
         <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl lg:text-6xl">
-          Een Franse zomer, het hele jaar door.
+          {home?.heroTitel}
         </h1>
         <p class="mt-6 max-w-md text-lg text-ink-500">
-          Ik help je Frankrijk beter te begrijpen — de taal, de keuken, de paden
-          door het landschap. Rustig opgebouwd, met aandacht voor detail.
+          {home?.heroIntro}
         </p>
         <div class="mt-10 flex flex-wrap gap-4">
-          <Button href="#aanbod" variant="primary">Ontdek wat ik bied</Button>
-          <Button href="#over-mij" variant="ghost">Over mij</Button>
+          <Button href="#aanbod" variant="primary">{home?.heroCtaPrimair}</Button>
+          <Button href="#over-mij" variant="ghost">{home?.heroCtaSecundair}</Button>
         </div>
       </div>
       <div class="order-1 lg:order-2">
-        <PlaceholderImage ratio="4/5" tone="olive" class="rounded-sm" />
+        <SanityImage image={home?.heroAfbeelding} ratio="4/5" tone="olive" class="rounded-sm" />
       </div>
     </Container>
   </Section>
@@ -79,21 +47,27 @@ const aanbod = [
   <!-- Over mij -->
   <Section id="over-mij" spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container wide class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-      <PlaceholderImage ratio="1/1" tone="terracotta" class="rounded-sm lg:order-1" />
+      <SanityImage
+        image={home?.overMijAfbeelding}
+        ratio="1/1"
+        tone="terracotta"
+        class="rounded-sm lg:order-1"
+      />
       <div class="lg:order-2">
-        <Eyebrow>Wie ben ik</Eyebrow>
+        <Eyebrow>{home?.overMijEyebrow}</Eyebrow>
         <h2 class="mt-6 font-serif text-3xl text-ink-900 sm:text-4xl">
-          Frankrijk is geen bestemming. Het is een manier van kijken.
+          {home?.overMijTitel}
         </h2>
         <p class="mt-6 max-w-lg text-base text-ink-500">
-          Al jaren trekt Frankrijk aan me — de taal, de tafels, de trage paden
-          door de heuvels. Saveur &amp; Savoir is waar ik dat deel: met wie
-          Frans wil leren spreken, wie op zoek is naar een goed recept, of wie
-          gewoon graag leest over een land dat nooit uitgeleerd raakt.
+          {home?.overMijTekst}
         </p>
-        <p class="mt-4 max-w-lg font-serif text-xl italic text-ink-900">
-          "Traag reizen begint met traag kijken."
-        </p>
+        {
+          home?.overMijQuote && (
+            <p class="mt-4 max-w-lg font-serif text-xl italic text-ink-900">
+              "{home.overMijQuote}"
+            </p>
+          )
+        }
       </div>
     </Container>
   </Section>
@@ -101,41 +75,23 @@ const aanbod = [
   <!-- Wat ik bied -->
   <Section id="aanbod" spacing="base" tone="blue" class="border-t border-blue-800">
     <Container wide>
-      <Eyebrow class="text-ochre-300">Wat ik bied</Eyebrow>
+      <Eyebrow class="text-ochre-300">{home?.aanbodEyebrow}</Eyebrow>
       <h2 class="mt-6 max-w-xl font-serif text-3xl text-cream-50 sm:text-4xl">
-        Zes manieren om dichter bij Frankrijk te komen.
+        {home?.aanbodTitel}
       </h2>
 
-      <div class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-16 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
         {
-          aanbod.map((item) => {
-            const Tag = item.href ? "a" : "div";
-            return (
-              <Tag
-                href={item.href ?? undefined}
-                class:list={[
-                  "group block border-t border-cream-50/20 pt-6",
-                  item.href && "transition-colors hover:border-ochre-300",
-                ]}
-              >
-                <span class="font-serif text-sm text-ochre-300">{item.nummer}</span>
-                <h3 class="mt-3 font-serif text-xl text-cream-50">
-                  {item.titel}
-                  {!item.href && (
-                    <span class="ml-2 align-middle text-xs font-sans font-medium tracking-wide text-blue-200 uppercase">
-                      Binnenkort
-                    </span>
-                  )}
-                </h3>
-                <p class="mt-3 text-sm text-blue-100">{item.tekst}</p>
-                {item.href && (
-                  <span class="mt-4 inline-block text-xs font-medium tracking-wide text-ochre-300 uppercase group-hover:text-ochre-200">
-                    Lees meer →
-                  </span>
-                )}
-              </Tag>
-            );
-          })
+          aanbod.map((item, i) => (
+            <a href={item.href} class="group block border-t border-cream-50/20 pt-6 transition-colors hover:border-ochre-300">
+              <span class="font-serif text-sm text-ochre-300">{String(i + 1).padStart(2, "0")}</span>
+              <h3 class="mt-3 font-serif text-xl text-cream-50">{item.titel}</h3>
+              <p class="mt-3 text-sm text-blue-100">{item.tekst}</p>
+              <span class="mt-4 inline-block text-xs font-medium tracking-wide text-ochre-300 uppercase group-hover:text-ochre-200">
+                Lees meer →
+              </span>
+            </a>
+          ))
         }
       </div>
     </Container>
@@ -144,16 +100,15 @@ const aanbod = [
   <!-- Contact CTA -->
   <Section id="contact" spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container class="text-center">
-      <Eyebrow class="justify-center">Contact</Eyebrow>
+      <Eyebrow class="justify-center">{home?.contactEyebrow}</Eyebrow>
       <h2 class="mx-auto mt-6 max-w-xl font-serif text-3xl text-ink-900 sm:text-4xl">
-        Vraag, idee, of gewoon zin om te praten over Frankrijk?
+        {home?.contactTitel}
       </h2>
       <p class="mx-auto mt-6 max-w-md text-base text-ink-500">
-        Stuur een bericht — ik antwoord graag persoonlijk, meestal binnen een
-        paar dagen.
+        {home?.contactTekst}
       </p>
       <div class="mt-10">
-        <Button href="/contact" variant="primary">Stuur een bericht</Button>
+        <Button href="/contact" variant="primary">{home?.contactCta}</Button>
       </div>
     </Container>
   </Section>

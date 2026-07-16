@@ -1,5 +1,5 @@
 import { sanityClient } from "sanity:client";
-import type { Blogartikel, Product, Recept, SiteInstellingen, Wandeling } from "./types";
+import type { Blogartikel, Homepage, Onderwerp, Product, Recept, SiteInstellingen } from "./types";
 
 // Documenten worden op aanmaakdatum getoond — dat is ook de volgorde
 // waarin het seed-script (scripts/seed.ts) ze aanmaakt.
@@ -16,30 +16,27 @@ export function getReceptBySlug(slug: string) {
   );
 }
 
-const WANDELING_PROJECTION = `{ ..., gpxBestand{ asset->{url, originalFilename, size} } }`;
-
-export function getWandelingen() {
-  return sanityClient.fetch<Wandeling[]>(
-    `*[_type == "wandeling"] | ${ORDER} ${WANDELING_PROJECTION}`
-  );
-}
-
-export function getWandelingBySlug(slug: string) {
-  return sanityClient.fetch<Wandeling | null>(
-    `*[_type == "wandeling" && slug.current == $slug][0] ${WANDELING_PROJECTION}`,
-    { slug }
-  );
-}
+const BLOGARTIKEL_PROJECTION = `{
+  ...,
+  onderwerp->{_id, titel, slug},
+  gerelateerdProduct->{naam, slug, prijs}
+}`;
 
 export function getBlogartikelen() {
-  return sanityClient.fetch<Blogartikel[]>(`*[_type == "blogartikel"] | ${ORDER}`);
+  return sanityClient.fetch<Blogartikel[]>(
+    `*[_type == "blogartikel"] | ${ORDER} ${BLOGARTIKEL_PROJECTION}`
+  );
 }
 
 export function getBlogartikelBySlug(slug: string) {
   return sanityClient.fetch<Blogartikel | null>(
-    `*[_type == "blogartikel" && slug.current == $slug][0]`,
+    `*[_type == "blogartikel" && slug.current == $slug][0] ${BLOGARTIKEL_PROJECTION}`,
     { slug }
   );
+}
+
+export function getOnderwerpen() {
+  return sanityClient.fetch<Onderwerp[]>(`*[_type == "onderwerp"] | order(titel asc)`);
 }
 
 export function getProducten() {
@@ -57,4 +54,8 @@ export function getSiteInstellingen() {
   return sanityClient.fetch<SiteInstellingen | null>(
     `*[_type == "siteInstellingen"][0]`
   );
+}
+
+export function getHomepage() {
+  return sanityClient.fetch<Homepage | null>(`*[_type == "homepage"][0]`);
 }

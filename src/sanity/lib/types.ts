@@ -21,39 +21,38 @@ export interface Recept {
   tip?: string;
 }
 
-export interface Wandeling {
+export interface Onderwerp {
   _id: string;
   titel: string;
   slug: { current: string };
-  streek: string;
-  excerpt: string;
-  afbeelding?: SanityImageValue;
-  afstand: string;
-  duur: string;
-  hoogteverschil?: string;
-  niveau: "Makkelijk" | "Matig zwaar" | "Zwaar";
-  intro?: PortableTextBlock[];
-  etappes?: string[];
-  gpxBestand?: { asset: { url: string; originalFilename: string; size: number } };
 }
 
 export interface Blogartikel {
   _id: string;
   titel: string;
   slug: { current: string };
-  onderwerp: "Tradities" | "Taal" | "Eten & drinken" | "Cultuur";
+  onderwerp: Onderwerp;
   excerpt: string;
   dek: string;
   afbeelding?: SanityImageValue;
   leestijdMinuten?: number;
   inhoud?: PortableTextBlock[];
+  gerelateerdProduct?: Pick<Product, "naam" | "slug" | "prijs">;
 }
 
 export interface Product {
   _id: string;
   naam: string;
   slug: { current: string };
-  categorie: "Kaas" | "Madeleines & bakvormen" | "Droge worst" | "Wijn" | "Zeep" | "Etherische oliën";
+  categorie:
+    | "Kaas"
+    | "Madeleines & bakvormen"
+    | "Droge worst"
+    | "Wijn"
+    | "Zeep"
+    | "Etherische oliën"
+    | "Wandelroutes";
+  soort: "fysiek" | "digitaal";
   prijs: string;
   herkomst: string;
   excerpt: string;
@@ -67,4 +66,30 @@ export interface SiteInstellingen {
   reactietijd: string;
   footerTagline: string;
   footerRegel: string;
+}
+
+export interface HomepageAanbodItem {
+  titel: string;
+  tekst: string;
+}
+
+export interface Homepage {
+  heroEyebrow: string;
+  heroTitel: string;
+  heroIntro: string;
+  heroCtaPrimair: string;
+  heroCtaSecundair: string;
+  heroAfbeelding?: SanityImageValue;
+  overMijEyebrow: string;
+  overMijTitel: string;
+  overMijTekst: string;
+  overMijQuote?: string;
+  overMijAfbeelding?: SanityImageValue;
+  aanbodEyebrow: string;
+  aanbodTitel: string;
+  aanbodItems: HomepageAanbodItem[];
+  contactEyebrow: string;
+  contactTitel: string;
+  contactTekst: string;
+  contactCta: string;
 }

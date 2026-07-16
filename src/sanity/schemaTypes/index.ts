@@ -3,10 +3,11 @@ import blockContent from "./objects/blockContent";
 import pullQuote from "./objects/pullQuote";
 
 import recept from "./documents/recept";
-import wandeling from "./documents/wandeling";
 import blogartikel from "./documents/blogartikel";
 import product from "./documents/product";
+import onderwerp from "./documents/onderwerp";
 import siteInstellingen from "./documents/siteInstellingen";
+import homepage from "./documents/homepage";
 
 export const schemaTypes = [
   // objecten (herbruikbare velden)
@@ -15,8 +16,9 @@ export const schemaTypes = [
   pullQuote,
   // documenten
   recept,
-  wandeling,
   blogartikel,
   product,
+  onderwerp,
   siteInstellingen,
+  homepage,
 ];

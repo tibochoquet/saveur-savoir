@@ -5,6 +5,7 @@ import Footer from "../../components/Footer.astro";
 import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
+import Button from "../../components/Button.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
 import { getBlogartikelen } from "../../sanity/lib/queries";
@@ -28,7 +29,7 @@ const { post } = Astro.props;
   <Section spacing="sm" tone="cream">
     <Container class="max-w-2xl">
       <a href="/blog" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle artikelen</a>
-      <Eyebrow class="mt-6">{post.onderwerp}</Eyebrow>
+      <Eyebrow class="mt-6">{post.onderwerp?.titel}</Eyebrow>
       <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
         {post.titel}
       </h1>
@@ -50,6 +51,23 @@ const { post } = Astro.props;
       <PortableText value={post.inhoud} />
     </Container>
   </Section>
+
+  {
+    post.gerelateerdProduct && (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <Container class="max-w-2xl">
+          <div class="border border-blue-200 bg-cream-50 p-8">
+            <p class="text-sm text-ink-500">Wil je deze route zelf lopen?</p>
+            <div class="mt-4">
+              <Button href={`/webshop/${post.gerelateerdProduct.slug.current}`} variant="primary">
+                Deze wandeling downloaden
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </Section>
+    )
+  }
 
   <Footer />
 </Layout>

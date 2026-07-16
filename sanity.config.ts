@@ -18,12 +18,16 @@ export default defineConfig({
           .title("Inhoud")
           .items([
             S.documentTypeListItem("recept").title("Recepten"),
-            S.documentTypeListItem("wandeling").title("Wandelingen"),
             S.documentTypeListItem("blogartikel").title("Blogartikelen"),
             S.documentTypeListItem("product").title("Producten"),
+            S.documentTypeListItem("onderwerp").title("Onderwerpen (blog)"),
             S.divider(),
-            // Site-instellingen is een singleton: altijd hetzelfde ene
-            // document openen, geen lijst en geen "nieuw document"-knop.
+            // Singletons: altijd hetzelfde ene document openen, geen
+            // lijst en geen "nieuw document"-knop.
+            S.listItem()
+              .title("Homepage")
+              .id("homepage")
+              .child(S.document().schemaType("homepage").documentId("homepage")),
             S.listItem()
               .title("Site-instellingen")
               .id("siteInstellingen")

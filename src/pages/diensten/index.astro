@@ -1,0 +1,69 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Container from "../../components/Container.astro";
+import Section from "../../components/Section.astro";
+import Eyebrow from "../../components/Eyebrow.astro";
+
+const diensten = [
+  {
+    nummer: "01",
+    titel: "Vertalingen & ondertiteling",
+    tekst:
+      "Frans-Nederlands en Nederlands-Frans, met oog voor toon en nuance — van zakelijke documenten tot ondertiteling.",
+    href: "/vertalingen",
+  },
+  {
+    nummer: "02",
+    titel: "Privéles Frans & Nederlands",
+    tekst:
+      "Persoonlijke lessen, op maat van jouw niveau en tempo. Voor wie eindelijk vloeiend mee wil praten.",
+    href: "/prive-les",
+  },
+];
+---
+
+<Layout
+  title="Diensten — Saveur & Savoir"
+  description="Vertalingen, ondertiteling en privéles Frans of Nederlands — persoonlijk en op maat."
+>
+  <Header />
+
+  <Section spacing="sm" tone="cream">
+    <Container wide>
+      <Eyebrow>Diensten</Eyebrow>
+      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+        Twee manieren om samen te werken.
+      </h1>
+      <p class="mt-6 max-w-xl text-lg text-ink-500">
+        Naast alles wat er te lezen en te ontdekken is, help ik ook direct —
+        met taal die klopt en les die aansluit bij jouw tempo.
+      </p>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <div class="grid gap-x-10 gap-y-12 sm:grid-cols-2">
+        {
+          diensten.map((dienst) => (
+            <a
+              href={dienst.href}
+              class="group block border-t border-blue-200 pt-6 transition-colors hover:border-terracotta-400"
+            >
+              <span class="font-serif text-sm text-terracotta-500">{dienst.nummer}</span>
+              <h2 class="mt-3 font-serif text-2xl text-ink-900">{dienst.titel}</h2>
+              <p class="mt-3 text-base text-ink-500">{dienst.tekst}</p>
+              <span class="mt-4 inline-block text-xs font-medium tracking-wide text-terracotta-500 uppercase group-hover:text-terracotta-600">
+                Meer weten →
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>

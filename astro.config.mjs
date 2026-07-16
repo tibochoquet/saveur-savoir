@@ -19,6 +19,14 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
+  redirects: {
+    '/franse-producten': '/webshop',
+    '/franse-producten/[slug]': '/webshop/[slug]',
+    '/wandelen': '/blog',
+    // De enige wandeling die ooit een echte detailpagina had.
+    '/wandelen/gr70-chemin-de-stevenson': '/blog',
+  },
+
   integrations: [
     react(),
     sanity({

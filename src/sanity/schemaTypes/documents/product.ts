@@ -22,7 +22,7 @@ export default defineType({
     defineField({
       name: "categorie",
       title: "Categorie",
-      description: "Bepaalt in welke categorie dit product valt bij het filteren op de productenpagina.",
+      description: "Bepaalt in welke categorie dit product valt bij het filteren op de webshop-pagina.",
       type: "string",
       options: {
         list: [
@@ -32,9 +32,33 @@ export default defineType({
           { title: "Wijn", value: "Wijn" },
           { title: "Zeep", value: "Zeep" },
           { title: "Etherische oliën", value: "Etherische oliën" },
+          { title: "Wandelroutes", value: "Wandelroutes" },
         ],
       },
       validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "soort",
+      title: "Soort product",
+      description: "Fysiek (wordt verzonden) of digitaal (bv. een gpx-bestand — geen verzendkosten).",
+      type: "string",
+      options: {
+        list: [
+          { title: "Fysiek", value: "fysiek" },
+          { title: "Digitaal", value: "digitaal" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "fysiek",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "gpxBestand",
+      title: "GPX-bestand",
+      description: "Alleen voor digitale producten zoals een wandelroute. Wordt niet rechtstreeks als publieke download getoond — dit is voor eigen beheer, zolang aanvragen nog via het contactformulier verlopen.",
+      type: "file",
+      options: { accept: ".gpx" },
+      hidden: ({ document }) => document?.soort !== "digitaal",
     }),
     defineField({
       name: "prijs",

@@ -8,7 +8,16 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
 import { getProducten } from "../../sanity/lib/queries";
 
-const categorieen = ["Alles", "Kaas", "Madeleines & bakvormen", "Droge worst", "Wijn", "Zeep", "Etherische oliën"];
+const categorieen = [
+  "Alles",
+  "Kaas",
+  "Madeleines & bakvormen",
+  "Droge worst",
+  "Wijn",
+  "Zeep",
+  "Etherische oliën",
+  "Wandelroutes",
+];
 const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
 const producten = await getProducten();
@@ -33,21 +42,21 @@ const stappen = [
 ---
 
 <Layout
-  title="Franse producten — Saveur & Savoir"
+  title="Webshop — Saveur & Savoir"
   description="Een kleine etalage van dingen die ik zelf gebruik en aanraad, rechtstreeks uit Frankrijk."
 >
   <Header />
 
   <Section spacing="sm" tone="cream">
     <Container wide>
-      <Eyebrow>Franse producten</Eyebrow>
+      <Eyebrow>Webshop</Eyebrow>
       <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
         Een kleine etalage, rechtstreeks uit Frankrijk.
       </h1>
       <p class="mt-6 max-w-xl text-lg text-ink-500">
-        Dit is geen webshop. Er is geen winkelmand en geen online kassa — je
-        vraagt een product aan via het contactformulier, en ik antwoord
-        persoonlijk met prijs, beschikbaarheid en verzendopties.
+        Nog geen kassa, geen winkelmand — je vraagt een product aan via het
+        contactformulier, en ik antwoord persoonlijk met prijs,
+        beschikbaarheid en (bij fysieke producten) verzendopties.
       </p>
     </Container>
   </Section>
@@ -78,14 +87,15 @@ const stappen = [
         {
           producten.map((product, i) => {
             const isGepubliceerd = (product.verhaal?.length ?? 0) > 0;
+            const soortLabel = product.soort === "digitaal" ? "Digitaal" : "Fysiek";
             return (
               <OverviewCard
-                href={isGepubliceerd ? `/franse-producten/${product.slug.current}` : null}
+                href={isGepubliceerd ? `/webshop/${product.slug.current}` : null}
                 eyebrow={product.categorie}
                 title={product.naam}
                 excerpt={product.excerpt}
                 prijs={product.prijs}
-                meta={product.herkomst}
+                meta={`${soortLabel} · ${product.herkomst}`}
                 image={product.afbeelding}
                 tone={tonen[i % tonen.length]}
                 dataCategory={product.categorie}

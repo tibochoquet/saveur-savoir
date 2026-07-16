@@ -6,12 +6,13 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
-import { getBlogartikelen } from "../../sanity/lib/queries";
+import { getBlogartikelen, getOnderwerpen } from "../../sanity/lib/queries";
 
-const categorieen = ["Alles", "Tradities", "Taal", "Eten & drinken", "Cultuur"];
 const tonen = ["terracotta", "blue", "ochre", "olive"] as const;
 
-const artikelen = await getBlogartikelen();
+const [artikelen, onderwerpen] = await Promise.all([getBlogartikelen(), getOnderwerpen()]);
+
+const filters = [{ titel: "Alles", slug: "alles" }, ...onderwerpen.map((o) => ({ titel: o.titel, slug: o.slug.current }))];
 ---
 
 <Layout
@@ -37,10 +38,10 @@ const artikelen = await getBlogartikelen();
     <Container wide>
       <div id="filters" class="flex flex-wrap gap-3">
         {
-          categorieen.map((cat, i) => (
+          filters.map((filter, i) => (
             <button
               type="button"
-              data-filter={cat}
+              data-filter={filter.slug}
               aria-pressed={i === 0 ? "true" : "false"}
               class:list={[
                 "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
@@ -49,7 +50,7 @@ const artikelen = await getBlogartikelen();
                   : "border-blue-300 text-ink-700 hover:border-terracotta-500 hover:text-terracotta-500",
               ]}
             >
-              {cat}
+              {filter.titel}
             </button>
           ))
         }
@@ -62,12 +63,12 @@ const artikelen = await getBlogartikelen();
             return (
               <OverviewCard
                 href={isGepubliceerd ? `/blog/${post.slug.current}` : null}
-                eyebrow={post.onderwerp}
+                eyebrow={post.onderwerp?.titel}
                 title={post.titel}
                 excerpt={post.excerpt}
                 image={post.afbeelding}
                 tone={tonen[i % tonen.length]}
-                dataCategory={post.onderwerp}
+                dataCategory={post.onderwerp?.slug?.current}
               />
             );
           })
@@ -106,7 +107,7 @@ const artikelen = await getBlogartikelen();
 
       let visibleCount = 0;
       cards.forEach((card) => {
-        const matches = filter === "Alles" || card.dataset.category === filter;
+        const matches = filter === "alles" || card.dataset.category === filter;
         card.classList.toggle("hidden", !matches);
         if (matches) visibleCount++;
       });
