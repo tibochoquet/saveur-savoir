@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "seed": "tsx scripts/seed.ts",
-    "migrate:restructure": "tsx scripts/migrate-restructure.ts"
+    "migrate:restructure": "tsx scripts/migrate-restructure.ts",
+    "migrate:editable-text": "tsx scripts/migrate-editable-text.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",

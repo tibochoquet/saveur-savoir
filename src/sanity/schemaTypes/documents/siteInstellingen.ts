@@ -37,6 +37,69 @@ export default defineType({
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
+    defineField({
+      name: "footerDiensten",
+      title: "Footer: kolom \"Diensten\"",
+      description: "De link-URL's liggen vast in code — hier stel je alleen de zichtbare tekst in.",
+      type: "object",
+      fields: [
+        defineField({ name: "titel", title: "Koptekst", type: "string", validation: (Rule) => Rule.required() }),
+        defineField({
+          name: "link1Label",
+          title: "Linktekst (gaat naar /vertalingen)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "link2Label",
+          title: "Linktekst (gaat naar /prive-les)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+    }),
+    defineField({
+      name: "footerOntdekken",
+      title: "Footer: kolom \"Ontdekken\"",
+      description: "De link-URL's liggen vast in code — hier stel je alleen de zichtbare tekst in.",
+      type: "object",
+      fields: [
+        defineField({ name: "titel", title: "Koptekst", type: "string", validation: (Rule) => Rule.required() }),
+        defineField({
+          name: "link1Label",
+          title: "Linktekst (gaat naar /recepten)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "link2Label",
+          title: "Linktekst (gaat naar /webshop)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+        defineField({
+          name: "link3Label",
+          title: "Linktekst (gaat naar /blog)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+    }),
+    defineField({
+      name: "footerContact",
+      title: "Footer: kolom \"Contact\"",
+      description: "De link-URL ligt vast in code — hier stel je alleen de zichtbare tekst in.",
+      type: "object",
+      fields: [
+        defineField({ name: "titel", title: "Koptekst", type: "string", validation: (Rule) => Rule.required() }),
+        defineField({
+          name: "link1Label",
+          title: "Linktekst (gaat naar /contact)",
+          type: "string",
+          validation: (Rule) => Rule.required(),
+        }),
+      ],
+    }),
   ],
   preview: {
     prepare() {

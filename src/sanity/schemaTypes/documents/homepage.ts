@@ -36,8 +36,8 @@ export default defineType({
     defineField({
       name: "heroIntro",
       title: "Introductietekst",
-      type: "text",
-      rows: 3,
+      description: "Elke nieuwe alinea (Enter) wordt een eigen paragraaf op de site.",
+      type: "eenvoudigeTekst",
       fieldset: "hero",
       validation: (Rule) => Rule.required(),
     }),
@@ -83,8 +83,8 @@ export default defineType({
     defineField({
       name: "overMijTekst",
       title: "Tekst",
-      type: "text",
-      rows: 4,
+      description: "Elke nieuwe alinea (Enter) wordt een eigen paragraaf op de site.",
+      type: "eenvoudigeTekst",
       fieldset: "overMij",
       validation: (Rule) => Rule.required(),
     }),
@@ -138,8 +138,8 @@ export default defineType({
             defineField({
               name: "tekst",
               title: "Tekst",
-              type: "text",
-              rows: 2,
+              description: "Elke nieuwe alinea (Enter) wordt een eigen paragraaf op de site.",
+              type: "eenvoudigeTekst",
               validation: (Rule) => Rule.required(),
             }),
           ],
@@ -166,8 +166,8 @@ export default defineType({
     defineField({
       name: "contactTekst",
       title: "Tekst",
-      type: "text",
-      rows: 2,
+      description: "Elke nieuwe alinea (Enter) wordt een eigen paragraaf op de site.",
+      type: "eenvoudigeTekst",
       fieldset: "contact",
       validation: (Rule) => Rule.required(),
     }),

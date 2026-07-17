@@ -5,6 +5,10 @@ import Footer from "../../components/Footer.astro";
 import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
+import PortableText from "../../components/PortableText.astro";
+import { getPagina } from "../../sanity/lib/queries";
+
+const pagina = await getPagina("paginaDiensten");
 
 const diensten = [
   {
@@ -25,21 +29,18 @@ const diensten = [
 ---
 
 <Layout
-  title="Diensten — Saveur & Savoir"
+  title={`${pagina?.paginatitel} — Saveur & Savoir`}
   description="Vertalingen, ondertiteling en privéles Frans of Nederlands — persoonlijk en op maat."
 >
   <Header />
 
   <Section spacing="sm" tone="cream">
     <Container wide>
-      <Eyebrow>Diensten</Eyebrow>
+      <Eyebrow>{pagina?.paginatitel}</Eyebrow>
       <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
-        Twee manieren om samen te werken.
+        {pagina?.kop}
       </h1>
-      <p class="mt-6 max-w-xl text-lg text-ink-500">
-        Naast alles wat er te lezen en te ontdekken is, help ik ook direct —
-        met taal die klopt en les die aansluit bij jouw tempo.
-      </p>
+      <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
     </Container>
   </Section>
 

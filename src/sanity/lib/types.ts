@@ -61,28 +61,38 @@ export interface Product {
   verhaal?: PortableTextBlock[];
 }
 
+export interface FooterKolom {
+  titel: string;
+  link1Label: string;
+  link2Label?: string;
+  link3Label?: string;
+}
+
 export interface SiteInstellingen {
   contactEmail: string;
   reactietijd: string;
   footerTagline: string;
   footerRegel: string;
+  footerDiensten: FooterKolom;
+  footerOntdekken: FooterKolom;
+  footerContact: FooterKolom;
 }
 
 export interface HomepageAanbodItem {
   titel: string;
-  tekst: string;
+  tekst: PortableTextBlock[];
 }
 
 export interface Homepage {
   heroEyebrow: string;
   heroTitel: string;
-  heroIntro: string;
+  heroIntro: PortableTextBlock[];
   heroCtaPrimair: string;
   heroCtaSecundair: string;
   heroAfbeelding?: SanityImageValue;
   overMijEyebrow: string;
   overMijTitel: string;
-  overMijTekst: string;
+  overMijTekst: PortableTextBlock[];
   overMijQuote?: string;
   overMijAfbeelding?: SanityImageValue;
   aanbodEyebrow: string;
@@ -90,6 +100,12 @@ export interface Homepage {
   aanbodItems: HomepageAanbodItem[];
   contactEyebrow: string;
   contactTitel: string;
-  contactTekst: string;
+  contactTekst: PortableTextBlock[];
   contactCta: string;
+}
+
+export interface Pagina {
+  paginatitel: string;
+  kop: string;
+  introtekst: PortableTextBlock[];
 }

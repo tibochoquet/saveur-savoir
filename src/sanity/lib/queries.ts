@@ -1,5 +1,5 @@
 import { sanityClient } from "sanity:client";
-import type { Blogartikel, Homepage, Onderwerp, Product, Recept, SiteInstellingen } from "./types";
+import type { Blogartikel, Homepage, Onderwerp, Pagina, Product, Recept, SiteInstellingen } from "./types";
 
 // Documenten worden op aanmaakdatum getoond — dat is ook de volgorde
 // waarin het seed-script (scripts/seed.ts) ze aanmaakt.
@@ -58,4 +58,8 @@ export function getSiteInstellingen() {
 
 export function getHomepage() {
   return sanityClient.fetch<Homepage | null>(`*[_type == "homepage"][0]`);
+}
+
+export function getPagina(type: "paginaWebshop" | "paginaDiensten" | "paginaRecepten" | "paginaBlog" | "paginaContact") {
+  return sanityClient.fetch<Pagina | null>(`*[_type == $type][0]`, { type });
 }

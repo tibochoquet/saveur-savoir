@@ -8,23 +8,28 @@ const instellingen = await getSiteInstellingen();
 const footerTagline = instellingen?.footerTagline ?? "Frans leven, taal en landschap — met tijd genomen.";
 const footerRegel = instellingen?.footerRegel ?? "Gevestigd in Nederland, met het hart in Frankrijk.";
 
+// De URL's liggen vast in code; alleen de zichtbare labels komen uit
+// siteInstellingen.
 const columns = [
   {
-    heading: "Diensten",
+    heading: instellingen?.footerDiensten?.titel ?? "Diensten",
     links: [
-      { label: "Vertalingen & ondertiteling", href: "/vertalingen" },
-      { label: "Privéles Frans & Nederlands", href: "/prive-les" },
+      { label: instellingen?.footerDiensten?.link1Label ?? "Vertalingen & ondertiteling", href: "/vertalingen" },
+      { label: instellingen?.footerDiensten?.link2Label ?? "Privéles Frans & Nederlands", href: "/prive-les" },
     ],
   },
   {
-    heading: "Ontdekken",
+    heading: instellingen?.footerOntdekken?.titel ?? "Ontdekken",
     links: [
-      { label: "Franse recepten", href: "/recepten" },
-      { label: "Webshop", href: "/webshop" },
-      { label: "Blog", href: "/blog" },
+      { label: instellingen?.footerOntdekken?.link1Label ?? "Franse recepten", href: "/recepten" },
+      { label: instellingen?.footerOntdekken?.link2Label ?? "Webshop", href: "/webshop" },
+      { label: instellingen?.footerOntdekken?.link3Label ?? "Blog", href: "/blog" },
     ],
   },
 ];
+
+const contactHeading = instellingen?.footerContact?.titel ?? "Contact";
+const contactLinkLabel = instellingen?.footerContact?.link1Label ?? "Stuur een bericht";
 ---
 
 <footer class="border-t border-blue-200/70 bg-cream-50">
@@ -57,10 +62,10 @@ const columns = [
       }
 
       <div>
-        <h3 class="text-xs font-semibold tracking-[0.15em] text-blue-500 uppercase">Contact</h3>
+        <h3 class="text-xs font-semibold tracking-[0.15em] text-blue-500 uppercase">{contactHeading}</h3>
         <ul class="mt-4 space-y-3">
           <li>
-            <a href="/contact" class="text-sm text-ink-700 hover:text-terracotta-500">Stuur een bericht</a>
+            <a href="/contact" class="text-sm text-ink-700 hover:text-terracotta-500">{contactLinkLabel}</a>
           </li>
         </ul>
       </div>

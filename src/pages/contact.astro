@@ -5,7 +5,8 @@ import Footer from "../components/Footer.astro";
 import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import { getSiteInstellingen } from "../sanity/lib/queries";
+import PortableText from "../components/PortableText.astro";
+import { getPagina, getSiteInstellingen } from "../sanity/lib/queries";
 
 const onderwerpen = [
   "Vertalingen & ondertiteling",
@@ -17,7 +18,7 @@ const onderwerpen = [
 
 // Valt terug op de oorspronkelijke tekst zolang het
 // site-instellingen-document nog niet bestaat (bv. vóór het seeden).
-const instellingen = await getSiteInstellingen();
+const [pagina, instellingen] = await Promise.all([getPagina("paginaContact"), getSiteInstellingen()]);
 const contactEmail = instellingen?.contactEmail ?? "hallo@saveursavoir.nl";
 const reactietijd = instellingen?.reactietijd ?? "Meestal binnen 2 à 3 werkdagen";
 
@@ -26,7 +27,7 @@ const inputClasses =
 ---
 
 <Layout
-  title="Contact — Saveur & Savoir"
+  title={`${pagina?.paginatitel} — Saveur & Savoir`}
   description="Vraag, idee, of gewoon zin om te praten over Frankrijk? Stuur een bericht."
 >
   <Header />
@@ -34,14 +35,11 @@ const inputClasses =
   <Section spacing="lg" tone="cream">
     <Container wide class="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)]">
       <div>
-        <Eyebrow>Contact</Eyebrow>
+        <Eyebrow>{pagina?.paginatitel}</Eyebrow>
         <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
-          Vraag, idee, of gewoon zin om te praten over Frankrijk?
+          {pagina?.kop}
         </h1>
-        <p class="mt-6 max-w-md text-lg text-ink-500">
-          Stuur een bericht — ik antwoord graag persoonlijk, meestal binnen
-          een paar dagen.
-        </p>
+        <PortableText value={pagina?.introtekst} class="mt-6 max-w-md text-lg text-ink-500" />
         <dl class="mt-10 space-y-4 text-sm text-ink-700">
           <div>
             <dt class="font-medium text-ink-900">E-mail</dt>

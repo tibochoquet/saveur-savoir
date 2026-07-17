@@ -6,28 +6,26 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
-import { getRecepten } from "../../sanity/lib/queries";
+import PortableText from "../../components/PortableText.astro";
+import { getPagina, getRecepten } from "../../sanity/lib/queries";
 
-const recepten = await getRecepten();
+const [pagina, recepten] = await Promise.all([getPagina("paginaRecepten"), getRecepten()]);
 const tonen = ["olive", "ochre", "terracotta", "blue"] as const;
 ---
 
 <Layout
-  title="Franse recepten — Saveur & Savoir"
+  title={`${pagina?.paginatitel} — Saveur & Savoir`}
   description="Gerechten uit Franse keukens, uitgeprobeerd en doorverteld — met de verhalen erbij."
 >
   <Header />
 
   <Section spacing="sm" tone="cream">
     <Container wide>
-      <Eyebrow>Franse recepten</Eyebrow>
+      <Eyebrow>{pagina?.paginatitel}</Eyebrow>
       <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
-        Gerechten om je keuken naar Frankrijk te verplaatsen.
+        {pagina?.kop}
       </h1>
-      <p class="mt-6 max-w-xl text-lg text-ink-500">
-        Geen ingewikkelde technieken, wel echte smaak — recepten die ik zelf
-        keer op keer maak, met de verhalen en trucjes erbij.
-      </p>
+      <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
     </Container>
   </Section>
 
