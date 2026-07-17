@@ -30,6 +30,15 @@ const columns = [
 
 const contactHeading = instellingen?.footerContact?.titel ?? "Contact";
 const contactLinkLabel = instellingen?.footerContact?.link1Label ?? "Stuur een bericht";
+
+// Vaste juridische links — geen cookiebanner, "Cookievoorkeuren" wijst
+// naar de eerlijke alinea over cookies op de privacypagina.
+const juridischeLinks = [
+  { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Cookievoorkeuren", href: "/privacybeleid#cookies" },
+  { label: "Privacybeleid", href: "/privacybeleid" },
+  { label: "Herroeping", href: "/herroeping" },
+];
 ---
 
 <footer class="border-t border-blue-200/70 bg-cream-50">
@@ -71,9 +80,20 @@ const contactLinkLabel = instellingen?.footerContact?.link1Label ?? "Stuur een b
       </div>
     </div>
 
-    <div class="mt-16 flex flex-col gap-2 border-t border-blue-200/70 pt-8 text-xs text-ink-500 sm:flex-row sm:justify-between">
-      <span>&copy; {new Date().getFullYear()} Saveur &amp; Savoir</span>
-      <span>{footerRegel}</span>
+    <div class="mt-16 flex flex-col gap-4 border-t border-blue-200/70 pt-8 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex flex-col gap-2 text-xs text-ink-500 sm:flex-row sm:gap-6">
+        <span>&copy; {new Date().getFullYear()} Saveur &amp; Savoir</span>
+        <span>{footerRegel}</span>
+      </div>
+      <div class="flex flex-wrap gap-x-5 gap-y-2 text-xs text-ink-500">
+        {
+          juridischeLinks.map((link) => (
+            <a href={link.href} class="hover:text-terracotta-500">
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
     </div>
   </Container>
 </footer>

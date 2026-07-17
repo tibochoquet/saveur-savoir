@@ -14,6 +14,9 @@ import paginaDiensten from "./documents/paginaDiensten";
 import paginaRecepten from "./documents/paginaRecepten";
 import paginaBlog from "./documents/paginaBlog";
 import paginaContact from "./documents/paginaContact";
+import paginaVertalingen from "./documents/paginaVertalingen";
+import paginaPriveLes from "./documents/paginaPriveLes";
+import juridischePagina from "./documents/juridischePagina";
 
 export const schemaTypes = [
   // objecten (herbruikbare velden)
@@ -33,5 +36,9 @@ export const schemaTypes = [
   paginaRecepten,
   paginaBlog,
   paginaContact,
+  paginaVertalingen,
+  paginaPriveLes,
   siteInstellingen,
+  // juridische pagina's: één schema, vijf documenten (zie sanity.config.ts)
+  juridischePagina,
 ];

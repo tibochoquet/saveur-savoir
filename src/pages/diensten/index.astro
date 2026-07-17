@@ -6,26 +6,17 @@ import Container from "../../components/Container.astro";
 import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import PortableText from "../../components/PortableText.astro";
-import { getPagina } from "../../sanity/lib/queries";
+import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
+import { getPaginaDiensten } from "../../sanity/lib/queries";
 
-const pagina = await getPagina("paginaDiensten");
+const pagina = await getPaginaDiensten();
 
-const diensten = [
-  {
-    nummer: "01",
-    titel: "Vertalingen & ondertiteling",
-    tekst:
-      "Frans-Nederlands en Nederlands-Frans, met oog voor toon en nuance — van zakelijke documenten tot ondertiteling.",
-    href: "/vertalingen",
-  },
-  {
-    nummer: "02",
-    titel: "Privéles Frans & Nederlands",
-    tekst:
-      "Persoonlijke lessen, op maat van jouw niveau en tempo. Voor wie eindelijk vloeiend mee wil praten.",
-    href: "/prive-les",
-  },
-];
+// Vaste bestemmingen per item — alleen de tekst komt uit Sanity.
+const dienstenHrefs = ["/vertalingen", "/prive-les"];
+const diensten = (pagina?.dienstenItems ?? []).map((item, i) => ({
+  ...item,
+  href: dienstenHrefs[i],
+}));
 ---
 
 <Layout
@@ -36,11 +27,13 @@ const diensten = [
 
   <Section spacing="sm" tone="cream">
     <Container wide>
-      <Eyebrow>{pagina?.paginatitel}</Eyebrow>
-      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
-        {pagina?.kop}
-      </h1>
-      <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
+      <SectieMetBeeld image={pagina?.introAfbeelding} ratio="4/5">
+        <Eyebrow>{pagina?.paginatitel}</Eyebrow>
+        <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+          {pagina?.kop}
+        </h1>
+        <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
+      </SectieMetBeeld>
     </Container>
   </Section>
 
@@ -48,14 +41,14 @@ const diensten = [
     <Container wide>
       <div class="grid gap-x-10 gap-y-12 sm:grid-cols-2">
         {
-          diensten.map((dienst) => (
+          diensten.map((dienst, i) => (
             <a
               href={dienst.href}
               class="group block border-t border-blue-200 pt-6 transition-colors hover:border-terracotta-400"
             >
-              <span class="font-serif text-sm text-terracotta-500">{dienst.nummer}</span>
+              <span class="font-serif text-sm text-terracotta-500">{String(i + 1).padStart(2, "0")}</span>
               <h2 class="mt-3 font-serif text-2xl text-ink-900">{dienst.titel}</h2>
-              <p class="mt-3 text-base text-ink-500">{dienst.tekst}</p>
+              <PortableText value={dienst.tekst} class="mt-3 text-base text-ink-500" />
               <span class="mt-4 inline-block text-xs font-medium tracking-wide text-terracotta-500 uppercase group-hover:text-terracotta-600">
                 Meer weten →
               </span>

@@ -25,10 +25,10 @@ const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
 
   <!-- Hero -->
   <Section spacing="lg" tone="cream">
-    <Container wide class="grid items-center gap-12 lg:grid-cols-[45fr_55fr] lg:gap-20">
+    <Container wide class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
       <div class="order-2 lg:order-1">
         <Eyebrow>{home?.heroEyebrow}</Eyebrow>
-        <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
+        <h1 class="mt-6 font-serif text-3xl text-ink-900 sm:text-4xl">
           {home?.heroTitel}
         </h1>
         <PortableText value={home?.heroIntro} class="mt-6 max-w-md text-lg text-ink-500" />
@@ -38,7 +38,7 @@ const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
         </div>
       </div>
       <div class="order-1 lg:order-2">
-        <SanityImage image={home?.heroAfbeelding} ratio="4/5" tone="olive" class="rounded-sm" />
+        <SanityImage image={home?.heroAfbeelding} ratio="1/1" tone="olive" class="rounded-sm" />
       </div>
     </Container>
   </Section>

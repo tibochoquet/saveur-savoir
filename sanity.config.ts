@@ -8,12 +8,14 @@ const projectId = import.meta.env.PUBLIC_SANITY_PROJECT_ID;
 const dataset = import.meta.env.PUBLIC_SANITY_DATASET || "production";
 
 // Singletons: altijd hetzelfde ene document openen, geen lijst en
-// geen "nieuw document"-knop.
-const singletonItem = (S: StructureBuilder, type: string, title: string) =>
+// geen "nieuw document"-knop. schemaType en documentId zijn meestal
+// gelijk, behalve bij de juridische pagina's (één gedeeld schema,
+// telkens een ander vast document-ID).
+const singletonItem = (S: StructureBuilder, schemaType: string, title: string, documentId: string = schemaType) =>
   S.listItem()
     .title(title)
-    .id(type)
-    .child(S.document().schemaType(type).documentId(type));
+    .id(documentId)
+    .child(S.document().schemaType(schemaType).documentId(documentId));
 
 export default defineConfig({
   name: "saveur-savoir",
@@ -42,11 +44,27 @@ export default defineConfig({
                     singletonItem(S, "homepage", "Homepage"),
                     singletonItem(S, "paginaWebshop", "Webshop"),
                     singletonItem(S, "paginaDiensten", "Diensten"),
+                    singletonItem(S, "paginaVertalingen", "Vertalingen"),
+                    singletonItem(S, "paginaPriveLes", "Privéles"),
                     singletonItem(S, "paginaRecepten", "Recepten"),
                     singletonItem(S, "paginaBlog", "Blog"),
                     singletonItem(S, "paginaContact", "Contact"),
                     S.divider(),
                     singletonItem(S, "siteInstellingen", "Site-instellingen"),
+                  ])
+              ),
+            // Vijf vaste documenten van hetzelfde schema.
+            S.listItem()
+              .title("Juridische pagina's")
+              .child(
+                S.list()
+                  .title("Juridische pagina's")
+                  .items([
+                    singletonItem(S, "juridischePagina", "Disclaimer", "disclaimer"),
+                    singletonItem(S, "juridischePagina", "Privacybeleid", "privacybeleid"),
+                    singletonItem(S, "juridischePagina", "Herroeping", "herroeping"),
+                    singletonItem(S, "juridischePagina", "Algemene voorwaarden", "algemeneVoorwaarden"),
+                    singletonItem(S, "juridischePagina", "Verzenden & Retourneren", "verzendenRetourneren"),
                   ])
               ),
           ]),

@@ -1,0 +1,32 @@
+---
+// Voor tekst-only secties die een optioneel beeld mogen krijgen. Bij
+// een gekozen foto: beeld rechts naast de tekst op desktop, eronder op
+// mobiel (dankzij normale documentvolgorde — geen extra classes nodig
+// voor mobiel). Zonder foto: geen gat, geen placeholder — de tekst
+// valt gewoon terug op volle breedte. Anders dan SanityImage elders op
+// de site (waar een placeholder juist wél hoort, omdat daar altijd
+// beeld verwacht wordt).
+import SanityImage from "./SanityImage.astro";
+import type { SanityImageValue } from "../sanity/lib/types";
+
+interface Props {
+  image?: SanityImageValue | null;
+  ratio?: string;
+}
+
+const { image, ratio = "4/5" } = Astro.props;
+const heeftBeeld = Boolean(image?.asset);
+---
+
+{
+  heeftBeeld ? (
+    <div class="grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
+      <div>
+        <slot />
+      </div>
+      <SanityImage image={image} ratio={ratio} class="rounded-sm" />
+    </div>
+  ) : (
+    <slot />
+  )
+}

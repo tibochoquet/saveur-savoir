@@ -6,75 +6,54 @@ import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import Button from "../components/Button.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import PlaceholderImage from "../components/PlaceholderImage.astro";
+import SanityImage from "../components/SanityImage.astro";
+import PortableText from "../components/PortableText.astro";
+import SectieMetBeeld from "../components/SectieMetBeeld.astro";
+import { getPaginaPriveLes } from "../sanity/lib/queries";
 
-const doelgroepen = [
-  {
-    titel: "Frans leren",
-    tekst:
-      "Voor wie een huis in Frankrijk heeft, er vaak komt, of gewoon eindelijk het gesprek aan de bar durft aan te gaan.",
-  },
-  {
-    titel: "Nederlands leren",
-    tekst:
-      "Voor Franstaligen die in Nederland wonen, werken of studeren en snel praktische taalvaardigheid nodig hebben.",
-  },
-];
-
-const stappen = [
-  { nummer: "01", titel: "Kennismaking", tekst: "Een gratis gesprek van 20 minuten om niveau en doel te bepalen." },
-  { nummer: "02", titel: "Lesplan", tekst: "Een programma op maat, gebouwd rond wat jij echt wilt kunnen." },
-  { nummer: "03", titel: "Lessen", tekst: "Wekelijks of tweewekelijks, online of in levenden lijve." },
-  { nummer: "04", titel: "Bijstellen", tekst: "Elke paar weken kijken we samen of het tempo nog klopt." },
-];
+const pagina = await getPaginaPriveLes();
 ---
 
 <Layout
-  title="Privéles Frans & Nederlands — Saveur & Savoir"
+  title={`${pagina?.heroTitel} — Saveur & Savoir`}
   description="Persoonlijke taallessen Frans en Nederlands, op maat van jouw niveau en tempo."
 >
   <Header />
 
   <Section spacing="lg" tone="cream">
     <Container wide class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-      <PlaceholderImage ratio="4/5" tone="terracotta" class="order-1 rounded-sm" />
+      <SanityImage image={pagina?.heroAfbeelding} ratio="4/5" tone="terracotta" class="order-1 rounded-sm" />
       <div class="order-2">
-        <Eyebrow>Dienst</Eyebrow>
+        <Eyebrow>{pagina?.heroEyebrow}</Eyebrow>
         <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
-          Privéles Frans &amp; Nederlands
+          {pagina?.heroTitel}
         </h1>
-        <p class="mt-6 max-w-md text-lg text-ink-500">
-          Geen klas, geen leerboek dat niet bij je past — gewoon jij, ik, en een
-          taal die eindelijk gaat kloppen.
-        </p>
+        <PortableText value={pagina?.heroIntro} class="mt-6 max-w-md text-lg text-ink-500" />
         <div class="mt-10">
-          <Button href="/contact" variant="primary">Plan een kennismaking</Button>
+          <Button href="/contact" variant="primary">{pagina?.heroKnoptekst}</Button>
         </div>
       </div>
     </Container>
   </Section>
 
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-    <Container class="max-w-2xl text-center">
-      <Eyebrow class="justify-center">Wat het is</Eyebrow>
-      <p class="mt-6 text-lg text-ink-700">
-        Privéles betekent dat de les om jou draait, niet om een methode. We
-        beginnen bij wat je al kan en bouwen van daaruit verder, in het tempo
-        dat bij jouw leven past — of dat nu een half uur per week is of een
-        intensief traject voor een verhuizing.
-      </p>
+    <Container wide>
+      <SectieMetBeeld image={pagina?.watHetIsAfbeelding} ratio="4/3">
+        <Eyebrow class="self-start">{pagina?.watHetIsEyebrow}</Eyebrow>
+        <PortableText value={pagina?.watHetIsTekst} class="mt-4 max-w-2xl text-lg text-ink-700" />
+      </SectieMetBeeld>
     </Container>
   </Section>
 
   <Section spacing="base" tone="olive" class="border-t border-olive-800">
     <Container wide>
-      <Eyebrow class="text-ochre-200">Voor wie</Eyebrow>
+      <Eyebrow class="text-ochre-200">{pagina?.doelgroepEyebrow}</Eyebrow>
       <div class="mt-10 grid gap-x-16 gap-y-10 sm:grid-cols-2">
         {
-          doelgroepen.map((item) => (
+          pagina?.doelgroepenItems.map((item) => (
             <div>
               <h3 class="font-serif text-2xl text-cream-50">{item.titel}</h3>
-              <p class="mt-3 max-w-sm text-sm text-olive-100">{item.tekst}</p>
+              <PortableText value={item.tekst} class="mt-3 max-w-sm text-sm text-olive-100" />
             </div>
           ))
         }
@@ -84,14 +63,14 @@ const stappen = [
 
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container wide>
-      <Eyebrow>Hoe het werkt</Eyebrow>
+      <Eyebrow>{pagina?.hoeHetWerktEyebrow}</Eyebrow>
       <div class="mt-10 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {
-          stappen.map((stap) => (
+          pagina?.hoeHetWerktStappen.map((stap, i) => (
             <div>
-              <span class="font-serif text-sm text-terracotta-500">{stap.nummer}</span>
+              <span class="font-serif text-sm text-terracotta-500">{String(i + 1).padStart(2, "0")}</span>
               <h3 class="mt-3 font-serif text-lg text-ink-900">{stap.titel}</h3>
-              <p class="mt-3 text-sm text-ink-500">{stap.tekst}</p>
+              <PortableText value={stap.tekst} class="mt-3 text-sm text-ink-500" />
             </div>
           ))
         }
@@ -101,16 +80,13 @@ const stappen = [
 
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container class="text-center">
-      <Eyebrow class="justify-center">Aan de slag</Eyebrow>
+      <Eyebrow class="justify-center">{pagina?.ctaEyebrow}</Eyebrow>
       <h2 class="mx-auto mt-6 max-w-xl font-serif text-3xl text-ink-900 sm:text-4xl">
-        Klaar om eindelijk vloeiend mee te praten?
+        {pagina?.ctaTitel}
       </h2>
-      <p class="mx-auto mt-6 max-w-md text-base text-ink-500">
-        De eerste kennismaking is vrijblijvend — daarna weten we allebei of
-        het klikt.
-      </p>
+      <PortableText value={pagina?.ctaTekst} class="mx-auto mt-6 max-w-md text-base text-ink-500" />
       <div class="mt-10">
-        <Button href="/contact" variant="primary">Neem contact op</Button>
+        <Button href="/contact" variant="primary">{pagina?.ctaKnoptekst}</Button>
       </div>
     </Container>
   </Section>

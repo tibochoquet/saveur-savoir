@@ -6,34 +6,16 @@ import Container from "../components/Container.astro";
 import Section from "../components/Section.astro";
 import Button from "../components/Button.astro";
 import Eyebrow from "../components/Eyebrow.astro";
-import PlaceholderImage from "../components/PlaceholderImage.astro";
+import SanityImage from "../components/SanityImage.astro";
+import PortableText from "../components/PortableText.astro";
+import SectieMetBeeld from "../components/SectieMetBeeld.astro";
+import { getPaginaVertalingen } from "../sanity/lib/queries";
 
-const voorWie = [
-  {
-    titel: "Bedrijven",
-    tekst: "Zakelijke correspondentie, websites en contracten die ook in het Frans professioneel moeten overkomen.",
-  },
-  {
-    titel: "Particulieren",
-    tekst: "Persoonlijke documenten, brieven of een verhuizing naar Frankrijk waarbij elk woord moet kloppen.",
-  },
-  {
-    titel: "Makers",
-    tekst: "Ondertiteling voor video's, documentaires en podcasts — Frans-Nederlands en andersom.",
-  },
-];
-
-const stappen = [
-  { nummer: "01", titel: "Aanvraag", tekst: "Je stuurt je tekst of video op, met een idee van de deadline." },
-  { nummer: "02", titel: "Offerte", tekst: "Binnen twee werkdagen krijg je een duidelijke prijs en planning." },
-  { nummer: "03", titel: "Vertaling", tekst: "Ik vertaal met aandacht voor toon, context en doelgroep." },
-  { nummer: "04", titel: "Revisie", tekst: "Je krijgt een kans om vragen te stellen en aanpassingen te vragen." },
-  { nummer: "05", titel: "Levering", tekst: "Je ontvangt het eindresultaat in het format dat jij nodig hebt." },
-];
+const pagina = await getPaginaVertalingen();
 ---
 
 <Layout
-  title="Vertalingen & ondertiteling — Saveur & Savoir"
+  title={`${pagina?.heroTitel} — Saveur & Savoir`}
   description="Frans-Nederlandse vertalingen en ondertiteling, met oog voor toon en nuance."
 >
   <Header />
@@ -41,50 +23,37 @@ const stappen = [
   <Section spacing="lg" tone="cream">
     <Container wide class="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
       <div>
-        <Eyebrow>Dienst</Eyebrow>
+        <Eyebrow>{pagina?.heroEyebrow}</Eyebrow>
         <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
-          Vertalingen &amp; ondertiteling
+          {pagina?.heroTitel}
         </h1>
-        <p class="mt-6 max-w-md text-lg text-ink-500">
-          Frans-Nederlands en Nederlands-Frans, zodat je boodschap overeind
-          blijft — ook als de taal verandert.
-        </p>
+        <PortableText value={pagina?.heroIntro} class="mt-6 max-w-md text-lg text-ink-500" />
         <div class="mt-10">
-          <Button href="/contact" variant="primary">Vraag een offerte aan</Button>
+          <Button href="/contact" variant="primary">{pagina?.heroKnoptekst}</Button>
         </div>
       </div>
-      <PlaceholderImage ratio="4/5" tone="blue" class="rounded-sm" />
-    </Container>
-  </Section>
-
-  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-    <Container wide class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-      <Eyebrow class="self-start">Wat het is</Eyebrow>
-      <div class="max-w-2xl space-y-4 text-base text-ink-700">
-        <p>
-          Een goede vertaling leest niet als een vertaling. Ik werk woord voor
-          woord, maar denk in betekenis: wat wil deze tekst bij de lezer
-          losmaken, en hoe doe je dat in de andere taal?
-        </p>
-        <p>
-          Van korte teksten tot volledige documenten, van ondertiteling voor
-          een video tot een e-mailwisseling die precies de juiste toon moet
-          raken — ik lever vertalingen die klinken alsof ze meteen zo
-          geschreven zijn.
-        </p>
-      </div>
+      <SanityImage image={pagina?.heroAfbeelding} ratio="4/5" tone="blue" class="rounded-sm" />
     </Container>
   </Section>
 
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container wide>
-      <Eyebrow>Voor wie</Eyebrow>
+      <SectieMetBeeld image={pagina?.watHetIsAfbeelding} ratio="4/3">
+        <Eyebrow class="self-start">{pagina?.watHetIsEyebrow}</Eyebrow>
+        <PortableText value={pagina?.watHetIsTekst} class="mt-4 max-w-2xl text-base text-ink-700" />
+      </SectieMetBeeld>
+    </Container>
+  </Section>
+
+  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+    <Container wide>
+      <Eyebrow>{pagina?.voorWieEyebrow}</Eyebrow>
       <div class="mt-10 grid gap-x-10 gap-y-10 sm:grid-cols-3">
         {
-          voorWie.map((item) => (
+          pagina?.voorWieItems.map((item) => (
             <div class="border-t border-blue-200 pt-6">
               <h3 class="font-serif text-xl text-ink-900">{item.titel}</h3>
-              <p class="mt-3 text-sm text-ink-500">{item.tekst}</p>
+              <PortableText value={item.tekst} class="mt-3 text-sm text-ink-500" />
             </div>
           ))
         }
@@ -94,14 +63,14 @@ const stappen = [
 
   <Section spacing="base" tone="blue" class="border-t border-blue-800">
     <Container wide>
-      <Eyebrow class="text-ochre-300">Hoe het werkt</Eyebrow>
+      <Eyebrow class="text-ochre-300">{pagina?.hoeHetWerktEyebrow}</Eyebrow>
       <div class="mt-10 divide-y divide-cream-50/20">
         {
-          stappen.map((stap) => (
+          pagina?.hoeHetWerktStappen.map((stap, i) => (
             <div class="flex flex-col gap-2 py-6 sm:flex-row sm:items-baseline sm:gap-8">
-              <span class="w-10 shrink-0 font-serif text-sm text-ochre-300">{stap.nummer}</span>
+              <span class="w-10 shrink-0 font-serif text-sm text-ochre-300">{String(i + 1).padStart(2, "0")}</span>
               <h3 class="w-full shrink-0 font-serif text-lg text-cream-50 sm:w-56">{stap.titel}</h3>
-              <p class="text-sm text-blue-100">{stap.tekst}</p>
+              <PortableText value={stap.tekst} class="text-sm text-blue-100" />
             </div>
           ))
         }
@@ -111,16 +80,13 @@ const stappen = [
 
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
     <Container class="text-center">
-      <Eyebrow class="justify-center">Aan de slag</Eyebrow>
+      <Eyebrow class="justify-center">{pagina?.ctaEyebrow}</Eyebrow>
       <h2 class="mx-auto mt-6 max-w-xl font-serif text-3xl text-ink-900 sm:text-4xl">
-        Heb je een tekst die om de juiste woorden vraagt?
+        {pagina?.ctaTitel}
       </h2>
-      <p class="mx-auto mt-6 max-w-md text-base text-ink-500">
-        Stuur me je document of video door — ik laat binnen twee werkdagen
-        weten wat het kost en hoe lang het duurt.
-      </p>
+      <PortableText value={pagina?.ctaTekst} class="mx-auto mt-6 max-w-md text-base text-ink-500" />
       <div class="mt-10">
-        <Button href="/contact" variant="primary">Neem contact op</Button>
+        <Button href="/contact" variant="primary">{pagina?.ctaKnoptekst}</Button>
       </div>
     </Container>
   </Section>

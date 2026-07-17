@@ -7,7 +7,8 @@ import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
 import PortableText from "../../components/PortableText.astro";
-import { getPagina, getProducten } from "../../sanity/lib/queries";
+import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
+import { getPaginaWebshop, getProducten } from "../../sanity/lib/queries";
 
 const categorieen = [
   "Alles",
@@ -21,25 +22,7 @@ const categorieen = [
 ];
 const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
-const [pagina, producten] = await Promise.all([getPagina("paginaWebshop"), getProducten()]);
-
-const stappen = [
-  {
-    nummer: "01",
-    titel: "Mail",
-    tekst: "Je stuurt een aanvraag via het contactformulier, met het product dat je wilt.",
-  },
-  {
-    nummer: "02",
-    titel: "Bevestiging",
-    tekst: "Ik laat binnen enkele dagen weten of het product beschikbaar is, en bevestig prijs en verzendkosten.",
-  },
-  {
-    nummer: "03",
-    titel: "Verzending",
-    tekst: "Na de betalingsafspraak verstuur ik het product, met een trackinglink waar mogelijk.",
-  },
-];
+const [pagina, producten] = await Promise.all([getPaginaWebshop(), getProducten()]);
 ---
 
 <Layout
@@ -50,11 +33,13 @@ const stappen = [
 
   <Section spacing="sm" tone="cream">
     <Container wide>
-      <Eyebrow>{pagina?.paginatitel}</Eyebrow>
-      <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
-        {pagina?.kop}
-      </h1>
-      <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
+      <SectieMetBeeld image={pagina?.introAfbeelding} ratio="4/5">
+        <Eyebrow>{pagina?.paginatitel}</Eyebrow>
+        <h1 class="mt-6 max-w-2xl font-serif text-4xl text-ink-900 sm:text-5xl">
+          {pagina?.kop}
+        </h1>
+        <PortableText value={pagina?.introtekst} class="mt-6 max-w-xl text-lg text-ink-500" />
+      </SectieMetBeeld>
     </Container>
   </Section>
 
@@ -113,11 +98,11 @@ const stappen = [
       <Eyebrow class="text-ochre-300">Hoe bestellen werkt</Eyebrow>
       <div class="mt-10 divide-y divide-cream-50/20">
         {
-          stappen.map((stap) => (
+          pagina?.bestelStappen.map((stap, i) => (
             <div class="flex flex-col gap-2 py-6 sm:flex-row sm:items-baseline sm:gap-8">
-              <span class="w-10 shrink-0 font-serif text-sm text-ochre-300">{stap.nummer}</span>
+              <span class="w-10 shrink-0 font-serif text-sm text-ochre-300">{String(i + 1).padStart(2, "0")}</span>
               <h3 class="w-full shrink-0 font-serif text-lg text-cream-50 sm:w-56">{stap.titel}</h3>
-              <p class="text-sm text-blue-100">{stap.tekst}</p>
+              <PortableText value={stap.tekst} class="text-sm text-blue-100" />
             </div>
           ))
         }

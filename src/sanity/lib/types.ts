@@ -108,4 +108,57 @@ export interface Pagina {
   paginatitel: string;
   kop: string;
   introtekst: PortableTextBlock[];
+  introAfbeelding?: SanityImageValue;
+}
+
+export interface TekstItem {
+  titel: string;
+  tekst: PortableTextBlock[];
+}
+
+export interface PaginaWebshop extends Pagina {
+  bestelStappen: TekstItem[];
+}
+
+export interface PaginaDiensten extends Pagina {
+  dienstenItems: TekstItem[];
+}
+
+export interface PaginaContact {
+  paginatitel: string;
+  kop: string;
+  introtekst: PortableTextBlock[];
+  onderwerpSuggesties?: string[];
+}
+
+export interface DienstPagina {
+  heroEyebrow: string;
+  heroTitel: string;
+  heroIntro: PortableTextBlock[];
+  heroKnoptekst: string;
+  heroAfbeelding?: SanityImageValue;
+  watHetIsEyebrow: string;
+  watHetIsTekst: PortableTextBlock[];
+  watHetIsAfbeelding?: SanityImageValue;
+  hoeHetWerktEyebrow: string;
+  hoeHetWerktStappen: TekstItem[];
+  ctaEyebrow: string;
+  ctaTitel: string;
+  ctaTekst: PortableTextBlock[];
+  ctaKnoptekst: string;
+}
+
+export interface PaginaVertalingen extends DienstPagina {
+  voorWieEyebrow: string;
+  voorWieItems: TekstItem[];
+}
+
+export interface PaginaPriveLes extends DienstPagina {
+  doelgroepEyebrow: string;
+  doelgroepenItems: TekstItem[];
+}
+
+export interface JuridischePagina {
+  titel: string;
+  inhoud?: PortableTextBlock[];
 }
