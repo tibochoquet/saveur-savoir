@@ -22,19 +22,9 @@ export default defineType({
     defineField({
       name: "categorie",
       title: "Categorie",
-      description: "Bepaalt in welke categorie dit product valt bij het filteren op de webshop-pagina.",
-      type: "string",
-      options: {
-        list: [
-          { title: "Kaas", value: "Kaas" },
-          { title: "Madeleines & bakvormen", value: "Madeleines & bakvormen" },
-          { title: "Droge worst", value: "Droge worst" },
-          { title: "Wijn", value: "Wijn" },
-          { title: "Zeep", value: "Zeep" },
-          { title: "Etherische oliën", value: "Etherische oliën" },
-          { title: "Wandelroutes", value: "Wandelroutes" },
-        ],
-      },
+      description: "Bepaalt in welke categorie dit product valt bij het filteren op de webshop-pagina. Categorieën beheer je zelf onder \"Productcategorieën\".",
+      type: "reference",
+      to: [{ type: "productcategorie" }],
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -103,6 +93,6 @@ export default defineType({
     }),
   ],
   preview: {
-    select: { title: "naam", subtitle: "categorie", media: "afbeelding" },
+    select: { title: "naam", subtitle: "categorie.titel", media: "afbeelding" },
   },
 });

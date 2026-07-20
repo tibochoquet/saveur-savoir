@@ -29,7 +29,7 @@ const { product } = Astro.props;
   <Section spacing="sm" tone="cream">
     <Container class="max-w-2xl">
       <a href="/webshop" class="text-sm text-blue-500 hover:text-terracotta-500">← Alle producten</a>
-      <Eyebrow class="mt-6">Product · {product.categorie}</Eyebrow>
+      <Eyebrow class="mt-6">Product · {product.categorie.titel}</Eyebrow>
       <h1 class="mt-6 font-serif text-4xl leading-[1.05] text-ink-900 sm:text-5xl">
         {product.naam}
       </h1>

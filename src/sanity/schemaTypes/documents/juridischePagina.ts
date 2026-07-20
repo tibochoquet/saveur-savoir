@@ -1,11 +1,11 @@
 import { defineField, defineType } from "sanity";
 
 /**
- * Eén schema, vijf documenten (Disclaimer, Privacybeleid, Herroeping,
- * Algemene voorwaarden, Verzenden & Retourneren) — elk met een vast
- * document-ID, geopend als eigen singleton-item in de Studio-structuur
- * (zie sanity.config.ts). Alleen titel + rich text, verder niets: de
- * inhoud is aan de eigenaar.
+ * Eén schema, zeven documenten (Disclaimer, Privacybeleid, Herroeping,
+ * Algemene voorwaarden, Verzenden & Retourneren, Cookievoorkeuren,
+ * Servicevoorwaarden) — elk met een vast document-ID, geopend als eigen
+ * singleton-item in de Studio-structuur (zie sanity.config.ts). Alleen
+ * titel + rich text, verder niets: de inhoud is aan de eigenaar.
  */
 export default defineType({
   name: "juridischePagina",

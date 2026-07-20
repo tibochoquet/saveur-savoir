@@ -17,17 +17,14 @@ export async function getStaticPaths() {
     { slug: "herroeping", id: "herroeping" },
     { slug: "algemene-voorwaarden", id: "algemeneVoorwaarden" },
     { slug: "verzenden-retourneren", id: "verzendenRetourneren" },
+    { slug: "cookievoorkeuren", id: "cookievoorkeuren" },
+    { slug: "servicevoorwaarden", id: "servicevoorwaarden" },
   ];
   return routes.map((route) => ({ params: { juridisch: route.slug }, props: { docId: route.id } }));
 }
 
 const { docId } = Astro.props as { docId: JuridischePaginaId };
 const pagina = await getJuridischePagina(docId);
-
-// Aanknopingspunt voor de "Cookievoorkeuren"-link in de footer: die
-// linkt naar /privacybeleid#cookies, in plaats van een eigen
-// cookiebanner (die overbodig zou zijn zolang er geen tracking is).
-const ankerId = docId === "privacybeleid" ? "cookies" : undefined;
 ---
 
 <Layout title={`${pagina?.titel ?? "Pagina"} — Saveur & Savoir`} description={pagina?.titel}>
@@ -35,7 +32,7 @@ const ankerId = docId === "privacybeleid" ? "cookies" : undefined;
 
   <Section spacing="lg" tone="cream">
     <Container class="max-w-2xl">
-      <h1 id={ankerId} class="font-serif text-4xl text-ink-900 sm:text-5xl">
+      <h1 class="font-serif text-4xl text-ink-900 sm:text-5xl">
         {pagina?.titel}
       </h1>
       <div class="mt-8">

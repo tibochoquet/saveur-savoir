@@ -19,6 +19,7 @@ export interface Recept {
   ingredientengroepen?: { titel: string; ingredienten: string[] }[];
   bereidingsstappen?: { titel: string; tekst: string }[];
   tip?: string;
+  gerelateerdProduct?: Pick<Product, "naam" | "slug" | "verhaal">;
 }
 
 export interface Onderwerp {
@@ -40,18 +41,17 @@ export interface Blogartikel {
   gerelateerdProduct?: Pick<Product, "naam" | "slug" | "prijs">;
 }
 
+export interface Productcategorie {
+  _id: string;
+  titel: string;
+  slug: { current: string };
+}
+
 export interface Product {
   _id: string;
   naam: string;
   slug: { current: string };
-  categorie:
-    | "Kaas"
-    | "Madeleines & bakvormen"
-    | "Droge worst"
-    | "Wijn"
-    | "Zeep"
-    | "Etherische oliën"
-    | "Wandelroutes";
+  categorie: Productcategorie;
   soort: "fysiek" | "digitaal";
   prijs: string;
   herkomst: string;

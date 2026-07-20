@@ -145,6 +145,13 @@ export default defineType({
       type: "text",
       rows: 2,
     }),
+    defineField({
+      name: "gerelateerdProduct",
+      title: "Dit recept als product",
+      description: "Optioneel. Als je hier een product kiest, verschijnt er onderaan het recept een \"Receptkaart\"-blok dat naar dat product in de webshop linkt.",
+      type: "reference",
+      to: [{ type: "product" }],
+    }),
   ],
   preview: {
     select: { title: "titel", subtitle: "streek", media: "afbeelding" },

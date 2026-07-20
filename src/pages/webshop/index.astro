@@ -8,21 +8,18 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
 import PortableText from "../../components/PortableText.astro";
 import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
-import { getPaginaWebshop, getProducten } from "../../sanity/lib/queries";
+import { getPaginaWebshop, getProducten, getProductcategorieen } from "../../sanity/lib/queries";
 
-const categorieen = [
-  "Alles",
-  "Kaas",
-  "Madeleines & bakvormen",
-  "Droge worst",
-  "Wijn",
-  "Zeep",
-  "Etherische oliën",
-  "Wandelroutes",
-];
+// "Alles" is een vaste UI-optie, geen Sanity-categorie — de overige
+// filterknoppen komen uit de door de eigenaar beheerde categorieën.
 const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
-const [pagina, producten] = await Promise.all([getPaginaWebshop(), getProducten()]);
+const [pagina, producten, productcategorieen] = await Promise.all([
+  getPaginaWebshop(),
+  getProducten(),
+  getProductcategorieen(),
+]);
+const categorieen = ["Alles", ...productcategorieen.map((c) => c.titel)];
 ---
 
 <Layout
@@ -73,14 +70,14 @@ const [pagina, producten] = await Promise.all([getPaginaWebshop(), getProducten(
             return (
               <OverviewCard
                 href={isGepubliceerd ? `/webshop/${product.slug.current}` : null}
-                eyebrow={product.categorie}
+                eyebrow={product.categorie.titel}
                 title={product.naam}
                 excerpt={product.excerpt}
                 prijs={product.prijs}
                 meta={`${soortLabel} · ${product.herkomst}`}
                 image={product.afbeelding}
                 tone={tonen[i % tonen.length]}
-                dataCategory={product.categorie}
+                dataCategory={product.categorie.titel}
               />
             );
           })

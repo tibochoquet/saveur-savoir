@@ -6,6 +6,7 @@ import pullQuote from "./objects/pullQuote";
 import recept from "./documents/recept";
 import blogartikel from "./documents/blogartikel";
 import product from "./documents/product";
+import productcategorie from "./documents/productcategorie";
 import onderwerp from "./documents/onderwerp";
 import siteInstellingen from "./documents/siteInstellingen";
 import homepage from "./documents/homepage";
@@ -28,6 +29,7 @@ export const schemaTypes = [
   recept,
   blogartikel,
   product,
+  productcategorie,
   onderwerp,
   // singletons (zie sanity.config.ts, gegroepeerd onder "Pagina's")
   homepage,

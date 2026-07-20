@@ -31,13 +31,13 @@ const columns = [
 const contactHeading = instellingen?.footerContact?.titel ?? "Contact";
 const contactLinkLabel = instellingen?.footerContact?.link1Label ?? "Stuur een bericht";
 
-// Vaste juridische links — geen cookiebanner, "Cookievoorkeuren" wijst
-// naar de eerlijke alinea over cookies op de privacypagina.
+// Vaste juridische links — elke link wijst naar zijn eigen pagina.
 const juridischeLinks = [
   { label: "Disclaimer", href: "/disclaimer" },
-  { label: "Cookievoorkeuren", href: "/privacybeleid#cookies" },
+  { label: "Cookievoorkeuren", href: "/cookievoorkeuren" },
   { label: "Privacybeleid", href: "/privacybeleid" },
   { label: "Herroeping", href: "/herroeping" },
+  { label: "Verzenden & Retourneren", href: "/verzenden-retourneren" },
 ];
 ---
 

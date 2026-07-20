@@ -11,6 +11,7 @@ import type {
   PaginaVertalingen,
   PaginaWebshop,
   Product,
+  Productcategorie,
   Recept,
   SiteInstellingen,
 } from "./types";
@@ -19,13 +20,18 @@ import type {
 // waarin het seed-script (scripts/seed.ts) ze aanmaakt.
 const ORDER = "order(_createdAt asc)";
 
+const RECEPT_PROJECTION = `{
+  ...,
+  gerelateerdProduct->{naam, slug, verhaal}
+}`;
+
 export function getRecepten() {
-  return sanityClient.fetch<Recept[]>(`*[_type == "recept"] | ${ORDER}`);
+  return sanityClient.fetch<Recept[]>(`*[_type == "recept"] | ${ORDER} ${RECEPT_PROJECTION}`);
 }
 
 export function getReceptBySlug(slug: string) {
   return sanityClient.fetch<Recept | null>(
-    `*[_type == "recept" && slug.current == $slug][0]`,
+    `*[_type == "recept" && slug.current == $slug][0] ${RECEPT_PROJECTION}`,
     { slug }
   );
 }
@@ -53,15 +59,24 @@ export function getOnderwerpen() {
   return sanityClient.fetch<Onderwerp[]>(`*[_type == "onderwerp"] | order(titel asc)`);
 }
 
+const PRODUCT_PROJECTION = `{
+  ...,
+  categorie->{_id, titel, slug}
+}`;
+
 export function getProducten() {
-  return sanityClient.fetch<Product[]>(`*[_type == "product"] | ${ORDER}`);
+  return sanityClient.fetch<Product[]>(`*[_type == "product"] | ${ORDER} ${PRODUCT_PROJECTION}`);
 }
 
 export function getProductBySlug(slug: string) {
   return sanityClient.fetch<Product | null>(
-    `*[_type == "product" && slug.current == $slug][0]`,
+    `*[_type == "product" && slug.current == $slug][0] ${PRODUCT_PROJECTION}`,
     { slug }
   );
+}
+
+export function getProductcategorieen() {
+  return sanityClient.fetch<Productcategorie[]>(`*[_type == "productcategorie"] | order(titel asc)`);
 }
 
 export function getSiteInstellingen() {
@@ -104,6 +119,8 @@ const JURIDISCHE_PAGINA_IDS = [
   "herroeping",
   "algemeneVoorwaarden",
   "verzendenRetourneren",
+  "cookievoorkeuren",
+  "servicevoorwaarden",
 ] as const;
 
 export type JuridischePaginaId = (typeof JURIDISCHE_PAGINA_IDS)[number];

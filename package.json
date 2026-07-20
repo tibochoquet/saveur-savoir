@@ -13,7 +13,8 @@
     "seed": "tsx scripts/seed.ts",
     "migrate:restructure": "tsx scripts/migrate-restructure.ts",
     "migrate:editable-text": "tsx scripts/migrate-editable-text.ts",
-    "migrate:alles-bewerkbaar": "tsx scripts/migrate-alles-bewerkbaar.ts"
+    "migrate:alles-bewerkbaar": "tsx scripts/migrate-alles-bewerkbaar.ts",
+    "migrate:round2": "tsx scripts/migrate-editable-round2.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",

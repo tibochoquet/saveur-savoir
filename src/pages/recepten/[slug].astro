@@ -7,7 +7,8 @@ import Section from "../../components/Section.astro";
 import Eyebrow from "../../components/Eyebrow.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
-import { getRecepten } from "../../sanity/lib/queries";
+import Button from "../../components/Button.astro";
+import { getRecepten, getProducten } from "../../sanity/lib/queries";
 
 export async function getStaticPaths() {
   const recepten = await getRecepten();
@@ -17,6 +18,16 @@ export async function getStaticPaths() {
 }
 
 const { recept } = Astro.props;
+
+// Beide blokken linken naar de webshop en verschijnen alleen als die
+// bestemming ook echt bestaat — geen kapotte link naar een nog niet
+// gepubliceerd product of een lege webshop.
+const producten = await getProducten();
+const heeftWebshopProducten = producten.some((p) => (p.verhaal?.length ?? 0) > 0);
+const receptkaartProduct = recept.gerelateerdProduct;
+const toonReceptkaart = Boolean(
+  receptkaartProduct?.slug?.current && (receptkaartProduct.verhaal?.length ?? 0) > 0
+);
 ---
 
 <Layout
@@ -111,6 +122,42 @@ const { recept } = Astro.props;
       </div>
     </Container>
   </Section>
+
+  {
+    (toonReceptkaart || heeftWebshopProducten) && (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <Container wide class="grid gap-8 sm:grid-cols-2">
+          {toonReceptkaart && (
+            <div class="border border-blue-200 bg-cream-50 p-8">
+              <Eyebrow>Receptkaart</Eyebrow>
+              <p class="mt-3 text-sm text-ink-500">
+                Liever dit recept als kant-en-klaar pakket in huis? Bekijk het als product in de webshop.
+              </p>
+              <div class="mt-6">
+                <Button href={`/webshop/${receptkaartProduct!.slug.current}`} variant="primary">
+                  Bekijk in de webshop
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {heeftWebshopProducten && (
+            <div class="border border-blue-200 bg-cream-50 p-8">
+              <Eyebrow>Accessoires &amp; Ingrediënten</Eyebrow>
+              <p class="mt-3 text-sm text-ink-500">
+                Op zoek naar de juiste spullen of ingrediënten uit Frankrijk? Bekijk de volledige webshop.
+              </p>
+              <div class="mt-6">
+                <Button href="/webshop" variant="secondary">
+                  Naar de webshop
+                </Button>
+              </div>
+            </div>
+          )}
+        </Container>
+      </Section>
+    )
+  }
 
   <Footer />
 </Layout>

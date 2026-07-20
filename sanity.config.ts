@@ -31,6 +31,7 @@ export default defineConfig({
             S.documentTypeListItem("recept").title("Recepten"),
             S.documentTypeListItem("blogartikel").title("Blogartikelen"),
             S.documentTypeListItem("product").title("Producten"),
+            S.documentTypeListItem("productcategorie").title("Productcategorieën"),
             S.documentTypeListItem("onderwerp").title("Onderwerpen (blog)"),
             S.divider(),
             // Alle paginateksten en instellingen gegroepeerd op één
@@ -53,7 +54,7 @@ export default defineConfig({
                     singletonItem(S, "siteInstellingen", "Site-instellingen"),
                   ])
               ),
-            // Vijf vaste documenten van hetzelfde schema.
+            // Zeven vaste documenten van hetzelfde schema.
             S.listItem()
               .title("Juridische pagina's")
               .child(
@@ -62,8 +63,10 @@ export default defineConfig({
                   .items([
                     singletonItem(S, "juridischePagina", "Disclaimer", "disclaimer"),
                     singletonItem(S, "juridischePagina", "Privacybeleid", "privacybeleid"),
+                    singletonItem(S, "juridischePagina", "Cookievoorkeuren", "cookievoorkeuren"),
                     singletonItem(S, "juridischePagina", "Herroeping", "herroeping"),
                     singletonItem(S, "juridischePagina", "Algemene voorwaarden", "algemeneVoorwaarden"),
+                    singletonItem(S, "juridischePagina", "Servicevoorwaarden", "servicevoorwaarden"),
                     singletonItem(S, "juridischePagina", "Verzenden & Retourneren", "verzendenRetourneren"),
                   ])
               ),

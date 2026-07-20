@@ -98,6 +98,18 @@ Vercel-deploy, zodat de live site binnen enkele minuten de nieuwe
 content toont. Er is geen verdere actie nodig vanuit de eigenaar — zij
 publiceert gewoon in het Studio.
 
+## Merkkleuren
+
+Voor gebruik buiten deze codebase (bijvoorbeeld in Shopify):
+
+| Kleur                                     | Hex       |
+| ------------------------------------------ | --------- |
+| Beige achtergrond (`cream-100`)            | `#f7f1e4` |
+| Knopkleur, roodachtig (`terracotta-500`)   | `#a44c2c` |
+
+Het volledige kleurenpalet (inclusief lichtere/donkerdere varianten)
+staat in `src/styles/global.css` onder `@theme`.
+
 ## Staging
 
 Zolang de site nog niet op saveursavoir.nl staat, draait hij op een
