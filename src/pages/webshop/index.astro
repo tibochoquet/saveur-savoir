@@ -8,18 +8,21 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
 import PortableText from "../../components/PortableText.astro";
 import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
-import { getPaginaWebshop, getProducten, getProductcategorieen } from "../../sanity/lib/queries";
+import { getPaginaWebshop } from "../../sanity/lib/queries";
+import { getShopifyProducten, isShopifyGeconfigureerd, kortBeschrijving } from "../../shopify/client";
 
-// "Alles" is een vaste UI-optie, geen Sanity-categorie — de overige
-// filterknoppen komen uit de door de eigenaar beheerde categorieën.
+// Productdata komt uitsluitend uit Shopify — recepten/blog/pagina's
+// blijven Sanity. Zonder Shopify-credentials (of zonder producten)
+// toont de pagina een nette "binnenkort"-melding, geen lege grid.
 const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
-const [pagina, producten, productcategorieen] = await Promise.all([
-  getPaginaWebshop(),
-  getProducten(),
-  getProductcategorieen(),
-]);
-const categorieen = ["Alles", ...productcategorieen.map((c) => c.titel)];
+const [pagina, producten] = await Promise.all([getPaginaWebshop(), getShopifyProducten()]);
+
+const categorieen = [
+  "Alles",
+  ...Array.from(new Set(producten.map((p) => p.categorie).filter((c): c is string => Boolean(c)))),
+];
+const toonWebshop = isShopifyGeconfigureerd && producten.length > 0;
 ---
 
 <Layout
@@ -40,55 +43,66 @@ const categorieen = ["Alles", ...productcategorieen.map((c) => c.titel)];
     </Container>
   </Section>
 
-  <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-    <Container wide>
-      <div id="filters" class="flex flex-wrap gap-3">
-        {
-          categorieen.map((cat, i) => (
-            <button
-              type="button"
-              data-filter={cat}
-              aria-pressed={i === 0 ? "true" : "false"}
-              class:list={[
-                "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
-                i === 0
-                  ? "border-terracotta-500 bg-terracotta-500 text-cream-50"
-                  : "border-blue-300 text-ink-700 hover:border-terracotta-500 hover:text-terracotta-500",
-              ]}
-            >
-              {cat}
-            </button>
-          ))
-        }
-      </div>
+  {
+    toonWebshop ? (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <Container wide>
+          <div id="filters" class="flex flex-wrap gap-3">
+            {categorieen.map((cat, i) => (
+              <button
+                type="button"
+                data-filter={cat}
+                aria-pressed={i === 0 ? "true" : "false"}
+                class:list={[
+                  "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
+                  i === 0
+                    ? "border-terracotta-500 bg-terracotta-500 text-cream-50"
+                    : "border-blue-300 text-ink-700 hover:border-terracotta-500 hover:text-terracotta-500",
+                ]}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-      <div id="product-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          producten.map((product, i) => {
-            const isGepubliceerd = (product.verhaal?.length ?? 0) > 0;
-            const soortLabel = product.soort === "digitaal" ? "Digitaal" : "Fysiek";
-            return (
+          <div id="product-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            {producten.map((product, i) => (
               <OverviewCard
-                href={isGepubliceerd ? `/webshop/${product.slug.current}` : null}
-                eyebrow={product.categorie.titel}
-                title={product.naam}
-                excerpt={product.excerpt}
+                href={`/webshop/${product.handle}`}
+                eyebrow={product.categorie ?? "Product"}
+                title={product.titel}
+                excerpt={kortBeschrijving(product.beschrijvingHtml)}
                 prijs={product.prijs}
-                meta={`${soortLabel} · ${product.herkomst}`}
-                image={product.afbeelding}
+                meta={product.beschikbaar ? undefined : "Tijdelijk uitverkocht"}
+                imageUrl={product.afbeelding?.url}
+                imageAlt={product.afbeelding?.alt ?? product.titel}
                 tone={tonen[i % tonen.length]}
-                dataCategory={product.categorie.titel}
+                dataCategory={product.categorie ?? undefined}
               />
-            );
-          })
-        }
-      </div>
+            ))}
+          </div>
 
-      <p id="no-results" class="mt-14 hidden text-sm text-ink-500">
-        Nog geen producten in deze categorie — kom snel terug.
-      </p>
-    </Container>
-  </Section>
+          <p id="no-results" class="mt-14 hidden text-sm text-ink-500">
+            Nog geen producten in deze categorie — kom snel terug.
+          </p>
+        </Container>
+      </Section>
+    ) : (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <Container class="max-w-xl text-center">
+          <Eyebrow class="justify-center">Webshop</Eyebrow>
+          <p class="mt-6 font-serif text-2xl text-ink-900">De webshop komt binnenkort.</p>
+          <p class="mt-4 text-base text-ink-500">
+            We zijn de etalage nog aan het inrichten — kom snel terug, of{" "}
+            <a href="/contact" class="text-terracotta-600 underline decoration-ochre-400 decoration-2 hover:decoration-terracotta-500">
+              stuur een bericht
+            </a>{" "}
+            als je nu al iets zoekt.
+          </p>
+        </Container>
+      </Section>
+    )
+  }
 
   <Section spacing="base" tone="blue" class="border-t border-blue-800">
     <Container wide>

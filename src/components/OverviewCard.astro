@@ -12,6 +12,8 @@ interface Props {
   meta?: string;
   prijs?: string;
   image?: SanityImageValue | null;
+  imageUrl?: string | null;
+  imageAlt?: string;
   tone?: "terracotta" | "olive" | "blue" | "ochre";
   ratio?: string;
   dataCategory?: string;
@@ -25,6 +27,8 @@ const {
   meta,
   prijs,
   image,
+  imageUrl,
+  imageAlt = "",
   tone = "olive",
   ratio = "4/3",
   dataCategory,
@@ -38,7 +42,15 @@ const Tag = href ? "a" : "div";
   data-category={dataCategory}
   class:list={["group block", href && "cursor-pointer"]}
 >
-  <SanityImage image={image} ratio={ratio} tone={tone} class="rounded-sm" />
+  {
+    imageUrl ? (
+      <div class="relative overflow-hidden rounded-sm" style={`aspect-ratio: ${ratio};`}>
+        <img src={imageUrl} alt={imageAlt} class="h-full w-full object-cover" loading="lazy" />
+      </div>
+    ) : (
+      <SanityImage image={image} ratio={ratio} tone={tone} class="rounded-sm" />
+    )
+  }
   <div class="mt-5">
     <span class="text-xs font-semibold tracking-[0.15em] text-terracotta-500 uppercase">
       {eyebrow}

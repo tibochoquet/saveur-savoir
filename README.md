@@ -6,10 +6,10 @@ landschap. Astro + Tailwind, met Sanity als headless CMS.
 ## Stack
 
 - **Astro 7** + TypeScript + Tailwind v4
-- **Sanity** als CMS, ingebed in de site op `/studio`
+- **Sanity** als CMS, ingebed in de site op `/studio` (recepten, blog, pagina's)
+- **Shopify** (Storefront API) voor de productcatalogus op `/webshop` — afrekenen gebeurt op Shopify zelf, niet op deze site
 - **Vercel** voor hosting
 - **Web3Forms** voor het contactformulier (geen eigen backend)
-- Geen webshop, geen betaalprovider — producten worden aangevraagd via e-mail
 
 ## Aan de slag
 
@@ -33,6 +33,8 @@ staat in `.gitignore`).
 | `PUBLIC_SANITY_DATASET`        | sanity.io/manage → je project (meestal `production`)             | site + Studio            |
 | `SANITY_API_WRITE_TOKEN`       | sanity.io/manage → project → API → Tokens → "Editor"-rechten     | alleen `npm run seed`    |
 | `PUBLIC_WEB3FORMS_ACCESS_KEY`  | web3forms.com (gratis, alleen e-mailadres nodig)                 | het contactformulier     |
+| `PUBLIC_SHOPIFY_DOMAIN`        | jouw-winkel.myshopify.com                                        | de webshop op `/webshop` |
+| `SHOPIFY_STOREFRONT_TOKEN`     | Shopify admin → Headless-kanaal → zie "Shopify-koppeling" hieronder | de webshop op `/webshop` |
 | `PUBLIC_ALLOW_INDEXING`        | —                                                                 | zoekmachine-indexering aan/uit |
 
 ## Content en het CMS
@@ -70,6 +72,56 @@ npm run seed
 Vereist `PUBLIC_SANITY_PROJECT_ID` en `SANITY_API_WRITE_TOKEN` in
 `.env`. Het script is veilig om vaker te draaien — het gebruikt
 `createIfNotExists`, dus het overschrijft nooit bestaande content.
+
+## Shopify-koppeling (webshop)
+
+`/webshop` toont de productcatalogus rechtstreeks uit Shopify via de
+**Storefront API** (alleen lezen: titel, prijs, foto's, beschrijving,
+beschikbaarheid en collectie/categorie). Er is geen eigen winkelmandje
+of checkout op deze site — de knop "Afrekenen" stuurt door naar de
+productpagina op Shopify zelf, waar ook echt wordt afgerekend.
+
+Sanity blijft verantwoordelijk voor al het overige (recepten, blog,
+pagina's, de intro-tekst en "Hoe bestellen werkt"-uitleg bovenaan/onderaan
+`/webshop`). Alleen de productdata zelf komt uit Shopify.
+
+### Token aanmaken
+
+De eenvoudigste manier is via Shopify's eigen **Headless**-kanaal (geen
+custom-app-gedoe nodig):
+
+1. Shopify admin → **Instellingen → Apps en verkoopkanalen**.
+2. **Shopify App Store verkennen** → zoek **"Headless"** (gratis, officieel
+   van Shopify) → installeren.
+3. Maak in Headless een nieuwe **Storefront** aan (bv. "Website").
+4. Kies **Storefront API** (niet Klantaccount-API).
+5. Kopieer de **openbare (public) access token** — dat is `SHOPIFY_STOREFRONT_TOKEN`.
+6. `PUBLIC_SHOPIFY_DOMAIN` is je `jouw-winkel.myshopify.com`-domein (te
+   vinden in de adresbalk van je Shopify admin).
+
+Belangrijk: een product is pas zichtbaar via de Storefront API als het
+(a) op **Actief** staat (niet Concept) én (b) gekoppeld is aan het
+verkoopkanaal dat bij de token hoort (bij Headless gebeurt dat
+automatisch voor nieuwe producten, maar check dit bij bestaande
+producten onder "Verkoopkanalen en apps").
+
+### Zonder token
+
+Ontbreken `PUBLIC_SHOPIFY_DOMAIN` of `SHOPIFY_STOREFRONT_TOKEN` (of zijn
+er nog geen producten gepubliceerd), dan toont `/webshop` een nette
+"De webshop komt binnenkort"-melding. De build faalt nooit hierop.
+
+### Oude productpagina's (vóór Shopify)
+
+Vóór deze koppeling had de site een eigen, kleine Sanity-productcatalogus
+(aanvragen via het contactformulier, geen echte checkout). Die schema's
+(`product`, `productcategorie`) en bestaande documenten staan nog in
+Sanity en hun paginas blijven bereikbaar op hun oude URL
+(`/webshop/<sanity-slug>`) — alleen niet meer in de hoofd-grid van
+`/webshop`, die toont nu uitsluitend Shopify-producten. Dit voorkomt dat
+bestaande interne links (zoals de downloadknop op het GR70-blogartikel)
+stukgaan. Nieuwe producten horen voortaan in Shopify thuis, niet in
+Sanity.
 
 ## Deploy: automatische rebuild bij publiceren
 
