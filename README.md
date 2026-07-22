@@ -34,7 +34,7 @@ staat in `.gitignore`).
 | `SANITY_API_WRITE_TOKEN`       | sanity.io/manage → project → API → Tokens → "Editor"-rechten     | alleen `npm run seed`    |
 | `PUBLIC_WEB3FORMS_ACCESS_KEY`  | web3forms.com (gratis, alleen e-mailadres nodig)                 | het contactformulier     |
 | `PUBLIC_SHOPIFY_DOMAIN`        | jouw-winkel.myshopify.com                                        | de webshop op `/webshop` |
-| `SHOPIFY_STOREFRONT_TOKEN`     | Shopify admin → Headless-kanaal → zie "Shopify-koppeling" hieronder | de webshop op `/webshop` |
+| `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | Shopify admin → Headless-kanaal → zie "Shopify-koppeling" hieronder | de webshop + winkelwagen |
 | `PUBLIC_ALLOW_INDEXING`        | —                                                                 | zoekmachine-indexering aan/uit |
 
 ## Content en het CMS
@@ -53,11 +53,33 @@ is bewust beperkt tot kop 2/3, vet, cursief, link, lijst, afbeelding en
 pull-quote — geen kleuren of lettertypes, zodat de opmaak van de site
 niet doorbroken kan worden vanuit het Studio.
 
-Een recept/wandeling/blogartikel/product is pas "gepubliceerd" (en dus
-aanklikbaar op de overzichtspagina) zodra het hoofdinhoud-veld gevuld is
-(bereidingsstappen, etappes + gpx-bestand, inhoud, of verhaal). Zonder
-die inhoud verschijnt het item met een "Binnenkort"-label en zonder
-link — precies zoals de eerdere hardcoded placeholders werkten.
+Een recept/blogartikel/product is pas "gepubliceerd" (en dus aanklikbaar
+op de overzichtspagina) zodra het hoofdinhoud-veld gevuld is
+(introductietekst bij een recept, inhoud bij een blogartikel, verhaal bij
+een product). Zonder die inhoud verschijnt het item met een
+"Binnenkort"-label en zonder link — precies zoals de eerdere hardcoded
+placeholders werkten.
+
+### SEO-titel en -omschrijving per pagina
+
+Elke pagina-singleton (Homepage, Webshop, Diensten, Vertalingen, Privéles,
+Recepten, Blog, Contact, en elke juridische pagina) heeft een optioneel
+veld **SEO-titel** en **SEO-omschrijving** (onderaan het document, meestal
+ingeklapt). Leeg = de site valt terug op de gewone paginatitel. Alleen de
+homepage heeft een hardcoded standaardtitel als niemand ooit een
+SEO-titel invult: "Saveur & Savoir | Franse recepten, Franse producten,
+vertalingen & Franse lessen".
+
+### Recept als "receptkaart"
+
+Een recept kan gekoppeld worden aan een product in de webshop via
+**"Receptkaart — webshopproduct (handle)"** op het recept (de handle uit
+de Shopify-productURL) plus een optionele eigen knoptekst. Ingevuld =
+er verschijnt onderaan het recept een CTA-blok naar dat product; leeg =
+geen blok. De oude ingrediënten/bereidingsstappen-velden staan nog in
+Studio (ingeklapt onder "Archief") maar worden niet meer op de site
+getoond — bewust niet verwijderd, zodat bestaande content niet verloren
+gaat.
 
 ### Seed-script
 
@@ -76,10 +98,11 @@ Vereist `PUBLIC_SANITY_PROJECT_ID` en `SANITY_API_WRITE_TOKEN` in
 ## Shopify-koppeling (webshop)
 
 `/webshop` toont de productcatalogus rechtstreeks uit Shopify via de
-**Storefront API** (alleen lezen: titel, prijs, foto's, beschrijving,
-beschikbaarheid en collectie/categorie). Er is geen eigen winkelmandje
-of checkout op deze site — de knop "Afrekenen" stuurt door naar de
-productpagina op Shopify zelf, waar ook echt wordt afgerekend.
+**Storefront API** (titel, prijs, foto's, beschrijving, beschikbaarheid en
+collectie/categorie). Er is een eigen winkelwagen (`/winkelwagen`, plus het
+cart-icoon in de header) die rechtstreeks met Shopify's **Storefront Cart
+API** praat — geen eigen ordersysteem. Vanuit de winkelwagen ga je naar
+Shopify's eigen hosted checkout om af te rekenen.
 
 Sanity blijft verantwoordelijk voor al het overige (recepten, blog,
 pagina's, de intro-tekst en "Hoe bestellen werkt"-uitleg bovenaan/onderaan
@@ -95,7 +118,11 @@ custom-app-gedoe nodig):
    van Shopify) → installeren.
 3. Maak in Headless een nieuwe **Storefront** aan (bv. "Website").
 4. Kies **Storefront API** (niet Klantaccount-API).
-5. Kopieer de **openbare (public) access token** — dat is `SHOPIFY_STOREFRONT_TOKEN`.
+5. Kopieer de **openbare (public) access token** — dat is
+   `PUBLIC_SHOPIFY_STOREFRONT_TOKEN`. Deze staat bewust met een
+   `PUBLIC_`-prefix: de winkelwagen praat rechtstreeks vanuit de browser
+   met de Storefront API, en dit is precies het token dat Shopify daarvoor
+   bedoeld heeft (geen geheime/Admin-rechten).
 6. `PUBLIC_SHOPIFY_DOMAIN` is je `jouw-winkel.myshopify.com`-domein (te
    vinden in de adresbalk van je Shopify admin).
 
@@ -105,10 +132,20 @@ verkoopkanaal dat bij de token hoort (bij Headless gebeurt dat
 automatisch voor nieuwe producten, maar check dit bij bestaande
 producten onder "Verkoopkanalen en apps").
 
+### Winkelwagen
+
+`src/shopify/cart.ts` praat client-side (in de browser) met Shopify's
+Storefront Cart API — `cartCreate`, `cartLinesAdd`, `cartLinesUpdate`,
+`cartLinesRemove`. De cart-ID staat in `localStorage`; de daadwerkelijke
+inhoud leeft bij Shopify. Elke wijziging dispatcht een
+`cart:updated`-event zodat het aantal-badge in de header overal bijwerkt.
+`/winkelwagen` toont de regels, laat aantallen aanpassen, en linkt naar
+`cart.checkoutUrl` (Shopify's eigen hosted checkout) om af te rekenen.
+
 ### Zonder token
 
-Ontbreken `PUBLIC_SHOPIFY_DOMAIN` of `SHOPIFY_STOREFRONT_TOKEN` (of zijn
-er nog geen producten gepubliceerd), dan toont `/webshop` een nette
+Ontbreken `PUBLIC_SHOPIFY_DOMAIN` of `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` (of
+zijn er nog geen producten gepubliceerd), dan toont `/webshop` een nette
 "De webshop komt binnenkort"-melding. De build faalt nooit hierop.
 
 ### Oude productpagina's (vóór Shopify)

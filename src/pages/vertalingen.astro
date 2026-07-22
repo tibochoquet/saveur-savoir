@@ -15,8 +15,8 @@ const pagina = await getPaginaVertalingen();
 ---
 
 <Layout
-  title={`${pagina?.heroTitel} — Saveur & Savoir`}
-  description="Frans-Nederlandse vertalingen en ondertiteling, met oog voor toon en nuance."
+  title={pagina?.seoTitel || `${pagina?.heroTitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Frans-Nederlandse vertalingen en ondertiteling, met oog voor toon en nuance."}
 >
   <Header />
 

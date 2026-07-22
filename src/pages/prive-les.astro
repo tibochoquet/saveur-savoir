@@ -15,8 +15,8 @@ const pagina = await getPaginaPriveLes();
 ---
 
 <Layout
-  title={`${pagina?.heroTitel} — Saveur & Savoir`}
-  description="Persoonlijke taallessen Frans en Nederlands, op maat van jouw niveau en tempo."
+  title={pagina?.seoTitel || `${pagina?.heroTitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Persoonlijke taallessen Frans en Nederlands, op maat van jouw niveau en tempo."}
 >
   <Header />
 

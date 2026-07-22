@@ -4,7 +4,7 @@ import type { ShopifyProduct } from "./types";
 // blijven volledig in Sanity. Zonder deze twee env-vars is de webshop
 // gewoon leeg (zie webshop/index.astro), nooit een build-fout.
 const domain = import.meta.env.PUBLIC_SHOPIFY_DOMAIN;
-const token = import.meta.env.SHOPIFY_STOREFRONT_TOKEN;
+const token = import.meta.env.PUBLIC_SHOPIFY_STOREFRONT_TOKEN;
 const API_VERSION = "2024-10";
 
 export const isShopifyGeconfigureerd = Boolean(domain && token);
@@ -29,6 +29,7 @@ interface ShopifyProductNode {
   images?: { edges: ShopifyImageEdge[] };
   priceRange: { minVariantPrice: { amount: string; currencyCode: string } };
   collections: { edges: { node: { title: string } }[] };
+  variants?: { edges: { node: { id: string } }[] };
 }
 
 function naarShopifyProduct(node: ShopifyProductNode): ShopifyProduct {
@@ -46,6 +47,9 @@ function naarShopifyProduct(node: ShopifyProductNode): ShopifyProduct {
     afbeeldingen: afbeeldingen.length ? afbeeldingen : featured ? [featured] : [],
     categorie: node.collections.edges[0]?.node.title ?? null,
     productUrl: `https://${domain}/products/${node.handle}`,
+    // Alle huidige producten hebben precies 1 (standaard-)variant — geen
+    // variant-kiezer nodig. Dit is de merchandiseId voor de winkelwagen.
+    variantId: node.variants?.edges[0]?.node.id ?? null,
   };
 }
 
@@ -93,6 +97,7 @@ const PRODUCTEN_QUERY = `
           featuredImage { url altText }
           priceRange { minVariantPrice { amount currencyCode } }
           collections(first: 1) { edges { node { title } } }
+          variants(first: 1) { edges { node { id } } }
         }
       }
     }
@@ -118,6 +123,7 @@ const PRODUCT_BY_HANDLE_QUERY = `
       images(first: 6) { edges { node { url altText } } }
       priceRange { minVariantPrice { amount currencyCode } }
       collections(first: 1) { edges { node { title } } }
+      variants(first: 1) { edges { node { id } } }
     }
   }
 `;

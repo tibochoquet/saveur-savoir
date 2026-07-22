@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { seoVelden } from "./paginaFactory";
 
 export default defineType({
   name: "paginaVertalingen",
@@ -10,8 +11,10 @@ export default defineType({
     { name: "voorWie", title: "Voor wie" },
     { name: "hoeHetWerkt", title: "Hoe het werkt" },
     { name: "cta", title: "Aan de slag (onderaan)" },
+    { name: "seo", title: "SEO", options: { collapsible: true, collapsed: true } },
   ],
   fields: [
+    ...seoVelden().map((veld) => ({ ...veld, fieldset: "seo" })),
     defineField({ name: "heroEyebrow", title: "Label", type: "string", fieldset: "hero", validation: (Rule) => Rule.required() }),
     defineField({ name: "heroTitel", title: "Titel", type: "string", fieldset: "hero", validation: (Rule) => Rule.required() }),
     defineField({

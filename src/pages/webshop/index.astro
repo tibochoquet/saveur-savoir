@@ -8,7 +8,7 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import OverviewCard from "../../components/OverviewCard.astro";
 import PortableText from "../../components/PortableText.astro";
 import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
-import { getPaginaWebshop } from "../../sanity/lib/queries";
+import { getPaginaWebshop, getProductcategorieen } from "../../sanity/lib/queries";
 import { getShopifyProducten, isShopifyGeconfigureerd, kortBeschrijving } from "../../shopify/client";
 
 // Productdata komt uitsluitend uit Shopify — recepten/blog/pagina's
@@ -16,7 +16,21 @@ import { getShopifyProducten, isShopifyGeconfigureerd, kortBeschrijving } from "
 // toont de pagina een nette "binnenkort"-melding, geen lege grid.
 const tonen = ["ochre", "blue", "terracotta", "olive"] as const;
 
-const [pagina, producten] = await Promise.all([getPaginaWebshop(), getShopifyProducten()]);
+const [pagina, producten, productcategorieen] = await Promise.all([
+  getPaginaWebshop(),
+  getShopifyProducten(),
+  getProductcategorieen(),
+]);
+
+// Het Sanity-productcategorie-document is sinds de Shopify-koppeling geen
+// bron van categorieën meer (die komen nu uit Shopify-collecties) — het
+// dient alleen nog als naam→tint-opzoektabel voor de zachte achtergrond
+// op het categorie-overzicht. Matcht op titel, hoofdletterongevoelig.
+const tintPerCategorie = new Map(
+  productcategorieen
+    .filter((c) => c.kleurTint)
+    .map((c) => [c.titel.toLowerCase(), c.kleurTint as string])
+);
 
 const categorieen = [
   "Alles",
@@ -26,8 +40,8 @@ const toonWebshop = isShopifyGeconfigureerd && producten.length > 0;
 ---
 
 <Layout
-  title={`${pagina?.paginatitel} — Saveur & Savoir`}
-  description="Een kleine etalage van dingen die ik zelf gebruik en aanraad, rechtstreeks uit Frankrijk."
+  title={pagina?.seoTitel || `${pagina?.paginatitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Een kleine etalage van dingen die ik zelf gebruik en aanraad, rechtstreeks uit Frankrijk."}
 >
   <Header />
 
@@ -52,6 +66,7 @@ const toonWebshop = isShopifyGeconfigureerd && producten.length > 0;
               <button
                 type="button"
                 data-filter={cat}
+                data-tint={tintPerCategorie.get(cat.toLowerCase()) ?? ""}
                 aria-pressed={i === 0 ? "true" : "false"}
                 class:list={[
                   "border px-4 py-2 text-xs font-medium tracking-wide uppercase transition-colors",
@@ -65,26 +80,28 @@ const toonWebshop = isShopifyGeconfigureerd && producten.length > 0;
             ))}
           </div>
 
-          <div id="product-grid" class="mt-14 grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {producten.map((product, i) => (
-              <OverviewCard
-                href={`/webshop/${product.handle}`}
-                eyebrow={product.categorie ?? "Product"}
-                title={product.titel}
-                excerpt={kortBeschrijving(product.beschrijvingHtml)}
-                prijs={product.prijs}
-                meta={product.beschikbaar ? undefined : "Tijdelijk uitverkocht"}
-                imageUrl={product.afbeelding?.url}
-                imageAlt={product.afbeelding?.alt ?? product.titel}
-                tone={tonen[i % tonen.length]}
-                dataCategory={product.categorie ?? undefined}
-              />
-            ))}
-          </div>
+          <div id="webshop-tint-area" class="mt-8 rounded-sm p-6 transition-colors duration-300 sm:p-8">
+            <div id="product-grid" class="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+              {producten.map((product, i) => (
+                <OverviewCard
+                  href={`/webshop/${product.handle}`}
+                  eyebrow={product.categorie ?? "Product"}
+                  title={product.titel}
+                  excerpt={kortBeschrijving(product.beschrijvingHtml)}
+                  prijs={product.prijs}
+                  meta={product.beschikbaar ? undefined : "Tijdelijk uitverkocht"}
+                  imageUrl={product.afbeelding?.url}
+                  imageAlt={product.afbeelding?.alt ?? product.titel}
+                  tone={tonen[i % tonen.length]}
+                  dataCategory={product.categorie ?? undefined}
+                />
+              ))}
+            </div>
 
-          <p id="no-results" class="mt-14 hidden text-sm text-ink-500">
-            Nog geen producten in deze categorie — kom snel terug.
-          </p>
+            <p id="no-results" class="hidden text-sm text-ink-500">
+              Nog geen producten in deze categorie — kom snel terug.
+            </p>
+          </div>
         </Container>
       </Section>
     ) : (
@@ -128,10 +145,21 @@ const toonWebshop = isShopifyGeconfigureerd && producten.length > 0;
   const filterButtons = document.querySelectorAll<HTMLButtonElement>("#filters button");
   const cards = document.querySelectorAll<HTMLElement>("#product-grid > *");
   const noResults = document.getElementById("no-results");
+  const tintArea = document.getElementById("webshop-tint-area");
+
+  // Alle mogelijke tinten uit productcategorie.ts — vooraf opsommen zodat
+  // Tailwind ze allemaal genereert (dynamische classList.add zonder dat de
+  // klasse letterlijk ergens in de source staat, wordt anders weggeschud).
+  const ALLE_TINTEN = ["bg-blue-100", "bg-olive-100", "bg-ochre-100", "bg-terracotta-100", "bg-cream-200", "bg-cream-300"];
 
   filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.dataset.filter;
+
+      tintArea?.classList.remove(...ALLE_TINTEN);
+      if (button.dataset.tint) {
+        tintArea?.classList.add(button.dataset.tint);
+      }
 
       filterButtons.forEach((b) => {
         const active = b === button;

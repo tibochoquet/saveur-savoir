@@ -1,9 +1,33 @@
 import { defineField, defineType, type FieldDefinition } from "sanity";
 
 /**
+ * SEO-titel/omschrijving — optioneel, overschrijft de standaardtitel/
+ * -omschrijving van de pagina in het browsertabblad en in zoekresultaten.
+ * Gedeeld door alle pagina-singletons (via paginaBasisVelden hieronder
+ * of losstaand toegevoegd aan schema's die de factory niet gebruiken).
+ */
+export function seoVelden(): FieldDefinition[] {
+  return [
+    defineField({
+      name: "seoTitel",
+      title: "SEO-titel",
+      description: "Optioneel. Titel in het browsertabblad en in zoekresultaten. Leeg = de standaardtitel van deze pagina.",
+      type: "string",
+    }),
+    defineField({
+      name: "seoOmschrijving",
+      title: "SEO-omschrijving",
+      description: "Optioneel. Korte omschrijving die zoekmachines tonen. Leeg = de standaardomschrijving van deze pagina.",
+      type: "text",
+      rows: 2,
+    }),
+  ];
+}
+
+/**
  * Basisvelden die alle paginatekst-singletons delen: paginatitel, kop,
- * introtekst en (optioneel) een beeld dat naast de intro rendert. Geen
- * layout- of structuurkeuzes verder.
+ * introtekst, (optioneel) een beeld dat naast de intro rendert, en
+ * SEO-titel/omschrijving. Geen layout- of structuurkeuzes verder.
  */
 export function paginaBasisVelden(options: { metBeeld?: boolean } = {}): FieldDefinition[] {
   const { metBeeld = true } = options;
@@ -43,6 +67,8 @@ export function paginaBasisVelden(options: { metBeeld?: boolean } = {}): FieldDe
       })
     );
   }
+
+  velden.push(...seoVelden());
 
   return velden;
 }

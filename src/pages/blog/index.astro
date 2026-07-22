@@ -22,8 +22,8 @@ const filters = [{ titel: "Alles", slug: "alles" }, ...onderwerpen.map((o) => ({
 ---
 
 <Layout
-  title={`${pagina?.paginatitel} — Saveur & Savoir`}
-  description="Franse cultuur en tradities, kleine ontdekkingen en 'wist je dat'-verhalen."
+  title={pagina?.seoTitel || `${pagina?.paginatitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Franse cultuur en tradities, kleine ontdekkingen en 'wist je dat'-verhalen."}
 >
   <Header />
 

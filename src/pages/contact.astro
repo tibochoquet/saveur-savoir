@@ -22,8 +22,8 @@ const inputClasses =
 ---
 
 <Layout
-  title={`${pagina?.paginatitel} — Saveur & Savoir`}
-  description="Vraag, idee, of gewoon zin om te praten over Frankrijk? Stuur een bericht."
+  title={pagina?.seoTitel || `${pagina?.paginatitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Vraag, idee, of gewoon zin om te praten over Frankrijk? Stuur een bericht."}
 >
   <Header />
 

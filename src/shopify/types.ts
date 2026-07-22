@@ -14,4 +14,5 @@ export interface ShopifyProduct {
   afbeeldingen: ShopifyProductAfbeelding[];
   categorie: string | null;
   productUrl: string;
+  variantId: string | null;
 }

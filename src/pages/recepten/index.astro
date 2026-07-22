@@ -15,8 +15,8 @@ const tonen = ["olive", "ochre", "terracotta", "blue"] as const;
 ---
 
 <Layout
-  title={`${pagina?.paginatitel} — Saveur & Savoir`}
-  description="Gerechten uit Franse keukens, uitgeprobeerd en doorverteld — met de verhalen erbij."
+  title={pagina?.seoTitel || `${pagina?.paginatitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Gerechten uit Franse keukens, uitgeprobeerd en doorverteld — met de verhalen erbij."}
 >
   <Header />
 
@@ -37,7 +37,7 @@ const tonen = ["olive", "ochre", "terracotta", "blue"] as const;
       <div class="grid gap-x-10 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
         {
           recepten.map((r, i) => {
-            const isGepubliceerd = (r.bereidingsstappen?.length ?? 0) > 0;
+            const isGepubliceerd = (r.intro?.length ?? 0) > 0;
             return (
               <OverviewCard
                 href={isGepubliceerd ? `/recepten/${r.slug.current}` : null}

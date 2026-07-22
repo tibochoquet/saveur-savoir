@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { seoVelden } from "./paginaFactory";
 
 /**
  * Eén schema, zeven documenten (Disclaimer, Privacybeleid, Herroeping,
@@ -24,6 +25,7 @@ export default defineType({
       description: "Mag leeg blijven totdat je hier zelf tekst voor hebt.",
       type: "blockContent",
     }),
+    ...seoVelden(),
   ],
   preview: {
     select: { title: "titel" },

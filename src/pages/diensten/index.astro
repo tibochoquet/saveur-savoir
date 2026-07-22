@@ -20,8 +20,8 @@ const diensten = (pagina?.dienstenItems ?? []).map((item, i) => ({
 ---
 
 <Layout
-  title={`${pagina?.paginatitel} — Saveur & Savoir`}
-  description="Vertalingen, ondertiteling en privéles Frans of Nederlands — persoonlijk en op maat."
+  title={pagina?.seoTitel || `${pagina?.paginatitel} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || "Vertalingen, ondertiteling en privéles Frans of Nederlands — persoonlijk en op maat."}
 >
   <Header />
 

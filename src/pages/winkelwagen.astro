@@ -1,0 +1,150 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Container from "../components/Container.astro";
+import Section from "../components/Section.astro";
+import Eyebrow from "../components/Eyebrow.astro";
+---
+
+<Layout title="Winkelwagen — Saveur & Savoir" description="Bekijk en pas je winkelwagen aan voordat je afrekent bij Shopify.">
+  <Header />
+
+  <Section spacing="lg" tone="cream">
+    <Container class="max-w-2xl">
+      <Eyebrow>Winkelwagen</Eyebrow>
+      <h1 class="mt-6 font-serif text-4xl text-ink-900 sm:text-5xl">Je winkelwagen</h1>
+
+      <p data-cart-loading class="mt-10 text-sm text-ink-500">Winkelwagen laden...</p>
+
+      <div data-cart-empty class="mt-10 hidden">
+        <p class="text-sm text-ink-500">Je winkelwagen is nog leeg.</p>
+        <a href="/webshop" class="mt-4 inline-block text-sm text-blue-500 underline hover:text-terracotta-500">
+          Naar de webshop
+        </a>
+      </div>
+
+      <div data-cart-content class="mt-10 hidden">
+        <ul data-cart-lines class="divide-y divide-blue-200"></ul>
+
+        <div class="mt-8 flex items-center justify-between border-t border-blue-200 pt-6">
+          <span class="text-sm font-medium text-ink-900">Totaal</span>
+          <span data-cart-total class="font-serif text-xl text-terracotta-600"></span>
+        </div>
+
+        <div class="mt-8">
+          <a
+            data-cart-checkout
+            href="#"
+            class="inline-flex items-center gap-2 bg-terracotta-500 px-6 py-3 text-sm font-medium tracking-wide text-cream-50 uppercase transition-colors duration-200 hover:bg-terracotta-600"
+          >
+            Naar afrekenen
+          </a>
+        </div>
+      </div>
+    </Container>
+  </Section>
+
+  <Footer />
+</Layout>
+
+<script>
+  import { getCart, updateLine, removeLine, type Cart } from "../shopify/cart";
+
+  const loadingEl = document.querySelector<HTMLElement>("[data-cart-loading]");
+  const emptyEl = document.querySelector<HTMLElement>("[data-cart-empty]");
+  const contentEl = document.querySelector<HTMLElement>("[data-cart-content]");
+  const linesEl = document.querySelector<HTMLElement>("[data-cart-lines]");
+  const totalEl = document.querySelector<HTMLElement>("[data-cart-total]");
+  const checkoutEl = document.querySelector<HTMLAnchorElement>("[data-cart-checkout]");
+
+  function renderLine(line: Cart["lines"][number]) {
+    const li = document.createElement("li");
+    li.className = "flex items-center gap-4 py-6";
+
+    const imgWrap = document.createElement("div");
+    imgWrap.className = "h-20 w-20 shrink-0 overflow-hidden rounded-sm bg-cream-50";
+    if (line.afbeeldingUrl) {
+      const img = document.createElement("img");
+      img.src = line.afbeeldingUrl;
+      img.alt = line.titel;
+      img.loading = "lazy";
+      img.className = "h-full w-full object-cover";
+      imgWrap.appendChild(img);
+    }
+
+    const info = document.createElement("div");
+    info.className = "flex-1";
+    const titleEl = document.createElement("p");
+    titleEl.className = "font-serif text-lg text-ink-900";
+    titleEl.textContent = line.titel;
+    const priceEl = document.createElement("p");
+    priceEl.className = "mt-1 text-sm text-ink-500";
+    priceEl.textContent = line.prijs;
+    info.append(titleEl, priceEl);
+
+    const stepper = document.createElement("div");
+    stepper.className = "flex items-center border border-blue-300";
+    const decBtn = document.createElement("button");
+    decBtn.type = "button";
+    decBtn.className = "px-3 py-2 text-lg text-ink-700 hover:text-terracotta-500";
+    decBtn.textContent = "−";
+    decBtn.setAttribute("aria-label", "Minder");
+    const qtySpan = document.createElement("span");
+    qtySpan.className = "min-w-[2ch] text-center text-sm text-ink-900";
+    qtySpan.textContent = String(line.quantity);
+    const incBtn = document.createElement("button");
+    incBtn.type = "button";
+    incBtn.className = "px-3 py-2 text-lg text-ink-700 hover:text-terracotta-500";
+    incBtn.textContent = "+";
+    incBtn.setAttribute("aria-label", "Meer");
+    stepper.append(decBtn, qtySpan, incBtn);
+
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "text-xs text-blue-500 underline hover:text-terracotta-500";
+    removeBtn.textContent = "Verwijderen";
+
+    li.append(imgWrap, info, stepper, removeBtn);
+
+    decBtn.addEventListener("click", async () => {
+      if (line.quantity <= 1) return;
+      await updateLine(line.id, line.quantity - 1);
+      await laadCart();
+    });
+    incBtn.addEventListener("click", async () => {
+      await updateLine(line.id, line.quantity + 1);
+      await laadCart();
+    });
+    removeBtn.addEventListener("click", async () => {
+      await removeLine(line.id);
+      await laadCart();
+    });
+
+    return li;
+  }
+
+  async function laadCart() {
+    loadingEl?.classList.remove("hidden");
+    emptyEl?.classList.add("hidden");
+    contentEl?.classList.add("hidden");
+
+    const cart = await getCart();
+    loadingEl?.classList.add("hidden");
+
+    if (!cart || cart.lines.length === 0) {
+      emptyEl?.classList.remove("hidden");
+      return;
+    }
+
+    if (linesEl) {
+      linesEl.innerHTML = "";
+      cart.lines.forEach((line) => linesEl.appendChild(renderLine(line)));
+    }
+    if (totalEl) totalEl.textContent = cart.totaal;
+    if (checkoutEl) checkoutEl.href = cart.checkoutUrl;
+    contentEl?.classList.remove("hidden");
+  }
+
+  laadCart();
+</script>

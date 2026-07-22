@@ -81,6 +81,17 @@ const neutrals = [
   { name: "Inkt 900", class: "bg-ink-900" },
 ];
 
+// De 6 opties uit productcategorie.ts (kleurTint) — zachte achtergrond op
+// het webshop-categorie-overzicht, niet op losse productkaarten.
+const categorieTinten = [
+  { name: "Blauw (zacht)", class: "bg-blue-100" },
+  { name: "Olijf (zacht)", class: "bg-olive-100" },
+  { name: "Oker (zacht)", class: "bg-ochre-100" },
+  { name: "Terracotta (zacht)", class: "bg-terracotta-100" },
+  { name: "Crème (licht)", class: "bg-cream-200" },
+  { name: "Crème (donker)", class: "bg-cream-300" },
+];
+
 const typeScale = [
   { label: "text-6xl", sample: "Frankrijk, met tijd genomen" },
   { label: "text-5xl", sample: "Frankrijk, met tijd genomen" },
@@ -150,6 +161,24 @@ const spacingScale = [
                 <div class="space-y-2">
                   <div class={`h-16 w-full rounded-sm border border-black/5 ${n.class}`} />
                   <p class="text-xs text-ink-500">{n.name}</p>
+                </div>
+              ))
+            }
+          </div>
+        </div>
+
+        <div>
+          <h3 class="mb-3 font-serif text-lg text-ink-900">Productcategorie-tinten (webshop)</h3>
+          <p class="mb-3 max-w-xl text-sm text-ink-500">
+            De 6 opties voor "Kleurtint" op een productcategorie in Sanity — zachte achtergrond op het
+            categorie-overzicht van de webshop, niet op losse productkaarten.
+          </p>
+          <div class="grid grid-cols-3 gap-3 sm:grid-cols-6">
+            {
+              categorieTinten.map((t) => (
+                <div class="space-y-2">
+                  <div class={`h-16 w-full rounded-sm border border-black/5 ${t.class}`} />
+                  <p class="text-xs text-ink-500">{t.name}</p>
                 </div>
               ))
             }

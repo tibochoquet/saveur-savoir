@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { seoVelden } from "./paginaFactory";
 
 /**
  * Singleton: er bestaat maar één document van dit type (zie
@@ -16,8 +17,10 @@ export default defineType({
     { name: "overMij", title: "Wie ben ik" },
     { name: "aanbod", title: "Wat ik bied" },
     { name: "contact", title: "Contact-oproep" },
+    { name: "seo", title: "SEO", options: { collapsible: true, collapsed: true } },
   ],
   fields: [
+    ...seoVelden().map((veld) => ({ ...veld, fieldset: "seo" })),
     defineField({
       name: "heroEyebrow",
       title: "Label boven de titel",

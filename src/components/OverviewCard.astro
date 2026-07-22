@@ -44,8 +44,15 @@ const Tag = href ? "a" : "div";
 >
   {
     imageUrl ? (
-      <div class="relative overflow-hidden rounded-sm" style={`aspect-ratio: ${ratio};`}>
-        <img src={imageUrl} alt={imageAlt} class="h-full w-full object-cover" loading="lazy" />
+      <div class="relative w-full overflow-hidden rounded-sm" style={`aspect-ratio: ${ratio};`}>
+        <img
+          src={imageUrl}
+          alt={imageAlt}
+          width="800"
+          height="600"
+          class="h-full w-full object-cover"
+          loading="lazy"
+        />
       </div>
     ) : (
       <SanityImage image={image} ratio={ratio} tone={tone} class="rounded-sm" />

@@ -20,20 +20,12 @@ import type {
 // waarin het seed-script (scripts/seed.ts) ze aanmaakt.
 const ORDER = "order(_createdAt asc)";
 
-const RECEPT_PROJECTION = `{
-  ...,
-  gerelateerdProduct->{naam, slug, verhaal}
-}`;
-
 export function getRecepten() {
-  return sanityClient.fetch<Recept[]>(`*[_type == "recept"] | ${ORDER} ${RECEPT_PROJECTION}`);
+  return sanityClient.fetch<Recept[]>(`*[_type == "recept"] | ${ORDER}`);
 }
 
 export function getReceptBySlug(slug: string) {
-  return sanityClient.fetch<Recept | null>(
-    `*[_type == "recept" && slug.current == $slug][0] ${RECEPT_PROJECTION}`,
-    { slug }
-  );
+  return sanityClient.fetch<Recept | null>(`*[_type == "recept" && slug.current == $slug][0]`, { slug });
 }
 
 const BLOGARTIKEL_PROJECTION = `{

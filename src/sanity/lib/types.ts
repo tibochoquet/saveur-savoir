@@ -5,6 +5,13 @@ export interface SanityImageValue extends Image {
   alt?: string;
 }
 
+// Gedeeld door alle pagina-singletons — optionele overrides voor
+// <title>/meta description, zie paginaFactory.ts (seoVelden()).
+export interface SeoVelden {
+  seoTitel?: string;
+  seoOmschrijving?: string;
+}
+
 export interface Recept {
   _id: string;
   titel: string;
@@ -19,7 +26,10 @@ export interface Recept {
   ingredientengroepen?: { titel: string; ingredienten: string[] }[];
   bereidingsstappen?: { titel: string; tekst: string }[];
   tip?: string;
-  gerelateerdProduct?: Pick<Product, "naam" | "slug" | "verhaal">;
+  // De webshopcatalogus leeft sinds de Shopify-koppeling niet meer in
+  // Sanity, dus dit is een platte handle-string, geen reference.
+  receptkaartHandle?: string;
+  receptkaartKnoptekst?: string;
 }
 
 export interface Onderwerp {
@@ -45,6 +55,7 @@ export interface Productcategorie {
   _id: string;
   titel: string;
   slug: { current: string };
+  kleurTint?: string;
 }
 
 export interface Product {
@@ -83,7 +94,7 @@ export interface HomepageAanbodItem {
   tekst: PortableTextBlock[];
 }
 
-export interface Homepage {
+export interface Homepage extends SeoVelden {
   heroEyebrow: string;
   heroTitel: string;
   heroIntro: PortableTextBlock[];
@@ -104,7 +115,7 @@ export interface Homepage {
   contactCta: string;
 }
 
-export interface Pagina {
+export interface Pagina extends SeoVelden {
   paginatitel: string;
   kop: string;
   introtekst: PortableTextBlock[];
@@ -124,14 +135,14 @@ export interface PaginaDiensten extends Pagina {
   dienstenItems: TekstItem[];
 }
 
-export interface PaginaContact {
+export interface PaginaContact extends SeoVelden {
   paginatitel: string;
   kop: string;
   introtekst: PortableTextBlock[];
   onderwerpSuggesties?: string[];
 }
 
-export interface DienstPagina {
+export interface DienstPagina extends SeoVelden {
   heroEyebrow: string;
   heroTitel: string;
   heroIntro: PortableTextBlock[];
@@ -158,7 +169,7 @@ export interface PaginaPriveLes extends DienstPagina {
   doelgroepenItems: TekstItem[];
 }
 
-export interface JuridischePagina {
+export interface JuridischePagina extends SeoVelden {
   titel: string;
   inhoud?: PortableTextBlock[];
 }

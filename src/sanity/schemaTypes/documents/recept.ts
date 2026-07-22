@@ -4,6 +4,15 @@ export default defineType({
   name: "recept",
   title: "Recept",
   type: "document",
+  fieldsets: [
+    {
+      name: "archief",
+      title: "Archief — niet meer zichtbaar op de site",
+      description:
+        "Deze velden worden niet meer getoond op de receptpagina (vervangen door de Receptkaart-CTA hieronder). Ze blijven bewaard, niet verwijderd.",
+      options: { collapsible: true, collapsed: true },
+    },
+  ],
   fields: [
     defineField({
       name: "titel",
@@ -69,13 +78,14 @@ export default defineType({
     defineField({
       name: "intro",
       title: "Introductietekst",
-      description: "De alinea direct onder de hoofdfoto.",
+      description: "De alinea direct onder de hoofdfoto. Leeg laten als het recept nog niet klaar is voor publicatie — dan krijgt het \"Binnenkort\" op de overzichtspagina.",
       type: "blockContent",
     }),
     defineField({
       name: "ingredientengroepen",
       title: "Ingrediënten",
       description: "Eén of meerdere groepen, bijvoorbeeld \"Voor de soep\" en \"Voor de pistou\".",
+      fieldset: "archief",
       type: "array",
       of: [
         {
@@ -110,7 +120,8 @@ export default defineType({
     defineField({
       name: "bereidingsstappen",
       title: "Bereiding",
-      description: "De genummerde stappen. Leeg laten als het recept nog niet klaar is voor publicatie — dan krijgt het \"Binnenkort\" op de overzichtspagina.",
+      description: "De genummerde stappen.",
+      fieldset: "archief",
       type: "array",
       of: [
         {
@@ -146,11 +157,17 @@ export default defineType({
       rows: 2,
     }),
     defineField({
-      name: "gerelateerdProduct",
-      title: "Dit recept als product",
-      description: "Optioneel. Als je hier een product kiest, verschijnt er onderaan het recept een \"Receptkaart\"-blok dat naar dat product in de webshop linkt.",
-      type: "reference",
-      to: [{ type: "product" }],
+      name: "receptkaartHandle",
+      title: "Receptkaart — webshopproduct (handle)",
+      description:
+        "Optioneel. De handle uit de Shopify-productURL van dit recept als receptkaart, bijvoorbeeld bij saveursavoir.nl/webshop/soupe-au-pistou-kaart vul je hier \"soupe-au-pistou-kaart\" in. Ingevuld = er verschijnt onderaan het recept een CTA-blok naar de webshop.",
+      type: "string",
+    }),
+    defineField({
+      name: "receptkaartKnoptekst",
+      title: "Receptkaart — eigen tekst bij de knop",
+      description: "Optioneel. Bijvoorbeeld: \"Bestel de receptkaart\". Leeg = standaardtekst.",
+      type: "string",
     }),
   ],
   preview: {

@@ -9,31 +9,34 @@ import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
 import Button from "../../components/Button.astro";
 import { getRecepten, getProducten } from "../../sanity/lib/queries";
+import { getShopifyProducten } from "../../shopify/client";
 
 export async function getStaticPaths() {
   const recepten = await getRecepten();
+  // Sinds de ingrediënten/bereiding niet meer op de site staan (vervangen
+  // door de Receptkaart-CTA), is de introtekst het enige overgebleven
+  // inhoudsveld dat bepaalt of een recept "af" is voor publicatie.
   return recepten
-    .filter((r) => (r.bereidingsstappen?.length ?? 0) > 0)
+    .filter((r) => (r.intro?.length ?? 0) > 0)
     .map((r) => ({ params: { slug: r.slug.current }, props: { recept: r } }));
 }
 
 const { recept } = Astro.props;
 
-// Beide blokken linken naar de webshop en verschijnen alleen als die
-// bestemming ook echt bestaat — geen kapotte link naar een nog niet
-// gepubliceerd product of een lege webshop.
-const producten = await getProducten();
-const heeftWebshopProducten = producten.some((p) => (p.verhaal?.length ?? 0) > 0);
-const receptkaartProduct = recept.gerelateerdProduct;
-const toonReceptkaart = Boolean(
-  receptkaartProduct?.slug?.current && (receptkaartProduct.verhaal?.length ?? 0) > 0
-);
+// De receptkaart-link wijst naar een Shopify-handle (de webshopcatalogus
+// leeft sinds de Shopify-koppeling niet meer in Sanity). Toon de CTA
+// alleen als die handle ook echt ergens naartoe leidt — bij Shopify of,
+// voor de paar overgebleven legacy-producten, bij Sanity — nooit een
+// dode link.
+const [shopifyProducten, sanityProducten] = await Promise.all([getShopifyProducten(), getProducten()]);
+const geldigeHandles = new Set([
+  ...shopifyProducten.map((p) => p.handle),
+  ...sanityProducten.filter((p) => (p.verhaal?.length ?? 0) > 0).map((p) => p.slug.current),
+]);
+const toonReceptkaart = Boolean(recept.receptkaartHandle && geldigeHandles.has(recept.receptkaartHandle));
 ---
 
-<Layout
-  title={`${recept.titel} — Saveur & Savoir`}
-  description={recept.excerpt}
->
+<Layout title={`${recept.titel} — Saveur & Savoir`} description={recept.excerpt}>
   <Header />
 
   <Section spacing="sm" tone="cream">
@@ -69,91 +72,34 @@ const toonReceptkaart = Boolean(
     </Container>
   </Section>
 
-  {
-    recept.intro && (
-      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-        <Container class="max-w-2xl">
-          <PortableText value={recept.intro} class="text-base text-ink-700" />
-        </Container>
-      </Section>
-    )
-  }
-
   <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-    <Container wide class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-      <div>
-        {
-          recept.ingredientengroepen?.map((groep) => (
-            <div class="mb-10 last:mb-0">
-              <h2 class="font-serif text-xl text-ink-900">{groep.titel}</h2>
-              <ul class="mt-4 space-y-2 text-sm text-ink-700">
-                {groep.ingredienten.map((i) => (
-                  <li class="border-t border-blue-200 pt-2">{i}</li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-
-      <div>
-        <h2 class="font-serif text-xl text-ink-900">Bereiding</h2>
-        <ol class="mt-6 space-y-8">
-          {
-            recept.bereidingsstappen?.map((stap, i) => (
-              <li class="flex gap-6">
-                <span class="font-serif text-lg text-terracotta-500">{String(i + 1).padStart(2, "0")}</span>
-                <div>
-                  <h3 class="font-serif text-lg text-ink-900">{stap.titel}</h3>
-                  <p class="mt-2 text-base leading-relaxed text-ink-700">{stap.tekst}</p>
-                </div>
-              </li>
-            ))
-          }
-        </ol>
-
-        {
-          recept.tip && (
-            <p class="mt-10 border-l-2 border-ochre-400 py-1 pl-6 font-serif text-lg text-ink-900 italic">
-              {recept.tip}
-            </p>
-          )
-        }
-      </div>
+    <Container class="max-w-2xl">
+      <PortableText value={recept.intro} class="text-base text-ink-700" />
+      {
+        recept.tip && (
+          <p class="mt-10 border-l-2 border-ochre-400 py-1 pl-6 font-serif text-lg text-ink-900 italic">
+            {recept.tip}
+          </p>
+        )
+      }
     </Container>
   </Section>
 
   {
-    (toonReceptkaart || heeftWebshopProducten) && (
+    toonReceptkaart && (
       <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
-        <Container wide class="grid gap-8 sm:grid-cols-2">
-          {toonReceptkaart && (
-            <div class="border border-blue-200 bg-cream-50 p-8">
-              <Eyebrow>Receptkaart</Eyebrow>
-              <p class="mt-3 text-sm text-ink-500">
-                Liever dit recept als kant-en-klaar pakket in huis? Bekijk het als product in de webshop.
-              </p>
-              <div class="mt-6">
-                <Button href={`/webshop/${receptkaartProduct!.slug.current}`} variant="primary">
-                  Bekijk in de webshop
-                </Button>
-              </div>
+        <Container class="max-w-2xl">
+          <div class="border border-blue-200 bg-cream-50 p-8">
+            <Eyebrow>Receptkaart</Eyebrow>
+            <p class="mt-3 text-sm text-ink-500">
+              Liever dit recept als kant-en-klaar pakket in huis? Bekijk het als product in de webshop.
+            </p>
+            <div class="mt-6">
+              <Button href={`/webshop/${recept.receptkaartHandle}`} variant="primary">
+                {recept.receptkaartKnoptekst || "Bekijk in de webshop"}
+              </Button>
             </div>
-          )}
-
-          {heeftWebshopProducten && (
-            <div class="border border-blue-200 bg-cream-50 p-8">
-              <Eyebrow>Accessoires &amp; Ingrediënten</Eyebrow>
-              <p class="mt-3 text-sm text-ink-500">
-                Op zoek naar de juiste spullen of ingrediënten uit Frankrijk? Bekijk de volledige webshop.
-              </p>
-              <div class="mt-6">
-                <Button href="/webshop" variant="secondary">
-                  Naar de webshop
-                </Button>
-              </div>
-            </div>
-          )}
+          </div>
         </Container>
       </Section>
     )

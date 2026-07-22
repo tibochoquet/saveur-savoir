@@ -27,7 +27,10 @@ const { docId } = Astro.props as { docId: JuridischePaginaId };
 const pagina = await getJuridischePagina(docId);
 ---
 
-<Layout title={`${pagina?.titel ?? "Pagina"} — Saveur & Savoir`} description={pagina?.titel}>
+<Layout
+  title={pagina?.seoTitel || `${pagina?.titel ?? "Pagina"} — Saveur & Savoir`}
+  description={pagina?.seoOmschrijving || pagina?.titel}
+>
   <Header />
 
   <Section spacing="lg" tone="cream">

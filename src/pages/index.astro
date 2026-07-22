@@ -20,7 +20,10 @@ const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
 }));
 ---
 
-<Layout title="Saveur & Savoir — Frans leven, met tijd genomen">
+<Layout
+  title={home?.seoTitel || "Saveur & Savoir | Franse recepten, Franse producten, vertalingen & Franse lessen"}
+  description={home?.seoOmschrijving}
+>
   <Header />
 
   <!-- Hero -->
