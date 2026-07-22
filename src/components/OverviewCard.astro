@@ -44,13 +44,18 @@ const Tag = href ? "a" : "div";
 >
   {
     imageUrl ? (
-      <div class="relative w-full overflow-hidden rounded-sm" style={`aspect-ratio: ${ratio};`}>
+      // object-contain i.p.v. object-cover: productfoto's uit Shopify zijn
+      // vaak klein en vierkant (vendor-aangeleverd, niet bijgesneden zoals
+      // Sanity-beelden) — cover sneed het product letterlijk af aan de
+      // randen. Contain toont altijd de hele foto, met een neutrale
+      // achtergrond eromheen als de verhouding niet exact klopt.
+      <div class="relative w-full overflow-hidden rounded-sm bg-cream-50" style={`aspect-ratio: ${ratio};`}>
         <img
           src={imageUrl}
           alt={imageAlt}
           width="800"
           height="600"
-          class="h-full w-full object-cover"
+          class="h-full w-full object-contain"
           loading="lazy"
         />
       </div>

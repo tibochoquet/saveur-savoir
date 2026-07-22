@@ -62,20 +62,26 @@ const sanityProduct = props.bron === "sanity" ? props.sanityProduct : null;
       </Section>
 
       <Section spacing="sm" tone="cream">
-        <Container wide>
+        <Container class="max-w-2xl">
           {shopifyProduct.afbeelding ? (
-            <div class="relative w-full overflow-hidden rounded-sm" style="aspect-ratio: 16/9;">
+            // object-contain i.p.v. object-cover: Shopify-productfoto's zijn
+            // vaak klein en vierkant, niet bijgesneden zoals Sanity-beelden.
+            // Cover sneed het product af aan boven-/onderkant. Contain toont
+            // altijd de volledige foto; een neutrale achtergrond vult de
+            // rest als de verhouding niet exact klopt. Ratio 4/3, dezelfde
+            // als in het webshop-overzicht, voor een consistente container.
+            <div class="relative w-full overflow-hidden rounded-sm bg-cream-50" style="aspect-ratio: 4/3;">
               <img
                 src={shopifyProduct.afbeelding.url}
                 alt={shopifyProduct.afbeelding.alt ?? shopifyProduct.titel}
-                width="1600"
+                width="1200"
                 height="900"
-                class="h-full w-full object-cover"
+                class="h-full w-full object-contain"
                 loading="lazy"
               />
             </div>
           ) : (
-            <div class="flex aspect-[16/9] items-center justify-center bg-ochre-100 text-sm text-ochre-700">
+            <div class="flex aspect-[4/3] items-center justify-center bg-ochre-100 text-sm text-ochre-700">
               Beeld volgt
             </div>
           )}
@@ -122,7 +128,7 @@ const sanityProduct = props.bron === "sanity" ? props.sanityProduct : null;
                     data-add-to-cart
                     class="inline-flex items-center gap-2 bg-terracotta-500 px-6 py-3 text-sm font-medium tracking-wide text-cream-50 uppercase transition-colors duration-200 hover:bg-terracotta-600"
                   >
-                    In winkelmand
+                    In winkelwagen
                   </button>
                 </div>
                 <p data-add-to-cart-status class="mt-3 hidden text-sm text-blue-600" role="status"></p>
@@ -178,12 +184,12 @@ const sanityProduct = props.bron === "sanity" ? props.sanityProduct : null;
       addButton.textContent = "Bezig...";
       const cart = await addToCart(variantId, qty);
       addButton.disabled = false;
-      addButton.textContent = "In winkelmand";
+      addButton.textContent = "In winkelwagen";
 
       if (status) {
         status.classList.remove("hidden");
         status.textContent = cart
-          ? "Toegevoegd aan je winkelmand."
+          ? "Toegevoegd aan je winkelwagen."
           : "Er ging iets mis — probeer het nog eens.";
       }
     });

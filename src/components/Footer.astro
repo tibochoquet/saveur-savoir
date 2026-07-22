@@ -32,8 +32,11 @@ const contactHeading = instellingen?.footerContact?.titel ?? "Contact";
 const contactLinkLabel = instellingen?.footerContact?.link1Label ?? "Stuur een bericht";
 
 // Vaste juridische links — elke link wijst naar zijn eigen pagina.
+// Algemene voorwaarden staat bewust ook hier (naast de link op de
+// contactpagina) — dit is de plek waar bezoekers 'm het eerst zoeken.
 const juridischeLinks = [
   { label: "Disclaimer", href: "/disclaimer" },
+  { label: "Algemene voorwaarden", href: "/algemene-voorwaarden" },
   { label: "Cookievoorkeuren", href: "/cookievoorkeuren" },
   { label: "Privacybeleid", href: "/privacybeleid" },
   { label: "Herroeping", href: "/herroeping" },
