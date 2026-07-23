@@ -10,6 +10,7 @@ import PortableText from "../../components/PortableText.astro";
 import Button from "../../components/Button.astro";
 import { getRecepten } from "../../sanity/lib/queries";
 import { getShopifyProducten } from "../../shopify/client";
+import { urlFor } from "../../sanity/lib/image";
 
 export async function getStaticPaths() {
   const recepten = await getRecepten();
@@ -32,9 +33,13 @@ const { recept } = Astro.props;
 const shopifyProducten = await getShopifyProducten();
 const geldigeHandles = new Set(shopifyProducten.map((p) => p.handle));
 const toonReceptkaart = Boolean(recept.receptkaartHandle && geldigeHandles.has(recept.receptkaartHandle));
+
+const socialImage = recept.afbeelding
+  ? urlFor(recept.afbeelding).width(1200).height(630).fit("crop").url()
+  : undefined;
 ---
 
-<Layout title={`${recept.titel} — Saveur & Savoir`} description={recept.excerpt}>
+<Layout title={`${recept.titel} — Saveur & Savoir`} description={recept.excerpt} image={socialImage}>
   <Header />
 
   <Section spacing="sm" tone="cream">

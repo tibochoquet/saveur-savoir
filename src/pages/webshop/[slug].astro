@@ -22,7 +22,11 @@ if (!product) {
 
 {
   product ? (
-    <Layout title={`${product.titel} — Saveur & Savoir`} description={product.categorie ?? undefined}>
+    <Layout
+      title={`${product.titel} — Saveur & Savoir`}
+      description={product.categorie ?? undefined}
+      image={product.afbeelding?.url}
+    >
       <Header />
 
       <Section spacing="sm" tone="cream">

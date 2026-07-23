@@ -9,6 +9,7 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import PortableText from "../components/PortableText.astro";
 import { getHomepage } from "../sanity/lib/queries";
+import { urlFor } from "../sanity/lib/image";
 
 const home = await getHomepage();
 
@@ -18,11 +19,16 @@ const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
   ...item,
   href: aanbodHrefs[i],
 }));
+
+const socialImage = home?.heroAfbeelding
+  ? urlFor(home.heroAfbeelding).width(1200).height(630).fit("crop").url()
+  : undefined;
 ---
 
 <Layout
   title={home?.seoTitel || "Saveur & Savoir | Franse recepten, Franse producten, vertalingen & Franse lessen"}
   description={home?.seoOmschrijving}
+  image={socialImage}
 >
   <Header />
 

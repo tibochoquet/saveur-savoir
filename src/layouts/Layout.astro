@@ -4,6 +4,10 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description?: string;
+  // Absolute URL van een deelafbeelding (og:image) — als een pagina er
+  // geen meegeeft, wordt gewoon geen og:image/twitter:image getoond
+  // (beter dan een generieke placeholder tonen).
+  image?: string;
   // Voor pagina's die nooit geïndexeerd mogen worden, los van de
   // algemene schakelaar hieronder (bv. /styleguide, een intern
   // design-system-overzicht, geen klantgerichte content).
@@ -13,6 +17,7 @@ interface Props {
 const {
   title,
   description = "Saveur & Savoir — Frans leven, taal en landschap, met tijd genomen.",
+  image,
   noindex = false,
 } = Astro.props;
 
@@ -20,6 +25,8 @@ const {
 // geïndexeerd worden. Zet PUBLIC_ALLOW_INDEXING=true in Vercel zodra
 // de site op saveursavoir.nl staat.
 const allowIndexing = import.meta.env.PUBLIC_ALLOW_INDEXING === "true";
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
@@ -28,9 +35,23 @@ const allowIndexing = import.meta.env.PUBLIC_ALLOW_INDEXING === "true";
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonicalUrl} />
     <meta name="description" content={description} />
     {(!allowIndexing || noindex) && <meta name="robots" content="noindex, nofollow" />}
     <title>{title}</title>
+
+    <!-- Open Graph / social delen (WhatsApp, Facebook, LinkedIn, ...) -->
+    <meta property="og:site_name" content="Saveur & Savoir" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    {image && <meta property="og:image" content={image} />}
+
+    <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {image && <meta name="twitter:image" content={image} />}
   </head>
   <body class="bg-cream-100 font-sans text-ink-700 antialiased">
     <slot />

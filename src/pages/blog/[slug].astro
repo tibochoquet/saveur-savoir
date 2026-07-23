@@ -8,6 +8,7 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
 import { getBlogartikelen } from "../../sanity/lib/queries";
+import { urlFor } from "../../sanity/lib/image";
 
 export async function getStaticPaths() {
   const artikelen = await getBlogartikelen();
@@ -17,11 +18,15 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const socialImage = post.afbeelding
+  ? urlFor(post.afbeelding).width(1200).height(630).fit("crop").url()
+  : undefined;
 ---
 
 <Layout
   title={`${post.titel} — Saveur & Savoir`}
   description={post.excerpt}
+  image={socialImage}
 >
   <Header />
 
