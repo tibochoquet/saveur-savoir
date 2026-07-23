@@ -16,10 +16,13 @@
     "migrate:alles-bewerkbaar": "tsx scripts/migrate-alles-bewerkbaar.ts",
     "migrate:round2": "tsx scripts/migrate-editable-round2.ts",
     "migrate:round3": "tsx scripts/migrate-round3.ts",
-    "migrate:round4": "tsx scripts/migrate-round4.ts"
+    "migrate:round4": "tsx scripts/migrate-round4.ts",
+    "migrate:round5": "tsx scripts/migrate-round5.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",
+    "@astrojs/sitemap": "^3.7.3",
+    "@astrojs/vercel": "^11.0.3",
     "@fontsource/fraunces": "^5.2.9",
     "@fontsource/karla": "^5.2.8",
     "@portabletext/types": "^4.0.2",

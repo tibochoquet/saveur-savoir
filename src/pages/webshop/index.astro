@@ -11,6 +11,12 @@ import SectieMetBeeld from "../../components/SectieMetBeeld.astro";
 import { getPaginaWebshop, getProductcategorieen } from "../../sanity/lib/queries";
 import { getShopifyProducten, isShopifyGeconfigureerd, kortBeschrijving } from "../../shopify/client";
 
+// Op-aanvraag gerenderd (niet vooraf gebouwd): prijs, voorraad en nieuwe
+// producten moeten bij elk bezoek live uit Shopify komen, niet pas na de
+// volgende build. De Vercel-adapter geeft dit een korte ISR-cache (zie
+// astro.config.mjs) zodat dit niet bij elk bezoek een verse API-call is.
+export const prerender = false;
+
 // Productdata komt uitsluitend uit Shopify — recepten/blog/pagina's
 // blijven Sanity. Zonder Shopify-credentials (of zonder producten)
 // toont de pagina een nette "binnenkort"-melding, geen lege grid.

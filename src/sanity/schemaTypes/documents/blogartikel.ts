@@ -60,13 +60,6 @@ export default defineType({
       description: "Het volledige artikel. Leeg laten als het artikel nog niet klaar is voor publicatie — dan krijgt het \"Binnenkort\" op de overzichtspagina.",
       type: "blockContent",
     }),
-    defineField({
-      name: "gerelateerdProduct",
-      title: "Gerelateerd product",
-      description: "Optioneel. Als je hier een product kiest, verschijnt er onderaan het artikel een CTA-blok dat naar dat product in de webshop linkt (bijvoorbeeld een gpx-bestand bij een wandelverhaal).",
-      type: "reference",
-      to: [{ type: "product" }],
-    }),
   ],
   preview: {
     select: { title: "titel", subtitle: "onderwerp.titel", media: "afbeelding" },

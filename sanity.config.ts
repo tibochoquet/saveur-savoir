@@ -30,8 +30,10 @@ export default defineConfig({
           .items([
             S.documentTypeListItem("recept").title("Recepten"),
             S.documentTypeListItem("blogartikel").title("Blogartikelen"),
-            S.documentTypeListItem("product").title("Producten"),
-            S.documentTypeListItem("productcategorie").title("Productcategorieën"),
+            // Productdata komt uitsluitend uit Shopify. Dit document dient
+            // alleen nog als naam→tint-opzoektabel voor de webshop-
+            // categoriekleur (zie productcategorie.ts).
+            S.documentTypeListItem("productcategorie").title("Productcategorieën (kleur)"),
             S.documentTypeListItem("onderwerp").title("Onderwerpen (blog)"),
             S.divider(),
             // Alle paginateksten en instellingen gegroepeerd op één

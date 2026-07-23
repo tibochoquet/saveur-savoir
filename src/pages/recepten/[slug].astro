@@ -8,7 +8,7 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
 import Button from "../../components/Button.astro";
-import { getRecepten, getProducten } from "../../sanity/lib/queries";
+import { getRecepten } from "../../sanity/lib/queries";
 import { getShopifyProducten } from "../../shopify/client";
 
 export async function getStaticPaths() {
@@ -23,16 +23,14 @@ export async function getStaticPaths() {
 
 const { recept } = Astro.props;
 
-// De receptkaart-link wijst naar een Shopify-handle (de webshopcatalogus
-// leeft sinds de Shopify-koppeling niet meer in Sanity). Toon de CTA
-// alleen als die handle ook echt ergens naartoe leidt — bij Shopify of,
-// voor de paar overgebleven legacy-producten, bij Sanity — nooit een
-// dode link.
-const [shopifyProducten, sanityProducten] = await Promise.all([getShopifyProducten(), getProducten()]);
-const geldigeHandles = new Set([
-  ...shopifyProducten.map((p) => p.handle),
-  ...sanityProducten.filter((p) => (p.verhaal?.length ?? 0) > 0).map((p) => p.slug.current),
-]);
+// De receptkaart-link wijst naar een Shopify-handle (Shopify is de enige
+// bron voor productdata). Toon de CTA alleen als die handle ook echt naar
+// een bestaand product wijst — nooit een dode link. Deze pagina blijft
+// statisch (Sanity-content), dus deze check gebeurt op build-time; een
+// Shopify-productwijziging triggert een rebuild via de webhook (zie
+// src/pages/api/shopify-webhook.ts), die dit dan meteen herverifieert.
+const shopifyProducten = await getShopifyProducten();
+const geldigeHandles = new Set(shopifyProducten.map((p) => p.handle));
 const toonReceptkaart = Boolean(recept.receptkaartHandle && geldigeHandles.has(recept.receptkaartHandle));
 ---
 

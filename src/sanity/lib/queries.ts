@@ -10,7 +10,6 @@ import type {
   PaginaPriveLes,
   PaginaVertalingen,
   PaginaWebshop,
-  Product,
   Productcategorie,
   Recept,
   SiteInstellingen,
@@ -30,8 +29,7 @@ export function getReceptBySlug(slug: string) {
 
 const BLOGARTIKEL_PROJECTION = `{
   ...,
-  onderwerp->{_id, titel, slug},
-  gerelateerdProduct->{naam, slug, prijs}
+  onderwerp->{_id, titel, slug}
 }`;
 
 export function getBlogartikelen() {
@@ -51,22 +49,9 @@ export function getOnderwerpen() {
   return sanityClient.fetch<Onderwerp[]>(`*[_type == "onderwerp"] | order(titel asc)`);
 }
 
-const PRODUCT_PROJECTION = `{
-  ...,
-  categorie->{_id, titel, slug}
-}`;
-
-export function getProducten() {
-  return sanityClient.fetch<Product[]>(`*[_type == "product"] | ${ORDER} ${PRODUCT_PROJECTION}`);
-}
-
-export function getProductBySlug(slug: string) {
-  return sanityClient.fetch<Product | null>(
-    `*[_type == "product" && slug.current == $slug][0] ${PRODUCT_PROJECTION}`,
-    { slug }
-  );
-}
-
+// Productdata komt uitsluitend uit Shopify (zie src/shopify/client.ts).
+// Dit document dient alleen nog als naam→tint-opzoektabel voor de
+// webshop-categoriekleur.
 export function getProductcategorieen() {
   return sanityClient.fetch<Productcategorie[]>(`*[_type == "productcategorie"] | order(titel asc)`);
 }

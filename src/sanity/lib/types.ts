@@ -48,28 +48,16 @@ export interface Blogartikel {
   afbeelding?: SanityImageValue;
   leestijdMinuten?: number;
   inhoud?: PortableTextBlock[];
-  gerelateerdProduct?: Pick<Product, "naam" | "slug" | "prijs">;
 }
 
+// Productdata komt uitsluitend uit Shopify (zie src/shopify/types.ts).
+// Dit document dient alleen nog als naam→tint-opzoektabel voor de
+// webshop-categoriekleur.
 export interface Productcategorie {
   _id: string;
   titel: string;
   slug: { current: string };
   kleurTint?: string;
-}
-
-export interface Product {
-  _id: string;
-  naam: string;
-  slug: { current: string };
-  categorie: Productcategorie;
-  soort: "fysiek" | "digitaal";
-  prijs: string;
-  herkomst: string;
-  excerpt: string;
-  dek: string;
-  afbeelding?: SanityImageValue;
-  verhaal?: PortableTextBlock[];
 }
 
 export interface FooterKolom {

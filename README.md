@@ -5,9 +5,12 @@ landschap. Astro + Tailwind, met Sanity als headless CMS.
 
 ## Stack
 
-- **Astro 7** + TypeScript + Tailwind v4
+- **Astro 7** + TypeScript + Tailwind v4, hybride gerenderd via de
+  **Vercel-adapter**: de meeste pagina's zijn statisch (Sanity-content),
+  `/webshop` + productpagina's renderen op-aanvraag (zie "Shopify-koppeling")
 - **Sanity** als CMS, ingebed in de site op `/studio` (recepten, blog, pagina's)
-- **Shopify** (Storefront API) voor de productcatalogus op `/webshop` — afrekenen gebeurt op Shopify zelf, niet op deze site
+- **Shopify** (Storefront API) is de enige bron voor productdata — geen
+  productdata in Sanity. Afrekenen gebeurt op Shopify zelf, niet op deze site
 - **Vercel** voor hosting
 - **Web3Forms** voor het contactformulier (geen eigen backend)
 
@@ -35,13 +38,16 @@ staat in `.gitignore`).
 | `PUBLIC_WEB3FORMS_ACCESS_KEY`  | web3forms.com (gratis, alleen e-mailadres nodig)                 | het contactformulier     |
 | `PUBLIC_SHOPIFY_DOMAIN`        | jouw-winkel.myshopify.com                                        | de webshop op `/webshop` |
 | `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` | Shopify admin → Headless-kanaal → zie "Shopify-koppeling" hieronder | de webshop + winkelwagen |
+| `SHOPIFY_WEBHOOK_SECRET`       | Shopify admin → Instellingen → Notificaties → onderaan "Webhooks"     | de Shopify-webhook (`/api/shopify-webhook`) |
+| `VERCEL_DEPLOY_HOOK_URL`       | Vercel-project → Settings → Git → Deploy Hooks                       | de Shopify-webhook (triggert een rebuild) |
 | `PUBLIC_ALLOW_INDEXING`        | —                                                                 | zoekmachine-indexering aan/uit |
 
 ## Content en het CMS
 
-Alle content (recepten, wandelingen, blogartikelen, producten,
-site-instellingen) wordt beheerd in Sanity Studio op `/studio`. De
-schema's staan in `src/sanity/schemaTypes/`.
+Alle content (recepten, blogartikelen, pagina's, site-instellingen) wordt
+beheerd in Sanity Studio op `/studio`. De schema's staan in
+`src/sanity/schemaTypes/`. Productdata zelf staat niet in Sanity — die komt
+uitsluitend uit Shopify (zie "Shopify-koppeling" verderop).
 
 Beeldvelden hebben altijd hotspot/crop aan en een verplicht alt-veld
 zodra er een foto gekozen is. Zolang een item geen foto heeft, toont de
@@ -106,7 +112,48 @@ Shopify's eigen hosted checkout om af te rekenen.
 
 Sanity blijft verantwoordelijk voor al het overige (recepten, blog,
 pagina's, de intro-tekst en "Hoe bestellen werkt"-uitleg bovenaan/onderaan
-`/webshop`). Alleen de productdata zelf komt uit Shopify.
+`/webshop`). Alleen de productdata zelf komt uit Shopify — Shopify is
+daarin de enige bron, er is bewust geen Sanity-synchronisatie/kopie van
+productdata.
+
+### Rendering: statisch vs. op-aanvraag
+
+`/webshop` en de productdetailpagina's (`export const prerender = false`
+in beide bestanden) renderen **op-aanvraag** via de Vercel-adapter, met een
+korte ISR-cache van 60 seconden (`astro.config.mjs`). Prijs, voorraad en
+nieuwe/verwijderde producten zijn dus binnen zo'n minuut zichtbaar, zonder
+dat er een nieuwe build nodig is. De rest van de site (homepage, recepten,
+blog, diensten, juridische pagina's) blijft volledig statisch — die content
+verandert alleen wanneer er in Sanity gepubliceerd wordt.
+
+### Shopify-webhook (vangnet)
+
+Naast de ISR-cache is er `/api/shopify-webhook` (`src/pages/api/shopify-webhook.ts`):
+bij elke product create/update/delete in Shopify triggert dit direct een
+volledige Vercel-rebuild, zodat ook de weinige **statische** pagina's die
+Shopify-data raadplegen (bv. de Receptkaart-check in `recepten/[slug].astro`,
+die op build-time controleert of de gekoppelde handle nog bestaat) meteen
+meebewegen, in plaats van te wachten op de eerstvolgende Sanity-publicatie.
+
+Instellen in Shopify admin:
+
+1. Ga naar **Instellingen → Notificaties**.
+2. Scroll naar **Webhooks** onderaan de pagina.
+3. Maak drie webhooks aan, telkens met URL `https://saveursavoir.nl/api/shopify-webhook`
+   en formaat **JSON**:
+   - Event: **Product creation**
+   - Event: **Product update**
+   - Event: **Product deletion**
+4. Kopieer de **Webhook-signing secret** die op diezelfde pagina staat
+   (geldt voor alle webhooks van deze winkel) naar `SHOPIFY_WEBHOOK_SECRET`
+   in Vercel.
+5. Zorg dat `VERCEL_DEPLOY_HOOK_URL` in Vercel wijst naar een deploy hook
+   (zie "Deploy: automatische rebuild bij publiceren" hieronder — dezelfde
+   soort hook als voor Sanity, mag een aparte, nieuwe hook zijn).
+
+Zonder deze twee env-vars geeft `/api/shopify-webhook` een `500`-fout terug
+in plaats van de site te breken — de ISR-cache blijft in dat geval het
+enige (iets tragere) verversingsmechanisme.
 
 ### Token aanmaken
 
@@ -148,23 +195,20 @@ Ontbreken `PUBLIC_SHOPIFY_DOMAIN` of `PUBLIC_SHOPIFY_STOREFRONT_TOKEN` (of
 zijn er nog geen producten gepubliceerd), dan toont `/webshop` een nette
 "De webshop komt binnenkort"-melding. De build faalt nooit hierop.
 
-### Oude productpagina's (vóór Shopify)
+### Uitverkocht
 
-Vóór deze koppeling had de site een eigen, kleine Sanity-productcatalogus
-(aanvragen via het contactformulier, geen echte checkout). Die schema's
-(`product`, `productcategorie`) en bestaande documenten staan nog in
-Sanity en hun paginas blijven bereikbaar op hun oude URL
-(`/webshop/<sanity-slug>`) — alleen niet meer in de hoofd-grid van
-`/webshop`, die toont nu uitsluitend Shopify-producten. Dit voorkomt dat
-bestaande interne links (zoals de downloadknop op het GR70-blogartikel)
-stukgaan. Nieuwe producten horen voortaan in Shopify thuis, niet in
-Sanity.
+Een product zonder voorraad (`availableForSale: false` in Shopify) toont
+"Tijdelijk uitverkocht" in plaats van de aantal-kiezer en de
+"In winkelwagen"-knop — kan dus niet aan de winkelwagen toegevoegd worden,
+zowel op het overzicht als op de productpagina zelf.
 
 ## Deploy: automatische rebuild bij publiceren
 
-De site is statisch gebouwd (`astro build`), dus een wijziging in
-Sanity leidt pas tot een nieuwe site nadat Vercel opnieuw gebouwd
-heeft. Dat gebeurt automatisch via een deploy hook + webhook:
+Op één uitzondering na (`/webshop`, zie "Rendering: statisch vs.
+op-aanvraag" hierboven) is de site statisch gebouwd (`astro build`), dus
+een wijziging in Sanity leidt pas tot een nieuwe site nadat Vercel
+opnieuw gebouwd heeft. Dat gebeurt automatisch via een deploy hook +
+webhook:
 
 ### 1. Maak een deploy hook aan in Vercel
 
@@ -186,6 +230,11 @@ Vanaf nu triggert elke publicatie in het Studio automatisch een nieuwe
 Vercel-deploy, zodat de live site binnen enkele minuten de nieuwe
 content toont. Er is geen verdere actie nodig vanuit de eigenaar — zij
 publiceert gewoon in het Studio.
+
+Er bestaat een tweede, vergelijkbare deploy hook-koppeling specifiek
+voor productwijzigingen in Shopify — zie "Shopify-webhook (vangnet)"
+verderop. Die twee webhooks staan los van elkaar en mogen dezelfde of
+een eigen deploy hook gebruiken.
 
 ## Merkkleuren
 

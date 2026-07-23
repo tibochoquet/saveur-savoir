@@ -5,7 +5,6 @@ import pullQuote from "./objects/pullQuote";
 
 import recept from "./documents/recept";
 import blogartikel from "./documents/blogartikel";
-import product from "./documents/product";
 import productcategorie from "./documents/productcategorie";
 import onderwerp from "./documents/onderwerp";
 import siteInstellingen from "./documents/siteInstellingen";
@@ -28,7 +27,9 @@ export const schemaTypes = [
   // documenten
   recept,
   blogartikel,
-  product,
+  // productcategorie dient nu alleen nog als naam→tint-opzoektabel voor
+  // de zachte achtergrond op het webshop-overzicht — productdata zelf
+  // komt uitsluitend uit Shopify (zie src/shopify/client.ts).
   productcategorie,
   onderwerp,
   // singletons (zie sanity.config.ts, gegroepeerd onder "Pagina's")
@@ -41,6 +42,6 @@ export const schemaTypes = [
   paginaVertalingen,
   paginaPriveLes,
   siteInstellingen,
-  // juridische pagina's: één schema, vijf documenten (zie sanity.config.ts)
+  // juridische pagina's: één schema, zeven documenten (zie sanity.config.ts)
   juridischePagina,
 ];
