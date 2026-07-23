@@ -1,6 +1,15 @@
 {
   "headers": [
     {
+      "source": "/studio",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
       "source": "/studio/(.*)",
       "headers": [
         {
