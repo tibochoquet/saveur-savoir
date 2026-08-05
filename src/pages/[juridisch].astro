@@ -47,8 +47,49 @@ const pagina = await getJuridischePagina(docId);
           )
         }
       </div>
+
+      {
+        docId === "cookievoorkeuren" && (
+          <div class="mt-10 border border-blue-200 bg-cream-50 p-6" id="cookie-status-block">
+            <p class="text-sm font-medium text-ink-900">
+              Je huidige voorkeur: <span id="cookie-status-text">nog geen keuze gemaakt</span>
+            </p>
+            <button
+              type="button"
+              id="cookie-status-change"
+              class="mt-4 inline-flex items-center gap-2 border border-terracotta-500 bg-terracotta-500 px-6 py-3 text-sm font-medium tracking-wide text-cream-50 uppercase transition-colors duration-200 hover:border-terracotta-600 hover:bg-terracotta-600"
+            >
+              Wijzig je cookievoorkeuren
+            </button>
+          </div>
+        )
+      }
     </Container>
   </Section>
 
   <Footer />
 </Layout>
+
+<script>
+  import { getStoredConsent } from "../lib/consent";
+
+  const statusText = document.getElementById("cookie-status-text");
+  const changeButton = document.getElementById("cookie-status-change");
+
+  function renderStatus() {
+    if (!statusText) return;
+    const consent = getStoredConsent();
+    statusText.textContent =
+      consent === "granted"
+        ? "analytische cookies geaccepteerd"
+        : consent === "denied"
+          ? "analytische cookies geweigerd"
+          : "nog geen keuze gemaakt";
+  }
+
+  renderStatus();
+  changeButton?.addEventListener("click", () => {
+    window.dispatchEvent(new CustomEvent("open-cookie-preferences"));
+  });
+  window.addEventListener("cookie-consent-changed", renderStatus);
+</script>

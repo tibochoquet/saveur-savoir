@@ -41,6 +41,7 @@ staat in `.gitignore`).
 | `SHOPIFY_WEBHOOK_SECRET`       | Shopify admin → Instellingen → Notificaties → onderaan "Webhooks"     | de Shopify-webhook (`/api/shopify-webhook`) |
 | `VERCEL_DEPLOY_HOOK_URL`       | Vercel-project → Settings → Git → Deploy Hooks                       | de Shopify-webhook (triggert een rebuild) |
 | `PUBLIC_ALLOW_INDEXING`        | —                                                                 | zoekmachine-indexering aan/uit |
+| `PUBLIC_GA_ID`                 | analytics.google.com → Beheer → Gegevens verzamelen → Streamgegevens | Google Analytics (zie "Cookietoestemming en Google Analytics") |
 
 ## Content en het CMS
 
@@ -235,6 +236,38 @@ Er bestaat een tweede, vergelijkbare deploy hook-koppeling specifiek
 voor productwijzigingen in Shopify — zie "Shopify-webhook (vangnet)"
 verderop. Die twee webhooks staan los van elkaar en mogen dezelfde of
 een eigen deploy hook gebruiken.
+
+## Cookietoestemming en Google Analytics
+
+De site meet standaard **niets**. Google Analytics (GA4) wordt pas
+geladen nadat een bezoeker expliciet op "Accepteren" klikt in de
+cookiebanner (rechtsonder in `src/components/CookieBanner.astro`, in
+elke pagina via `Layout.astro`). Bij weigeren — of zolang er nog geen
+keuze is gemaakt — wordt er geen enkel verzoek naar Google verstuurd en
+worden er geen `_ga`-cookies geplaatst.
+
+Technisch:
+
+- `src/lib/consent.ts` bevat de hele logica: Google Consent Mode v2
+  (`analytics_storage` etc. staan standaard op `'denied'`, zie
+  `setDefaultDeniedConsent()`), het laden van `gtag.js` (alleen ná
+  toestemming, zie `loadGtagScript()`), en het opslaan/toepassen van de
+  keuze in `localStorage` (`applyConsent()` / `getStoredConsent()`).
+- De keuze is op elk moment herroepbaar via de knop op de
+  Cookievoorkeuren-pagina (`src/pages/[juridisch].astro`, alleen
+  zichtbaar op die pagina) — dit stuurt een `open-cookie-preferences`-
+  event dat de banner opnieuw opent. Bij intrekken worden eventuele
+  `_ga`/`_ga_*`-cookies meteen verwijderd.
+- `PUBLIC_GA_ID` (zie omgevingsvariabelen hierboven) bepaalt welk GA4-
+  meet-ID gebruikt wordt. Leeg/ontbrekend → de banner werkt nog gewoon,
+  maar "Accepteren" laadt dan niets (geen crash).
+
+Zelf testen: open de site in een incognitovenster, klik "Weigeren" en
+controleer in de Netwerktab dat er geen verzoeken naar
+`googletagmanager.com` of `google-analytics.com` verschijnen. Klik
+daarna (in een nieuw incognitovenster) op "Accepteren" — dan hoort
+`gtag/js?id=G-...` wél te laden, en zou de bezoeker binnen enkele
+seconden in GA4 → Rapporten → Realtime moeten verschijnen.
 
 ## Merkkleuren
 

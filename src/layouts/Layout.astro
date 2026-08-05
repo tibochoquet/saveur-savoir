@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import CookieBanner from "../components/CookieBanner.astro";
 
 interface Props {
   title: string;
@@ -27,6 +28,7 @@ const {
 const allowIndexing = import.meta.env.PUBLIC_ALLOW_INDEXING === "true";
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
+const gaId = import.meta.env.PUBLIC_GA_ID;
 ---
 
 <!doctype html>
@@ -52,8 +54,31 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {image && <meta name="twitter:image" content={image} />}
+
+    <!--
+      AVG: Consent Mode-standaard (alles 'denied') moet zo vroeg mogelijk
+      staan, vóór er ooit een gtag.js-script geladen wordt. Een eerder
+      opgeslagen keuze (van een vorig bezoek) wordt hier meteen toegepast —
+      gtag.js wordt alleen geladen als die keuze 'granted' is, nooit
+      standaard. Zie CookieBanner.astro voor de UI en src/lib/consent.ts
+      voor de logica.
+
+      Twee losse scripts: define:vars dwingt is:inline af (geen
+      npm-imports mogelijk in datzelfde scriptblok), dus de env-var wordt
+      hier alleen op window gezet; het echte werk gebeurt in de tweede,
+      wél door Vite verwerkte module hieronder.
+    -->
+    <script is:inline define:vars={{ gaId }}>
+      window.__GA_ID__ = gaId || undefined;
+    </script>
+    <script>
+      import { setDefaultDeniedConsent, applyStoredConsent } from "../lib/consent";
+      setDefaultDeniedConsent();
+      applyStoredConsent(window.__GA_ID__);
+    </script>
   </head>
   <body class="bg-cream-100 font-sans text-ink-700 antialiased">
     <slot />
+    <CookieBanner />
   </body>
 </html>
