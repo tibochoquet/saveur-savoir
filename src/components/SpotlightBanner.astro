@@ -1,0 +1,52 @@
+---
+// Uitgelichte producten op de homepage, tussen de hero en "Wie ben ik".
+// De producten zelf komen live uit Shopify (zie index.astro) — hier
+// alleen de layout. Consistent met de kaarten in de webshop-grid
+// (zelfde OverviewCard, object-contain voor Shopify-foto's).
+import Container from "./Container.astro";
+import OverviewCard from "./OverviewCard.astro";
+import Button from "./Button.astro";
+import { kortBeschrijving } from "../shopify/client";
+import type { ShopifyProduct } from "../shopify/types";
+
+interface Props {
+  titel: string;
+  producten: ShopifyProduct[];
+}
+
+const { titel, producten } = Astro.props;
+
+const gridCols =
+  producten.length >= 4
+    ? "sm:grid-cols-2 lg:grid-cols-4"
+    : "sm:grid-cols-2 lg:grid-cols-3";
+---
+
+{
+  producten.length > 0 && (
+    <Container wide>
+      <h2 class="font-serif text-3xl text-ink-900 sm:text-4xl">{titel}</h2>
+
+      <div class:list={["mt-10 grid grid-cols-1 gap-x-8 gap-y-12", gridCols]}>
+        {producten.map((product) => (
+          <OverviewCard
+            href={`/webshop/${product.handle}`}
+            eyebrow={product.categorie ?? "Product"}
+            title={product.titel}
+            excerpt={kortBeschrijving(product.beschrijvingHtml)}
+            prijs={product.prijs}
+            meta={product.beschikbaar ? undefined : "Tijdelijk uitverkocht"}
+            imageUrl={product.afbeelding?.url}
+            imageAlt={product.afbeelding?.alt ?? product.titel}
+          />
+        ))}
+      </div>
+
+      <div class="mt-12 text-center">
+        <Button href="https://shop.saveursavoir.nl" variant="secondary">
+          Alles weergeven
+        </Button>
+      </div>
+    </Container>
+  )
+}

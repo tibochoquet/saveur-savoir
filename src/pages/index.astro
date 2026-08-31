@@ -8,8 +8,10 @@ import SanityImage from "../components/SanityImage.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import PortableText from "../components/PortableText.astro";
+import SpotlightBanner from "../components/SpotlightBanner.astro";
 import { getHomepage } from "../sanity/lib/queries";
 import { urlFor } from "../sanity/lib/image";
+import { getShopifyProducten } from "../shopify/client";
 
 const home = await getHomepage();
 
@@ -23,6 +25,17 @@ const aanbod = (home?.aanbodItems ?? []).map((item, i) => ({
 const socialImage = home?.heroAfbeelding
   ? urlFor(home.heroAfbeelding).width(1200).height(630).fit("crop").url()
   : undefined;
+
+// Spotlight-producten: de handles komen uit Sanity, de productdata zelf
+// altijd live uit Shopify (nooit uit Sanity gekopieerd). Deze pagina
+// blijft statisch (net als recepten/[slug].astro) — een Shopify-wijziging
+// triggert een rebuild via de webhook, die dit dan meteen herverifieert.
+// Een handle die niet meer bestaat wordt gewoon overgeslagen, nooit een
+// dode kaart.
+const shopifyProducten = await getShopifyProducten();
+const spotlightProducten = (home?.spotlightHandles ?? [])
+  .map((handle) => shopifyProducten.find((p) => p.handle === handle))
+  .filter((p) => p !== undefined);
 ---
 
 <Layout
@@ -51,6 +64,15 @@ const socialImage = home?.heroAfbeelding
       </div>
     </Container>
   </Section>
+
+  <!-- Spotlight: uitgelichte producten -->
+  {
+    home && (
+      <Section spacing="base" tone="cream" class="border-t border-blue-200/70">
+        <SpotlightBanner titel={home.spotlightTitel} producten={spotlightProducten} />
+      </Section>
+    )
+  }
 
   <!-- Over mij -->
   <Section id="over-mij" spacing="base" tone="cream" class="border-t border-blue-200/70">

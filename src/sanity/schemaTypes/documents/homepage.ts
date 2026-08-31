@@ -14,6 +14,7 @@ export default defineType({
   type: "document",
   fieldsets: [
     { name: "hero", title: "Hero (bovenaan)" },
+    { name: "spotlight", title: "Spotlight (uitgelichte producten)" },
     { name: "overMij", title: "Wie ben ik" },
     { name: "aanbod", title: "Wat ik bied" },
     { name: "contact", title: "Contact-oproep" },
@@ -66,6 +67,25 @@ export default defineType({
       type: "afbeelding",
       fieldset: "hero",
       description: "Zonder foto wordt automatisch een placeholder getoond.",
+    }),
+
+    defineField({
+      name: "spotlightTitel",
+      title: "Kop boven de uitgelichte producten",
+      description: "Bijvoorbeeld: \"Nieuw in ons assortiment\" of \"Speciaal voor Kerst\".",
+      type: "string",
+      fieldset: "spotlight",
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: "spotlightHandles",
+      title: "Uitgelichte producten (3 tot 4)",
+      description:
+        "De handle uit de Shopify-productURL, bijvoorbeeld bij saveursavoir.nl/webshop/soupe-au-pistou-kaart vul je \"soupe-au-pistou-kaart\" in. Een product dat niet meer bestaat in Shopify wordt automatisch overgeslagen, nooit een dode link.",
+      type: "array",
+      fieldset: "spotlight",
+      of: [{ type: "string" }],
+      validation: (Rule) => Rule.min(3).max(4).required(),
     }),
 
     defineField({

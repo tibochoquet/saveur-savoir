@@ -89,6 +89,8 @@ export interface Homepage extends SeoVelden {
   heroCtaPrimair: string;
   heroCtaSecundair: string;
   heroAfbeelding?: SanityImageValue;
+  spotlightTitel: string;
+  spotlightHandles: string[];
   overMijEyebrow: string;
   overMijTitel: string;
   overMijTekst: PortableTextBlock[];
