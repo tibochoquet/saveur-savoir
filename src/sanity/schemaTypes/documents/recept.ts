@@ -1,4 +1,5 @@
 import { defineField, defineType } from "sanity";
+import { seoVelden } from "./paginaFactory";
 
 export default defineType({
   name: "recept",
@@ -10,6 +11,13 @@ export default defineType({
       title: "Archief — niet meer zichtbaar op de site",
       description:
         "Deze velden worden niet meer getoond op de receptpagina (vervangen door de Receptkaart-CTA hieronder). Ze blijven bewaard, niet verwijderd.",
+      options: { collapsible: true, collapsed: true },
+    },
+    {
+      name: "seo",
+      title: "SEO en zoekmachines",
+      description:
+        "Gebruikt voor het browsertabblad, zoekresultaten, en de gestructureerde data (JSON-LD) die Google en AI-crawlers gebruiken om dit receptverhaal te herkennen als artikel.",
       options: { collapsible: true, collapsed: true },
     },
   ],
@@ -34,6 +42,15 @@ export default defineType({
       description: "Bijvoorbeeld: Provence. Te zien op de receptpagina zelf, niet op het overzicht.",
       type: "string",
     }),
+    defineField({
+      name: "publicatiedatum",
+      title: "Publicatiedatum",
+      description: "De datum die bij dit receptverhaal getoond wordt en die zoekmachines gebruiken.",
+      type: "date",
+      fieldset: "seo",
+      validation: (Rule) => Rule.required(),
+    }),
+    ...seoVelden().map((veld) => ({ ...veld, fieldset: "seo" })),
     defineField({
       name: "excerpt",
       title: "Korte omschrijving",

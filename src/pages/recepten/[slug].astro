@@ -8,6 +8,7 @@ import Eyebrow from "../../components/Eyebrow.astro";
 import SanityImage from "../../components/SanityImage.astro";
 import PortableText from "../../components/PortableText.astro";
 import Button from "../../components/Button.astro";
+import JsonLd from "../../components/JsonLd.astro";
 import { getRecepten } from "../../sanity/lib/queries";
 import { getShopifyProducten } from "../../shopify/client";
 import { urlFor } from "../../sanity/lib/image";
@@ -37,9 +38,40 @@ const toonReceptkaart = Boolean(recept.receptkaartHandle && geldigeHandles.has(r
 const socialImage = recept.afbeelding
   ? urlFor(recept.afbeelding).width(1200).height(630).fit("crop").url()
   : undefined;
+
+const pageTitle = recept.seoTitel || `${recept.titel} — Saveur & Savoir`;
+const pageDescription = recept.seoOmschrijving || recept.excerpt;
+
+const publicatiedatumWeergave = new Intl.DateTimeFormat("nl-NL", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+}).format(new Date(recept.publicatiedatum));
+
+// Article-schema (JSON-LD) voor Google en AI-crawlers. Bewust GEEN
+// Recipe-schema: er staan geen ingrediënten/bereidingsstappen op deze
+// pagina (die zijn nu een los te kopen receptkaart in de webshop), en
+// Recipe-structured-data die naar niet-zichtbare content verwijst is in
+// strijd met Google's richtlijnen. Elk veld hieronder komt overeen met
+// tekst die ook echt zichtbaar op de pagina staat.
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).toString();
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: recept.titel,
+  description: pageDescription,
+  image: socialImage ? [socialImage] : undefined,
+  datePublished: recept.publicatiedatum,
+  dateModified: recept._updatedAt,
+  author: { "@type": "Organization", name: "Saveur & Savoir" },
+  publisher: { "@type": "Organization", name: "Saveur & Savoir" },
+  articleSection: recept.streek || undefined,
+  mainEntityOfPage: { "@type": "WebPage", "@id": canonicalUrl },
+};
 ---
 
-<Layout title={`${recept.titel} — Saveur & Savoir`} description={recept.excerpt} image={socialImage}>
+<Layout title={pageTitle} description={pageDescription} image={socialImage}>
+  <JsonLd data={articleSchema} />
   <Header />
 
   <Section spacing="sm" tone="cream">
@@ -64,6 +96,10 @@ const socialImage = recept.afbeelding
         <div class="flex items-center gap-2">
           <dt class="font-medium text-ink-900">Niveau</dt>
           <dd>{recept.niveau}</dd>
+        </div>
+        <div class="flex items-center gap-2">
+          <dt class="font-medium text-ink-900">Gepubliceerd</dt>
+          <dd>{publicatiedatumWeergave}</dd>
         </div>
       </dl>
     </Container>

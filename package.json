@@ -19,7 +19,8 @@
     "migrate:round4": "tsx scripts/migrate-round4.ts",
     "migrate:round5": "tsx scripts/migrate-round5.ts",
     "migrate:round6": "tsx scripts/migrate-round6.ts",
-    "migrate:round7": "tsx scripts/migrate-round7.ts"
+    "migrate:round7": "tsx scripts/migrate-round7.ts",
+    "migrate:round8": "tsx scripts/migrate-round8.ts"
   },
   "dependencies": {
     "@astrojs/react": "^6.0.1",

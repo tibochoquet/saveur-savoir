@@ -12,11 +12,13 @@ export interface SeoVelden {
   seoOmschrijving?: string;
 }
 
-export interface Recept {
+export interface Recept extends SeoVelden {
   _id: string;
+  _updatedAt: string;
   titel: string;
   slug: { current: string };
   streek: string;
+  publicatiedatum: string;
   excerpt: string;
   afbeelding?: SanityImageValue;
   bereidingstijd: string;
