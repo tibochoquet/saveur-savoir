@@ -34,6 +34,9 @@ export default defineConfig({
             // alleen nog als naam→tint-opzoektabel voor de webshop-
             // categoriekleur (zie productcategorie.ts).
             S.documentTypeListItem("productcategorie").title("Productcategorieën (kleur)"),
+            // Redactionele receptenkaart-links per Shopify-product (zie
+            // productAanvulling.ts) — productdata zelf blijft Shopify.
+            S.documentTypeListItem("productAanvulling").title("Producten — receptenkaarten"),
             S.documentTypeListItem("onderwerp").title("Onderwerpen (blog)"),
             S.divider(),
             // Alle paginateksten en instellingen gegroepeerd op één

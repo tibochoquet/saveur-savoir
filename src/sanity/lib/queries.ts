@@ -10,6 +10,7 @@ import type {
   PaginaPriveLes,
   PaginaVertalingen,
   PaginaWebshop,
+  ProductAanvulling,
   Productcategorie,
   Recept,
   SiteInstellingen,
@@ -54,6 +55,15 @@ export function getOnderwerpen() {
 // webshop-categoriekleur.
 export function getProductcategorieen() {
   return sanityClient.fetch<Productcategorie[]>(`*[_type == "productcategorie"] | order(titel asc)`);
+}
+
+// Redactionele receptenkaart-links per Shopify-product, gekoppeld via de
+// handle (zie productAanvulling.ts) — productdata zelf blijft Shopify.
+export function getProductAanvullingByHandle(handle: string) {
+  return sanityClient.fetch<ProductAanvulling | null>(
+    `*[_type == "productAanvulling" && productHandle == $handle][0]`,
+    { handle }
+  );
 }
 
 export function getSiteInstellingen() {

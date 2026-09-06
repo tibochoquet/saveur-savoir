@@ -10,7 +10,7 @@ export default defineType({
       name: "archief",
       title: "Archief — niet meer zichtbaar op de site",
       description:
-        "Deze velden worden niet meer getoond op de receptpagina (vervangen door de Receptkaart-CTA hieronder). Ze blijven bewaard, niet verwijderd.",
+        "Deze velden worden niet meer getoond op de receptpagina (vervangen door de Receptenkaart-CTA hieronder). Ze blijven bewaard, niet verwijderd.",
       options: { collapsible: true, collapsed: true },
     },
     {
@@ -174,17 +174,59 @@ export default defineType({
       rows: 2,
     }),
     defineField({
-      name: "receptkaartHandle",
-      title: "Receptkaart — webshopproduct (handle)",
+      name: "receptenkaartHandle",
+      title: "Receptenkaart — webshopproduct (handle)",
       description:
-        "Optioneel. De handle uit de Shopify-productURL van dit recept als receptkaart, bijvoorbeeld bij saveursavoir.nl/webshop/soupe-au-pistou-kaart vul je hier \"soupe-au-pistou-kaart\" in. Ingevuld = er verschijnt onderaan het recept een CTA-blok naar de webshop.",
+        "Optioneel. De handle uit de Shopify-productURL van dit recept als receptenkaart, bijvoorbeeld bij saveursavoir.nl/webshop/soupe-au-pistou-kaart vul je hier \"soupe-au-pistou-kaart\" in. Ingevuld = er verschijnt onderaan het recept een CTA-blok naar de webshop.",
       type: "string",
     }),
     defineField({
-      name: "receptkaartKnoptekst",
-      title: "Receptkaart — eigen tekst bij de knop",
-      description: "Optioneel. Bijvoorbeeld: \"Bestel de receptkaart\". Leeg = standaardtekst.",
+      name: "receptenkaartTekst",
+      title: "Receptenkaart — eigen zin bij de CTA",
+      description:
+        "Optioneel. De zin boven de knop, bijvoorbeeld \"Liever dit recept als kant-en-klaar pakket in huis? Bekijk het als product in de webshop.\" Leeg = standaardzin.",
+      type: "text",
+      rows: 2,
+    }),
+    defineField({
+      name: "receptenkaartKnoptekst",
+      title: "Receptenkaart — eigen tekst bij de knop",
+      description: "Optioneel. Bijvoorbeeld: \"Bestel de receptenkaart\". Leeg = standaardtekst.",
       type: "string",
+    }),
+    defineField({
+      name: "gerelateerdeProducten",
+      title: "Producten bij dit recept",
+      description:
+        "Optioneel, 2 tot 4 stuks. Verschijnt als apart blok onderaan het recept, los van de Receptenkaart-CTA hierboven. Alleen zichtbaar zodra er minstens één item is ingevuld.",
+      type: "array",
+      of: [
+        {
+          type: "object",
+          name: "gerelateerdProduct",
+          title: "Product",
+          fields: [
+            defineField({
+              name: "productHandle",
+              title: "Webshopproduct (handle)",
+              description:
+                "De handle uit de Shopify-productURL, bijvoorbeeld bij saveursavoir.nl/webshop/teisseire-siroop-muntsmaak vul je hier \"teisseire-siroop-muntsmaak\" in.",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: "tekst",
+              title: "Eigen tekst (naam of aanprijzende zin)",
+              type: "string",
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+          preview: {
+            select: { title: "tekst", subtitle: "productHandle" },
+          },
+        },
+      ],
+      validation: (Rule) => Rule.min(2).max(4),
     }),
   ],
   preview: {

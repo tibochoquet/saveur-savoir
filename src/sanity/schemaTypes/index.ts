@@ -6,6 +6,7 @@ import pullQuote from "./objects/pullQuote";
 import recept from "./documents/recept";
 import blogartikel from "./documents/blogartikel";
 import productcategorie from "./documents/productcategorie";
+import productAanvulling from "./documents/productAanvulling";
 import onderwerp from "./documents/onderwerp";
 import siteInstellingen from "./documents/siteInstellingen";
 import homepage from "./documents/homepage";
@@ -31,6 +32,9 @@ export const schemaTypes = [
   // de zachte achtergrond op het webshop-overzicht — productdata zelf
   // komt uitsluitend uit Shopify (zie src/shopify/client.ts).
   productcategorie,
+  // Redactionele aanvulling per Shopify-product (receptenkaart-links) —
+  // dupliceert geen productdata, zie het schema zelf voor uitleg.
+  productAanvulling,
   onderwerp,
   // singletons (zie sanity.config.ts, gegroepeerd onder "Pagina's")
   homepage,

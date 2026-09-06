@@ -77,16 +77,26 @@ homepage heeft een hardcoded standaardtitel als niemand ooit een
 SEO-titel invult: "Saveur & Savoir | Franse recepten, Franse producten,
 vertalingen & Franse lessen".
 
-### Recept als "receptkaart"
+### Recept als "receptenkaart"
 
 Een recept kan gekoppeld worden aan een product in de webshop via
-**"Receptkaart — webshopproduct (handle)"** op het recept (de handle uit
-de Shopify-productURL) plus een optionele eigen knoptekst. Ingevuld =
-er verschijnt onderaan het recept een CTA-blok naar dat product; leeg =
-geen blok. De oude ingrediënten/bereidingsstappen-velden staan nog in
-Studio (ingeklapt onder "Archief") maar worden niet meer op de site
-getoond — bewust niet verwijderd, zodat bestaande content niet verloren
-gaat.
+**"Receptenkaart — webshopproduct (handle)"** op het recept (de handle
+uit de Shopify-productURL) plus een optionele eigen zin en knoptekst.
+Ingevuld = er verschijnt onderaan het recept een CTA-blok naar dat
+product; leeg = geen blok. De oude ingrediënten/bereidingsstappen-velden
+staan nog in Studio (ingeklapt onder "Archief") maar worden niet meer op
+de site getoond — bewust niet verwijderd, zodat bestaande content niet
+verloren gaat.
+
+Los daarvan kan een recept ook 2-4 losse "Producten bij dit recept"
+tonen (elk met een eigen Shopify-handle en een eigen tekst) — een apart
+blok, verschijnt alleen als er minstens één is ingevuld.
+
+Omgekeerd kan een webshopproduct ook 1-2 receptenkaarten tonen via een
+los `productAanvulling`-document (gekoppeld via dezelfde Shopify-handle,
+zie `src/sanity/schemaTypes/documents/productAanvulling.ts`) — dit
+document dupliceert geen productdata, het voegt alleen de receptenkaart-
+links en bijbehorende tekst toe die Shopify niet heeft.
 
 ### Seed-script
 
@@ -132,7 +142,7 @@ verandert alleen wanneer er in Sanity gepubliceerd wordt.
 Naast de ISR-cache is er `/api/shopify-webhook` (`src/pages/api/shopify-webhook.ts`):
 bij elke product create/update/delete in Shopify triggert dit direct een
 volledige Vercel-rebuild, zodat ook de weinige **statische** pagina's die
-Shopify-data raadplegen (bv. de Receptkaart-check in `recepten/[slug].astro`,
+Shopify-data raadplegen (bv. de Receptenkaart-check in `recepten/[slug].astro`,
 die op build-time controleert of de gekoppelde handle nog bestaat) meteen
 meebewegen, in plaats van te wachten op de eerstvolgende Sanity-publicatie.
 

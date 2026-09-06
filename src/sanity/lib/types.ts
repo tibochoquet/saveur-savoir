@@ -30,8 +30,13 @@ export interface Recept extends SeoVelden {
   tip?: string;
   // De webshopcatalogus leeft sinds de Shopify-koppeling niet meer in
   // Sanity, dus dit is een platte handle-string, geen reference.
-  receptkaartHandle?: string;
-  receptkaartKnoptekst?: string;
+  receptenkaartHandle?: string;
+  receptenkaartTekst?: string;
+  receptenkaartKnoptekst?: string;
+  // 2-4 items indien ingevuld, verder optioneel. Ook hier: platte
+  // handle-strings, geen reference — Shopify blijft de enige bron voor
+  // productdata.
+  gerelateerdeProducten?: { productHandle: string; tekst: string }[];
 }
 
 export interface Onderwerp {
@@ -60,6 +65,18 @@ export interface Productcategorie {
   titel: string;
   slug: { current: string };
   kleurTint?: string;
+}
+
+export interface ProductAanvullingReceptenkaart {
+  handle: string;
+  tekst: string;
+}
+
+export interface ProductAanvulling {
+  _id: string;
+  productHandle: string;
+  receptenkaart1?: ProductAanvullingReceptenkaart;
+  receptenkaart2?: ProductAanvullingReceptenkaart;
 }
 
 export interface FooterKolom {

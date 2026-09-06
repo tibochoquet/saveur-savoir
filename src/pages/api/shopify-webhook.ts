@@ -4,7 +4,7 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 // Vangnet naast de ISR-cache op /webshop (zie astro.config.mjs): bij elke
 // product create/update/delete in Shopify triggert dit endpoint direct een
 // volledige Vercel-rebuild, zodat ook statische pagina's die Shopify-data
-// gebruiken (bv. de Receptkaart-check in recepten/[slug].astro) meteen
+// gebruiken (bv. de Receptenkaart-check in recepten/[slug].astro) meteen
 // bijwerken, in plaats van te wachten op de eerstvolgende Sanity-publicatie.
 //
 // Instellen in Shopify-admin: zie README.md ("Shopify-webhook").
