@@ -43,25 +43,16 @@ const spotlightProducten = (home?.spotlightHandles ?? [])
   description={home?.seoOmschrijving}
   image={socialImage}
 >
-  <!-- Header staat hier los van de hero (niet erin genest): "sticky"
-       stopt met werken zodra de sticky-ancestor eindigt, en de hero-
-       wrapper hieronder heeft juist een vaste hoogte (min-h-screen).
-       Genest zou de header dus alleen tijdens de eerste schermhoogte
-       blijven plakken en daarna gewoon wegscrollen. In plaats daarvan:
-       header een gewone sticky sibling, en de hero-wrapper op lg+ een
-       stukje omhoog (negative margin, exact de headerhoogte) zodat de
-       foto er toch achter doorloopt — met evenveel padding-top op de
-       tekst erin zodat die niet onder de header verdwijnt. -->
-  <Header transparent />
+  <Header />
 
-  <!-- Hero. Geen verloop: de foto zelf is al links leeg genoeg voor de
-       tekst. Mobiel/tablet: een lange introtekst past niet betrouwbaar
-       binnen "min-h-screen" met de foto als achtergrond erachter — de
-       foto zou dan te ver onder de tekst wegzakken. Daarom daar een
-       vaste-hoogte fotoband bovenaan, gewoon in de leesvolgorde, met de
-       tekst eronder (geen overlap met de header nodig, die is daar toch
-       niet transparant). -->
-  <div class="relative isolate bg-cream-100 text-ink-700 lg:-mt-[82px] lg:flex lg:min-h-screen lg:flex-col">
+  <!-- Hero. Header staat er gewoon (met zijn normale cream achtergrond)
+       bovenop, geen verloop nodig: de foto zelf is al links leeg genoeg
+       voor de tekst. Mobiel/tablet: een lange introtekst past niet
+       betrouwbaar binnen "min-h-screen" met de foto als achtergrond
+       erachter — de foto zou dan te ver onder de tekst wegzakken.
+       Daarom daar een vaste-hoogte fotoband bovenaan, gewoon in de
+       leesvolgorde, met de tekst eronder. -->
+  <div class="relative isolate bg-cream-100 text-ink-700 lg:flex lg:min-h-[calc(100vh-82px)] lg:flex-col">
     <SanityImage
       image={home?.heroAfbeelding}
       ratio="16/9"
@@ -85,6 +76,29 @@ const spotlightProducten = (home?.spotlightHandles ?? [])
         </div>
       </Container>
     </div>
+
+    <!-- Scroll-hint: alleen op lg+ nodig, waar de hero echt fullscreen is
+         en niet vanzelf duidelijk is dat er meer volgt. -->
+    <a
+      href="#aanbod"
+      aria-label="Scroll naar beneden"
+      class="absolute inset-x-0 bottom-8 z-10 hidden flex-col items-center gap-2 text-xs font-medium tracking-[0.2em] text-ink-900 uppercase [text-shadow:0_1px_6px_rgba(255,251,245,0.9)] lg:flex"
+    >
+      <span>Scroll</span>
+      <svg
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="animate-bounce"
+      >
+        <path d="M6 9l6 6 6-6" />
+      </svg>
+    </a>
   </div>
 
   <!-- Spotlight: uitgelichte producten -->
