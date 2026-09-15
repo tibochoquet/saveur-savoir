@@ -43,39 +43,49 @@ const spotlightProducten = (home?.spotlightHandles ?? [])
   description={home?.seoOmschrijving}
   image={socialImage}
 >
-  <Header />
+  <!-- Header staat hier los van de hero (niet erin genest): "sticky"
+       stopt met werken zodra de sticky-ancestor eindigt, en de hero-
+       wrapper hieronder heeft juist een vaste hoogte (min-h-screen).
+       Genest zou de header dus alleen tijdens de eerste schermhoogte
+       blijven plakken en daarna gewoon wegscrollen. In plaats daarvan:
+       header een gewone sticky sibling, en de hero-wrapper op lg+ een
+       stukje omhoog (negative margin, exact de headerhoogte) zodat de
+       foto er toch achter doorloopt — met evenveel padding-top op de
+       tekst erin zodat die niet onder de header verdwijnt. -->
+  <Header transparent />
 
-  <!-- Hero. Desktop (lg+): volledig fullscreen achtergrondfoto met de
-       tekst links, cream-verloop van links (dichter, voor leesbaarheid)
-       naar rechts (foto zichtbaar). Mobiel/tablet: een lange introtekst
-       past niet betrouwbaar binnen "min-h-screen" met de foto als
-       achtergrond erachter — de foto zou dan te ver onder de tekst
-       wegzakken. Daarom daar een vaste hoogte fotoband bovenaan, gewoon
-       in de leesvolgorde, met de tekst er gewoon onder. -->
-  <Section spacing="lg" tone="cream" class="relative isolate overflow-hidden !py-0 lg:flex lg:min-h-screen lg:items-center lg:!py-section-lg">
+  <!-- Hero. Geen verloop: de foto zelf is al links leeg genoeg voor de
+       tekst. Mobiel/tablet: een lange introtekst past niet betrouwbaar
+       binnen "min-h-screen" met de foto als achtergrond erachter — de
+       foto zou dan te ver onder de tekst wegzakken. Daarom daar een
+       vaste-hoogte fotoband bovenaan, gewoon in de leesvolgorde, met de
+       tekst eronder (geen overlap met de header nodig, die is daar toch
+       niet transparant). -->
+  <div class="relative isolate bg-cream-100 text-ink-700 lg:-mt-[82px] lg:flex lg:min-h-screen lg:flex-col">
     <SanityImage
       image={home?.heroAfbeelding}
       ratio="16/9"
       tone="olive"
-      class="relative h-64 w-full sm:h-80 lg:absolute lg:inset-0 lg:-z-20 lg:h-full"
+      class="relative h-64 w-full sm:h-80 lg:absolute lg:inset-0 lg:-z-10 lg:h-full lg:w-full"
       sizes="100vw"
     />
-    <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-cream-100 to-cream-100/0 lg:inset-0 lg:-z-10 lg:h-auto lg:bg-gradient-to-r lg:from-cream-100 lg:via-cream-100/60 lg:via-30% lg:to-cream-100/0 lg:to-70%"></div>
 
-    <Container wide class="py-12 lg:py-0">
-      <div class="max-w-md">
-        <Eyebrow>{home?.heroEyebrow}</Eyebrow>
-        <h1 class="mt-6 font-serif text-3xl text-ink-900 sm:text-4xl">
-          {home?.heroTitel}
-        </h1>
-        <PortableText value={home?.heroIntro} class="mt-6 max-w-md text-lg text-ink-700" />
-        <div class="mt-10 flex flex-wrap gap-4">
-          <Button href="#aanbod" variant="primary">{home?.heroCtaPrimair}</Button>
-          <Button href="#over-mij" variant="ghost">{home?.heroCtaSecundair}</Button>
+    <div class="lg:flex lg:flex-1 lg:items-center">
+      <Container wide class="py-12 lg:py-0">
+        <div class="max-w-md">
+          <Eyebrow>{home?.heroEyebrow}</Eyebrow>
+          <h1 class="mt-6 font-serif text-3xl text-ink-900 sm:text-4xl">
+            {home?.heroTitel}
+          </h1>
+          <PortableText value={home?.heroIntro} class="mt-6 max-w-md text-lg text-ink-700" />
+          <div class="mt-10 flex flex-wrap gap-4">
+            <Button href="#aanbod" variant="primary">{home?.heroCtaPrimair}</Button>
+            <Button href="#over-mij" variant="ghost">{home?.heroCtaSecundair}</Button>
+          </div>
         </div>
-      </div>
-    </Container>
-  </Section>
+      </Container>
+    </div>
+  </div>
 
   <!-- Spotlight: uitgelichte producten -->
   {

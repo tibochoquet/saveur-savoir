@@ -1,6 +1,15 @@
 ---
 import Container from "./Container.astro";
 
+interface Props {
+  // Alleen gebruikt op de homepage: header zonder eigen achtergrond op
+  // lg+, zodat de hero-foto erachter zichtbaar blijft. Op mobiel/tablet
+  // altijd de gewone cream balk (daar staat geen foto achter de header).
+  transparent?: boolean;
+}
+
+const { transparent = false } = Astro.props;
+
 const navItems = [
   { label: "Home", href: "/" },
   { label: "Webshop", href: "/webshop" },
@@ -14,7 +23,13 @@ const { pathname } = Astro.url;
 const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.startsWith(href));
 ---
 
-<header class="relative border-b border-blue-200/70 bg-cream-100">
+<header
+  data-transparent={transparent ? "true" : undefined}
+  class:list={[
+    "sticky top-0 z-50 border-b border-blue-200/70 bg-cream-100",
+    transparent && "lg:border-transparent lg:bg-transparent",
+  ]}
+>
   <Container wide class="flex items-center justify-between py-6">
     <a href="/" class="flex flex-shrink-0 items-center">
       <img
@@ -137,4 +152,22 @@ const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.s
   window.addEventListener("cart:updated", (event) => {
     renderCartCount((event as CustomEvent<{ count: number }>).detail.count);
   });
+
+  // Transparante header (alleen op de homepage, zie de "transparent"-prop):
+  // de header is sticky en blijft dus zichtbaar tijdens het scrollen, ook
+  // nadat de hero-foto allang voorbij is. Zonder dit zou de header daar
+  // een onleesbare doorzichtige balk over de rest van de pagina worden.
+  const header = document.querySelector<HTMLElement>("header[data-transparent]");
+  if (header) {
+    function updateHeaderBackground() {
+      const scrolled = window.scrollY > 40;
+      header!.classList.toggle("lg:bg-cream-100", scrolled);
+      header!.classList.toggle("lg:border-blue-200/70", scrolled);
+      header!.classList.toggle("lg:bg-transparent", !scrolled);
+      header!.classList.toggle("lg:border-transparent", !scrolled);
+    }
+
+    updateHeaderBackground();
+    window.addEventListener("scroll", updateHeaderBackground, { passive: true });
+  }
 </script>
