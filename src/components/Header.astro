@@ -16,7 +16,24 @@ const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname.s
 
 <header class="relative border-b border-blue-200/70 bg-cream-100">
   <Container wide class="flex items-center justify-between py-6">
-    <a href="/" class="font-serif text-xl text-ink-900">Saveur &amp; Savoir</a>
+    <a href="/" class="flex flex-shrink-0 items-center">
+      <img
+        src="/logo/wordmark.svg"
+        alt="Saveur &amp; Savoir"
+        width="184"
+        height="18"
+        loading="eager"
+        class="hidden h-[18px] w-auto flex-shrink-0 sm:block xl:h-[24px]"
+      />
+      <img
+        src="/logo/icon.svg"
+        alt="Saveur &amp; Savoir"
+        width="44"
+        height="35"
+        loading="eager"
+        class="block h-9 w-auto sm:hidden"
+      />
+    </a>
 
     <nav class="hidden items-center gap-8 text-base font-medium tracking-wide text-ink-700 lg:flex">
       {
